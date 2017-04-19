@@ -1,8 +1,8 @@
-package flight;
+package user;
 
 import java.util.Date;
 
-import user.Passenger;
+import flight.Flight;
 
 public class Order {
 	

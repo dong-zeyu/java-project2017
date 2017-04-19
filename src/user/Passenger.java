@@ -2,8 +2,6 @@ package user;
 
 import java.util.ArrayList;
 
-import flight.Order;
-
 public class Passenger extends User {
 	
 	String identityID;
