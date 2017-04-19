@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Passenger extends User {
 	
-	String identityID;
+	String identityID; // XXX this should not be changed?
 	ArrayList<Order> orderList;
 
 	public Passenger(String identityID, String realName, String password) {
@@ -12,10 +12,11 @@ public class Passenger extends User {
 		this.userName = realName;
 		this.userID = User.ID;
 		User.ID++;
-		// TODO hash pass
+		// TODO(Dong) hash pass
 	}
 	
 	public void addOrder(Order order) {
-		// TODO add Order
+		orderList.add(order);
 	}
+	
 }

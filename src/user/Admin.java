@@ -6,6 +6,7 @@ public class Admin extends User {
 		this.userName = userName;
 		this.userID = User.ID;
 		User.ID++;
-		// TODO hash pass
+		// TODO(Dong) hash pass
 	}
+	
 }

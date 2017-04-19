@@ -1,23 +1,23 @@
 package exceptions;
 
+import flight.FlightStatus;
+
 public class StatusUnavailableException extends Exception {
 
 	/**
-	 * default
+	 *  throws when status has already changed to not UNPUBLISH or TERMINATE but still trying to change something
 	 */
-	private static final long serialVersionUID = 1L;
-	private String cause = null;
+	private static final long serialVersionUID = 4179354336026016114L;
+	private FlightStatus status;
 
-	public StatusUnavailableException(String cause) {
-		// TODO Auto-generated constructor stub
-		this.cause = cause;
+	public StatusUnavailableException(FlightStatus status) {
+		this.status = status;
 	}
 	
 	public StatusUnavailableException() {
-		// TODO Auto-generated constructor stub
 	}
 	
-	public String getCauseMessage() {
-		return cause;
+	public FlightStatus getStatusMessage() {
+		return status;
 	}
 }

@@ -2,12 +2,14 @@ package flight;
 
 public class City {
 	
+	public static int ID = 0; //ID is just the count of cities
 	private int cityID; //cityID needn't changing
-	public String cityName;
+	public String cityName; //it can be public
 	
-	public City(int cityID, String cityName) {
-		this.cityID = cityID;
+	public City(String cityName) {
 		this.cityName = cityName;
+		this.cityID = ID;
+		ID++;
 	}
 
 	public int getCityID() {

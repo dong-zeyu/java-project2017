@@ -7,7 +7,9 @@ import user.Passenger;
 
 public class Flight {
 	
-	private String flightID;
+	public static int ID = 0;
+	private int flightID;
+	private String flightName;
 	private Date startTime;
 	private Date arriveTime;
 	private City startCity;
@@ -17,10 +19,10 @@ public class Flight {
 	private FlightStatus flightStatus;
 	private ArrayList<Passenger> passagers;
 	
-	public Flight(String flightID, Date startTime, Date arriveTime, City startCity, City arriveCity, int price,
-			int seatCapacity, FlightStatus flightStatus) {
+	public Flight(String flightName, Date startTime, Date arriveTime, City startCity, City arriveCity, int price,
+			int seatCapacity) {
 		passagers = new ArrayList<>();
-		this.flightID = flightID;
+		this.flightName = flightName;
 		this.startTime = startTime;
 		this.arriveTime = arriveTime;
 		this.startCity = startCity;
@@ -28,18 +30,28 @@ public class Flight {
 		this.price = price;
 		this.seatCapacity = seatCapacity;
 		this.flightStatus = FlightStatus.UNPUBLISHED;
+		flightID = Flight.ID;
+		ID++;
 	}
-	/* TODO
+	
+	public int getNumber() {
+		return passagers.size();
+	}
+	/* TODO(Zhu)
 	 * getter and setter are generated automatically, and need mortifying
-	 * basically the restriction is flightStatus
-	 * if force to change, throw StatusUnavailableException("${CurrentStatus}").
+	 * basically the restriction is flightStatus(seeing requirement)
+	 * if force to change, throw StatusUnavailableException(${CurrentStatus}).
 	 */
-	public String getFlightID() {
+	public int getFlightID() {
 		return flightID;
 	}
-
-	public void setFlightID(String flightID) {
-		this.flightID = flightID;
+	
+	public String getFlightName() {
+		return flightName;
+	}
+	
+	public void setFlightName(String flightName) {
+		this.flightName = flightName;
 	}
 
 	public Date getStartTime() {
@@ -98,13 +110,19 @@ public class Flight {
 		this.flightStatus = flightStatus;
 	}
 
-	public ArrayList<Passenger> getPassagers() {
+	public ArrayList<Passenger> getPassagers() { // read only, use add/remove to operate 
 		return passagers;
 	}
 
 	public void addPassager(Passenger passager) {
-		//TODO
+		/* TODO(Zhu)
+		 * order should be generated at the same time
+		 *	order.seat is set to (totalNumber + 1)
+		 */
 	}
 	
-	
+	public boolean removePassenger(int passengerID) { // return false when no one can found
+		// TODO(Zhu) removePassenger
+		return false;
+	}
 }

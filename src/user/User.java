@@ -8,6 +8,10 @@ public abstract class User {
 	protected String passHash; //using sha-256;
 	
 	protected void changePass(String newPass) { 
-		// TODO password change should be written to file immediately
+		// TODO(Dong) password change should be written to file immediately
+	}
+	
+	protected void changeName(String name) {
+		userName = name;
 	}
 }

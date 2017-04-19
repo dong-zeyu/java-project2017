@@ -7,21 +7,20 @@ import flight.Flight;
 public class Order {
 	
 	private Passenger passager;
-	private String seat;
+	private int seat;
 	private Flight flight;
 	private Date creatDate;
 	private OrderStatus status;
 	
-	public Order(Passenger passager, Flight flight) {
+	public Order(Passenger passager, Flight flight, int seat) {
 		this.passager = passager;
 		this.flight = flight;
-		this.creatDate = new Date(); //now
-		
-		// TODO this should be generated randomly
-		this.seat = "";		
+		this.seat = seat;
+		creatDate = new Date(); //now
+		status = OrderStatus.UNPAID;
 	}
 	
 	public void printOrder() {
-		// TODO printOrder
+		// TODO(Peng) printOrder
 	}
 }
