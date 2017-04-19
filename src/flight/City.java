@@ -2,7 +2,7 @@ package flight;
 
 public class City {
 	
-	public static int ID = 0; //ID is just the count of cities
+	private static int ID = 0; //ID is just the count of cities
 	private int cityID; //cityID needn't changing
 	public String cityName; //it can be public
 	
