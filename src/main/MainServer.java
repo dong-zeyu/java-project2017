@@ -71,7 +71,7 @@ public class MainServer {
 		return null;
 	}
 	
-	private User searchUserByID(int UserID) { // XXX whether should we return User?
+	private User searchUserByID(int userID) { // XXX whether should we return User?
 		// TODO(Zhu) searchUserByID
 		return null;
 	}
@@ -96,7 +96,9 @@ public class MainServer {
 	}
 	
 	public void deleteFlight(int flightID) throws PermissionDeniedException { 
-		// TODO(Peng) deleteFlight
+		/* TODO(Peng) deleteFlight
+		 * **be sure to delete flight from the city**
+		 */
 	}
 	
 	public void queryFlight() {
@@ -111,8 +113,22 @@ public class MainServer {
 		// TODO(Peng) addAdmin
 	}
 	
-	public void deleteUser(int userID) throws PermissionDeniedException {
-		// TODO(Peng) deleteUser
+	public boolean deleteUser(int userID) throws PermissionDeniedException {
+		/* TODO(Peng) deleteUser
+		 * first to test if user is a passenger (using instanceof)
+		 * **be sure to remove user from the flight**
+		 */
+		User u = searchUserByID(userID);
+		if (u == null) {
+			return false;
+		}
+		if (u instanceof Passenger) {
+			Passenger passenger = (Passenger) u;
+			// remove passenger from the flight
+		} else {
+			
+		}
+		return false;
 	}
 	
 	public User getCurrentUser() throws PermissionDeniedException { // to update user info

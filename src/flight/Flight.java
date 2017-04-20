@@ -33,6 +33,8 @@ public class Flight {
 		this.flightStatus = FlightStatus.UNPUBLISHED;
 		flightID = Flight.ID;
 		ID++;
+		startCity.flightsOut.add(this);
+		arriveCity.flightsIn.add(this);
 	}
 	
 	public int getNumber() {
