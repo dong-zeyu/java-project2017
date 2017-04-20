@@ -114,7 +114,7 @@ public class Flight {
 	}
 
 	public ArrayList<Passenger> getPassagers() { // read only, use add/remove to operate 
-		return passagers;
+		return (ArrayList<Passenger>) passagers.clone();
 	}
 
 	public void addPassager(Passenger passager) throws StatusUnavailableException {
