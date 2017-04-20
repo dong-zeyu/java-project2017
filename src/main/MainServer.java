@@ -2,6 +2,7 @@ package main;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Timer;
 
 import exceptions.PermissionDeniedException;
 import flight.City;
@@ -25,7 +26,9 @@ public class MainServer {
 		isLogin = false;
 		isAdmin = false;
 		dataManager = new DataManager(this);
-		// TODO(Zhu) init admins, passengers, flights and cities.
+		Timer timer = new Timer(true);
+		timer.schedule(dataManager, DataManager.SYNC_INTERVAL*1000, DataManager.SYNC_INTERVAL*1000);
+//		dataManager.init(); // constructor should include init
 	}
 	
 	public boolean Login(String userName, String pass) {
@@ -111,4 +114,5 @@ public class MainServer {
 		// TODO(Peng) unsubscribeFlight
 		return false;
 	}
+	
 }

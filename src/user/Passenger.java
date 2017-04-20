@@ -12,7 +12,7 @@ public class Passenger extends User {
 		this.userName = realName;
 		this.userID = User.ID;
 		User.ID++;
-		// TODO(Dong) hash pass
+		passHash = hashPass(password);
 	}
 	
 	public void addOrder(Order order) {
