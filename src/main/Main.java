@@ -9,25 +9,25 @@ public class Main {
 		MainServer server = new MainServer();
 		Scanner scanner = new Scanner(System.in);
 		String string = "";
-		String param = "";
+		String[] param;
 		printHelp(true);
 		while (!string.equals("exit")) {
 			System.out.print(">");
 			string = scanner.nextLine();
 			if (string.contains(" ")) {
 				string = string.replaceAll("\\s+", " ");
-				try {
-					param = string.split(" ")[1];
-					string = string.split(" ")[0];
-				} catch (ArrayIndexOutOfBoundsException e) {
-					// TODO Auto-generated catch block
-					System.out.println("Unknown command: Type 'help' for more information.");
-					string = "";
-					param = "";
+				if (string.equals(" ")) {
+					continue;
+				}
+				String[] cmd = string.split(" ");
+				string = cmd[0];
+				param = new String[cmd.length - 1];
+				for (int i = 1; i < cmd.length; i++) {
+					param[i - 1] = cmd[i]; 
 				}
 			}
 			else {
-				param = "";
+				param = null;
 			}
 			switch (string) {
 			case "help":
@@ -37,7 +37,7 @@ public class Main {
 				break;
 			default:
 				if (!string.equals("")) {
-					System.out.println("Unknown command: Print 'help' for more information.");
+					System.out.println("Unknown command: Type 'help' for more information.");
 				}
 				break;
 			}
