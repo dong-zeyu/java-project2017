@@ -14,10 +14,12 @@ public class Main {
 		while (!string.equals("exit")) {
 			System.out.print(">");
 			string = scanner.nextLine();
+			string = string.replaceAll("\\s+", " ");
 			if (string.contains(" ")) {
-				string = string.replaceAll("\\s+", " ");
 				if (string.equals(" ")) {
 					continue;
+				} else if (string.startsWith(" ")) {
+					string = string.replaceAll("^\\s+", "");
 				}
 				String[] cmd = string.split(" ");
 				string = cmd[0];
@@ -25,8 +27,7 @@ public class Main {
 				for (int i = 1; i < cmd.length; i++) {
 					param[i - 1] = cmd[i]; 
 				}
-			}
-			else {
+			} else {
 				param = null;
 			}
 			switch (string) {
