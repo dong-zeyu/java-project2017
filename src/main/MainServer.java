@@ -32,7 +32,24 @@ public class MainServer {
 	}
 	
 	public boolean Login(String userName, String pass) {
-		// TODO(Dong) set isAdmin isLogin
+		User tmp;
+		for (int i = 0; i < admins.size(); i++) {
+			tmp = admins.get(i);
+			if (tmp.userName == userName && tmp.getPassHash().equals(User.hashPass(pass))) {
+				isLogin = true;
+				isAdmin = true;
+				currentUser = tmp;
+				return true;
+			}
+		}
+		for (int i = 0; i < admins.size(); i++) {
+			tmp = passengers.get(i);
+			if (tmp.userName == userName && tmp.getPassHash().equals(User.hashPass(pass))) {
+				isLogin = true;
+				currentUser = tmp;
+				return true;
+			}
+		}
 		return false;
 	}
 	
@@ -78,7 +95,7 @@ public class MainServer {
 		}
 	}
 	
-	public void deleteFlight(int flightID) { 
+	public void deleteFlight(int flightID) throws PermissionDeniedException { 
 		// TODO(Peng) deleteFlight
 	}
 	
@@ -90,11 +107,11 @@ public class MainServer {
 		// XXX I think this can be changed to a class extends queryFlight
 	}
 	
-	public void addAdmin(String userName, String password) {
+	public void addAdmin(String userName, String password) throws PermissionDeniedException {
 		// TODO(Peng) addAdmin
 	}
 	
-	public void deleteUser(int userID) {
+	public void deleteUser(int userID) throws PermissionDeniedException {
 		// TODO(Peng) deleteUser
 	}
 	
@@ -106,11 +123,11 @@ public class MainServer {
 		}
 	}
 	
-	public void reserveFlight(int flightID) {
+	public void reserveFlight(int flightID) throws PermissionDeniedException {
 		// TODO(Zhu) reserveFlight
 	}
 	
-	public boolean unsubscribeFlight(int flightID) { //return false when no flight is found
+	public boolean unsubscribeFlight(int flightID) throws PermissionDeniedException { //return false when no flight is found
 		// TODO(Peng) unsubscribeFlight
 		return false;
 	}

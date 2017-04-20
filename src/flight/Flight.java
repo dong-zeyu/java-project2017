@@ -3,6 +3,7 @@ package flight;
 import java.util.ArrayList;
 import java.util.Date;
 
+import exceptions.StatusUnavailableException;
 import user.Passenger;
 
 public class Flight {
@@ -37,7 +38,7 @@ public class Flight {
 	public int getNumber() {
 		return passagers.size();
 	}
-	/* TODO(Zhu)
+	/* TODO(Zhu) get and set in Flight
 	 * getter and setter are generated automatically, and need mortifying
 	 * basically the restriction is flightStatus(seeing requirement)
 	 * if force to change, throw StatusUnavailableException(${CurrentStatus}).
@@ -50,7 +51,7 @@ public class Flight {
 		return flightName;
 	}
 	
-	public void setFlightName(String flightName) {
+	public void setFlightName(String flightName) throws StatusUnavailableException {
 		this.flightName = flightName;
 	}
 
@@ -58,7 +59,7 @@ public class Flight {
 		return startTime;
 	}
 
-	public void setStartTime(Date startTime) {
+	public void setStartTime(Date startTime) throws StatusUnavailableException {
 		this.startTime = startTime;
 	}
 
@@ -66,7 +67,7 @@ public class Flight {
 		return arriveTime;
 	}
 
-	public void setArriveTime(Date arriveTime) {
+	public void setArriveTime(Date arriveTime) throws StatusUnavailableException {
 		this.arriveTime = arriveTime;
 	}
 
@@ -74,7 +75,7 @@ public class Flight {
 		return startCity;
 	}
 
-	public void setStartCity(City startCity) {
+	public void setStartCity(City startCity) throws StatusUnavailableException {
 		this.startCity = startCity;
 	}
 
@@ -82,7 +83,7 @@ public class Flight {
 		return arriveCity;
 	}
 
-	public void setArriveCity(City arriveCity) {
+	public void setArriveCity(City arriveCity) throws StatusUnavailableException {
 		this.arriveCity = arriveCity;
 	}
 
@@ -90,7 +91,7 @@ public class Flight {
 		return price;
 	}
 
-	public void setPrice(int price) {
+	public void setPrice(int price) throws StatusUnavailableException {
 		this.price = price;
 	}
 
@@ -98,7 +99,7 @@ public class Flight {
 		return seatCapacity;
 	}
 
-	public void setSeatCapacity(int seatCapacity) {
+	public void setSeatCapacity(int seatCapacity) throws StatusUnavailableException {
 		this.seatCapacity = seatCapacity;
 	}
 
@@ -114,15 +115,16 @@ public class Flight {
 		return passagers;
 	}
 
-	public void addPassager(Passenger passager) {
-		/* TODO(Zhu)
+	public void addPassager(Passenger passager) throws StatusUnavailableException {
+		/* TODO(Zhu) addPassager
 		 * order should be generated at the same time
 		 *	order.seat is set to (totalNumber + 1)
 		 */
 	}
 	
-	public boolean removePassenger(int passengerID) { // return false when no one can found
+	public boolean removePassenger(int passengerID) throws StatusUnavailableException { // return false when no one can found
 		// TODO(Zhu) removePassenger
 		return false;
 	}
+	
 }

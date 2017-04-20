@@ -7,16 +7,16 @@ public abstract class User {
 	
 	protected static int ID = 0; //Plus one when create a new user and current is set to userID
 	protected int userID; //ID is unchangeable.
-	protected String userName;
-	protected String passHash; //using sha-256;
+	public String userName; //needn't to be private
+	protected String passHash; //using sha-1;
 	
-	protected void changePass(String newPass) { 
+	public void changePass(String newPass) { 
 		passHash = hashPass(newPass);
 		// XXX(Dong) password change should be written to file immediately
 	}
 	
-	protected void changeName(String name) {
-		userName = name;
+	public String getPassHash() {
+		return passHash;
 	}
 	
 	public static String hashPass(String password) {
