@@ -1,11 +1,10 @@
 package main;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.TimerTask;
-
 import flight.City;
 import flight.Flight;
 import user.Admin;
@@ -15,6 +14,46 @@ import user.Passenger;
  * This is to provide a access to write file
  * use constructor DataManager(MainServer server) to trace
  * use saveData() to save to file
+ */
+/* file format:
+ * <root>
+ * 	<user>
+ * 		<admin>
+ * 			<username></username>
+ * 			<passhash></passhash>
+ * 		</admin>
+ * 		<passenger>
+ * 			<username></username>
+ * 			<passhash></passhash>
+ * 			<idnumber></idnumber>
+ * 			<order>
+ * 				<item>
+ * 					<flightid></flightid>
+ * 					<seat></seat>
+ * 					<date></date>
+ * 					<status></status>
+ * 				</item>
+ * 			</order>
+ * 		</passenger>
+ * 	</user>
+ * 	<flight>
+ * 		<item>
+ *			<flightname></flightname>
+ *			<starttime><starttime>
+ *			<arrivetime><arrivetime>
+ *			<startcity></startcity>
+ *			<arrivecity></arrivecity>
+ *			<price></price>
+ *			<seatcapacity></seatcapacity>
+ *			<status></status>
+ * 		</item>
+ * 	</flight>
+ * 	<city>
+ * 		<item>
+ * 			<cityname></cityname>
+ * 		</item>
+ * 	</city>
+ * </root>
  */
 public class DataManager {
 	
@@ -39,8 +78,10 @@ public class DataManager {
 		
 	}
 	
-	public void saveData() {
-		
+	public void saveData() throws IOException {
+		FileWriter writer = new FileWriter(file);
+		BufferedWriter bWriter = new BufferedWriter(writer);
+		bWriter.write(toXMLString());
 	}
 
 	private void init(boolean isCreate) throws IOException {
