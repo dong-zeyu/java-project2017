@@ -113,7 +113,11 @@ public class Flight {
 		this.flightStatus = flightStatus;
 	}
 	
-	public ArrayList<Passenger> getPassagers() { // read only, use add/remove to operate 
+	/**
+	 * read only, use add/remove to operate
+	 * @return a clone of field passengers
+	 */
+	public ArrayList<Passenger> getPassagers() {
 		return (ArrayList<Passenger>) passagers.clone();
 	}
 
@@ -124,7 +128,12 @@ public class Flight {
 		 */
 	}
 	
-	public boolean removePassenger(int passengerID) throws StatusUnavailableException { // return false when no one can found
+	/**
+	 * remove passenger from the passenger list
+	 * @return return false when no one can found
+	 * @throws StatusUnavailableException when status is TERMINATE
+	 */
+	public boolean removePassenger(int passengerID) throws StatusUnavailableException {
 		// TODO(Zhu) removePassenger
 		return false;
 	}
