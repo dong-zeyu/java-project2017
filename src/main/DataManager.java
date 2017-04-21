@@ -16,7 +16,7 @@ import user.Passenger;
  * use constructor DataManager(MainServer server) to trace
  * use saveData() to save to file
  */
-public class DataManager extends TimerTask {
+public class DataManager {
 	
 	// TODO(Dong) This class is all of my job :(
 	public ArrayList<Admin> admins = new ArrayList<>();
@@ -29,25 +29,26 @@ public class DataManager extends TimerTask {
 	
 	public DataManager() {
 		try {
-			init();
+			init(true);
 		} catch (IOException e) {
 			try {
-				init();
-			} catch (IOException e1) {
 				System.out.println("Read flie error!");
-				
-			}
+				init(false);
+			} catch (IOException e1) {}
 		}
+		
 	}
 	
 	public void saveData() {
 		
 	}
 
-	private void init() throws IOException {
+	private void init(boolean isCreate) throws IOException {
 		file = new File(filename);
 		if (!file.exists()) {
-			file.createNewFile();
+			if (isCreate) {				
+				file.createNewFile();
+			}
 			Admin admin = new Admin("Admin", "admin");
 			admins.add(admin);
 			City shenz = new City("Shenzhen");
@@ -57,28 +58,25 @@ public class DataManager extends TimerTask {
 			cities.add(beij);
 			cities.add(shenz);
 			Flight flight1 = new Flight("A001",
-					new Date(2017, 3, 1, 14, 10, 0),
-					new Date(2017, 3, 1, 16, 0, 0), shenz, beij, 1200, 120);
+					Flight.calendar(2017, 4, 1, 9, 30, 0),
+					Flight.calendar(2017, 4, 1, 10, 40, 0), shenz, beij, 1200, 120);
 			Flight flight2 = new Flight("A002",
-					new Date(2017, 3, 1, 14, 10, 0),
-					new Date(2017, 3, 1, 16, 0, 0), beij, shenz, 1200, 120);
+					Flight.calendar(2017, 5, 2, 9, 12, 0),
+					Flight.calendar(2017, 5, 2, 10, 42, 0), beij, shenz, 1200, 120);
 			Flight flight3 = new Flight("A003",
-					new Date(2017, 3, 1, 14, 10, 0),
-					new Date(2017, 3, 1, 16, 0, 0), zhenz, shenz, 1200, 120);
+					Flight.calendar(2017, 3, 3, 16, 12, 00),
+					Flight.calendar(2017, 3, 3, 16, 52, 00), zhenz, shenz, 1200, 120);
 			flights.add(flight1);
 			flights.add(flight2);
 			flights.add(flight3);
-			saveData();
+			if (isCreate) {
+				saveData();				
+			}
 		}
 	}
 
 	private String toXMLString() {
 		return null;
-	}
-	
-	@Override
-	public void run() {
-		
 	}
 	
 }

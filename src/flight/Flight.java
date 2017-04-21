@@ -1,7 +1,10 @@
 package flight;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 import exceptions.StatusUnavailableException;
 import user.Passenger;
@@ -39,6 +42,13 @@ public class Flight {
 	
 	public int getNumber() {
 		return passagers.size();
+	}
+	
+	public static Date calendar(int year, int month, int date, int hr, int min, int sec) {
+		Calendar calendar = new GregorianCalendar(TimeZone.getTimeZone("GMT+8:00"));
+		calendar.clear();
+		calendar.set(year, month - 1, date, hr, min, sec);
+		return calendar.getTime();
 	}
 	/* TODO(Zhu) get and set in Flight
 	 * getter and setter are generated automatically, and need mortifying

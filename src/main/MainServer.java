@@ -20,8 +20,6 @@ public class MainServer {
 		isLogin = false;
 		isAdmin = false;
 		dataManager = new DataManager();
-		Timer timer = new Timer(true);
-		timer.schedule(dataManager, DataManager.SYNC_INTERVAL*1000, DataManager.SYNC_INTERVAL*1000);
 //		dataManager.init(); // constructor should include init
 	}
 	
