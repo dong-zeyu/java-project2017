@@ -6,9 +6,9 @@ public class City {
 	
 	private static int ID = 0; //ID is just the count of cities
 	private int cityID; //cityID needn't changing
-	public String cityName; //it can be public
-	public ArrayList<Flight> flightsIn; // flights end in this city
-	public ArrayList<Flight> flightsOut; // flights start in this city
+	private String cityName;
+	private ArrayList<Flight> flightsIn; // flights end in this city
+	private ArrayList<Flight> flightsOut; // flights start in this city
 	
 	public City(String cityName) {
 		flightsIn = new ArrayList<>();
@@ -21,5 +21,21 @@ public class City {
 	public int getCityID() {
 		return cityID;
 	}
+	
+	public String getCityName() {
+		return cityName;
+	}
+	
+	public void setCityName(String cityName) {
+		this.cityName = cityName;
+	}
+	
+	public ArrayList<Flight> getFlightsIn() {
+		return flightsIn;
+	}
 
+	public ArrayList<Flight> getFlightsOut() {
+		return flightsOut;
+	}
+	
 }

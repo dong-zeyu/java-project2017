@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 public class Passenger extends User {
 	
-	String identityID; // XXX this should not be changed?
-	ArrayList<Order> orderList;
+	private String identityID; // XXX this should not be changed?
+	private ArrayList<Order> orderList;
 
 	public Passenger(String identityID, String realName, String password) {
 		this.identityID = identityID;
@@ -15,8 +15,16 @@ public class Passenger extends User {
 		passHash = hashPass(password);
 	}
 	
+	public String getIdentityID() {
+		return identityID;
+	}
+	
 	public void addOrder(Order order) {
 		orderList.add(order);
+	}
+	
+	public ArrayList<Order> getOrderList() {
+		return orderList;
 	}
 	
 }

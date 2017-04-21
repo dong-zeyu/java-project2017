@@ -7,7 +7,7 @@ public abstract class User {
 	
 	protected static int ID = 0; //Plus one when create a new user and current is set to userID
 	protected int userID; //ID is unchangeable.
-	public String userName; //needn't to be private
+	protected String userName;
 	protected String passHash; //using sha-1;
 	
 	public void changePass(String newPass) { 
@@ -17,6 +17,14 @@ public abstract class User {
 	
 	public String getPassHash() {
 		return passHash;
+	}
+	
+	public String getUserName() {
+		return userName;
+	}
+	
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 	
 	public static String hashPass(String password) {

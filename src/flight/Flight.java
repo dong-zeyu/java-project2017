@@ -33,8 +33,8 @@ public class Flight {
 		this.flightStatus = FlightStatus.UNPUBLISHED;
 		flightID = Flight.ID;
 		ID++;
-		startCity.flightsOut.add(this);
-		arriveCity.flightsIn.add(this);
+		startCity.getFlightsOut().add(this);
+		arriveCity.getFlightsIn().add(this);
 	}
 	
 	public int getNumber() {
@@ -112,7 +112,7 @@ public class Flight {
 	public void setFlightStatus(FlightStatus flightStatus) {
 		this.flightStatus = flightStatus;
 	}
-
+	
 	public ArrayList<Passenger> getPassagers() { // read only, use add/remove to operate 
 		return (ArrayList<Passenger>) passagers.clone();
 	}

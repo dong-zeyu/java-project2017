@@ -35,7 +35,7 @@ public class MainServer {
 		User tmp;
 		for (int i = 0; i < admins.size(); i++) {
 			tmp = admins.get(i);
-			if (tmp.userName == userName && tmp.getPassHash().equals(User.hashPass(pass))) {
+			if (tmp.getUserName() == userName && tmp.getPassHash().equals(User.hashPass(pass))) {
 				isLogin = true;
 				isAdmin = true;
 				currentUser = tmp;
@@ -44,7 +44,7 @@ public class MainServer {
 		}
 		for (int i = 0; i < admins.size(); i++) {
 			tmp = passengers.get(i);
-			if (tmp.userName == userName && tmp.getPassHash().equals(User.hashPass(pass))) {
+			if (tmp.getUserName() == userName && tmp.getPassHash().equals(User.hashPass(pass))) {
 				isLogin = true;
 				currentUser = tmp;
 				return true;
