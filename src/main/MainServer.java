@@ -1,22 +1,16 @@
 package main;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Timer;
 
 import exceptions.PermissionDeniedException;
 import flight.City;
 import flight.Flight;
-import user.Admin;
 import user.Passenger;
 import user.User;
 
 public class MainServer {
 	
-	private ArrayList<Admin> admins = new ArrayList<>();
-	private ArrayList<Passenger> passengers = new ArrayList<>();
-	private ArrayList<Flight> flights = new ArrayList<>();
-	private ArrayList<City> cities = new ArrayList<>();
 	private DataManager dataManager;
 	private User currentUser;
 	private boolean isLogin;
@@ -25,7 +19,7 @@ public class MainServer {
 	public MainServer() {
 		isLogin = false;
 		isAdmin = false;
-		dataManager = new DataManager(this);
+		dataManager = new DataManager();
 		Timer timer = new Timer(true);
 		timer.schedule(dataManager, DataManager.SYNC_INTERVAL*1000, DataManager.SYNC_INTERVAL*1000);
 //		dataManager.init(); // constructor should include init
@@ -33,8 +27,8 @@ public class MainServer {
 	
 	public boolean Login(String userName, String pass) {
 		User tmp;
-		for (int i = 0; i < admins.size(); i++) {
-			tmp = admins.get(i);
+		for (int i = 0; i < dataManager.admins.size(); i++) {
+			tmp = dataManager.admins.get(i);
 			if (tmp.getUserName() == userName && tmp.getPassHash().equals(User.hashPass(pass))) {
 				isLogin = true;
 				isAdmin = true;
@@ -42,8 +36,8 @@ public class MainServer {
 				return true;
 			}
 		}
-		for (int i = 0; i < admins.size(); i++) {
-			tmp = passengers.get(i);
+		for (int i = 0; i < dataManager.admins.size(); i++) {
+			tmp = dataManager.passengers.get(i);
 			if (tmp.getUserName() == userName && tmp.getPassHash().equals(User.hashPass(pass))) {
 				isLogin = true;
 				currentUser = tmp;
