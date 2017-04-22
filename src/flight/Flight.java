@@ -133,17 +133,20 @@ public class Flight {
 
 	public void addPassager(Passenger passager) throws StatusUnavailableException {
 		/* TODO(Zhu) addPassager
-		 * order should be generated at the same time
-		 *	order.seat is set to (totalNumber + 1)
 		 */
+		if (flightStatus == FlightStatus.AVAILABLE) {
+			 passagers.add(passager);			
+		} else {
+			throw new StatusUnavailableException(flightStatus);
+		}
 	}
 	
 	/**
 	 * remove passenger from the passenger list
 	 * @return return false when no one can found
-	 * @throws StatusUnavailableException when status is TERMINATE
+	 * @throws StatusUnavailableException when status is TERMINATE, 
 	 */
-	public boolean removePassenger(int passengerID) throws StatusUnavailableException {
+	public boolean removePassenger(Passenger passenger) throws StatusUnavailableException {
 		// TODO(Zhu) removePassenger
 		return false;
 	}
