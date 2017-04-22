@@ -131,7 +131,7 @@ public class MainServer {
 		}
 	}
 	
-	public void reserveFlight(int flightID) throws PermissionDeniedException {
+	public void reserveFlight(int flightID) throws PermissionDeniedException, StatusUnavailableException {
 		// TODO(Zhu) reserveFlight
 		if (isLogin) {
 			if (!isAdmin) {
@@ -139,10 +139,7 @@ public class MainServer {
 				Flight flight = getFlight(flightID);
 				Order order = new Order(passenger, flight, flight.getNumber() + 1);
 				passenger.addOrder(order);
-				try {
-					flight.addPassager(passenger);
-				} catch (StatusUnavailableException e) {
-				}
+				flight.addPassager(passenger);
 			}
 		} else {
 			throw new PermissionDeniedException();
