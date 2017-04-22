@@ -1,13 +1,29 @@
 package main;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 import flight.City;
 import flight.Flight;
 import user.Admin;
+import user.Order;
 import user.Passenger;
 
 /** 
@@ -49,9 +65,7 @@ import user.Passenger;
  * 		</item>
  * 	</flight>
  * 	<city>
- * 		<item>
- * 			<cityname></cityname>
- * 		</item>
+ * 		<cityname></cityname>
  * 	</city>
  * </root>
  */
@@ -69,22 +83,94 @@ public class DataManager {
 	public DataManager() {
 		try {
 			init(true);
-		} catch (IOException e) {
+		} catch (IOException | ParserConfigurationException e) {
 			try {
-				System.out.println("Read flie error!");
+				System.out.println("Read file error!");
 				init(false);
-			} catch (IOException e1) {}
+			} catch (IOException | ParserConfigurationException e1) {}
 		}
 		
 	}
 	
-	public void saveData() throws IOException {
-		FileWriter writer = new FileWriter(file);
-		BufferedWriter bWriter = new BufferedWriter(writer);
-		bWriter.write(toXMLString());
+	public void saveData() throws IOException, ParserConfigurationException {
+		Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+		Element root = document.createElement("root");
+		document.appendChild(root);
+		Element user = document.createElement("user");
+		Element flight = document.createElement("flight");
+		Element city = document.createElement("city");
+		root.appendChild(user);
+		root.appendChild(city);
+		root.appendChild(flight);
+		Element egg;
+		//admins
+		egg = document.createElement("admin");
+		egg.appendChild(document.createElement("username"));
+		egg.appendChild(document.createElement("passhash"));
+		for (Admin admin : admins) {
+			NodeList tmp = egg.cloneNode(true).getChildNodes();
+			tmp.item(0).appendChild(document.createTextNode(admin.getUserName()));
+			tmp.item(1).appendChild(document.createTextNode(admin.getPassHash()));
+			user.appendChild(tmp.item(0).getParentNode());
+		}
+		//passengers
+		egg = document.createElement("passenger");
+		egg.appendChild(document.createElement("username"));
+		egg.appendChild(document.createElement("passhash"));
+		egg.appendChild(document.createElement("idnumber"));
+		egg.appendChild(document.createElement("order"));
+		for (Passenger passenger : passengers) {
+			NodeList tmp = egg.cloneNode(true).getChildNodes();
+			tmp.item(0).appendChild(document.createTextNode(passenger.getUserName()));
+			tmp.item(1).appendChild(document.createTextNode(passenger.getPassHash()));
+			tmp.item(2).appendChild(document.createTextNode(passenger.getIdentityID()));
+			Element otmp = (Element) tmp.item(4);
+			Element oegg = document.createElement("item");
+			oegg.appendChild(document.createElement("flightid"));
+			oegg.appendChild(document.createElement("seat"));
+			oegg.appendChild(document.createElement("date"));
+			oegg.appendChild(document.createElement("status"));
+			for (Order order : passenger.getOrderList()) {
+				NodeList item = oegg.cloneNode(true).getChildNodes();
+				item.item(0).appendChild(document.createTextNode(String.valueOf(order.getFlight().getFlightID())));
+				item.item(1).appendChild(document.createTextNode(String.valueOf(order.getSeat())));
+				item.item(2).appendChild(document.createTextNode(String.valueOf(order.getCreatDate().getTime())));
+				item.item(3).appendChild(document.createTextNode(String.valueOf(order.getStatus().name())));
+				otmp.appendChild(item.item(0).getParentNode());
+			}
+			user.appendChild(tmp.item(0).getParentNode());
+		}
+		//flight
+		egg = document.createElement("item");
+		egg.appendChild(document.createElement("flightname"));
+		egg.appendChild(document.createElement("starttime"));
+		egg.appendChild(document.createElement("arrivetime"));
+		egg.appendChild(document.createElement("startcity"));
+		egg.appendChild(document.createElement("arrivecity"));
+		egg.appendChild(document.createElement("price"));
+		egg.appendChild(document.createElement("seatcapacity"));
+		egg.appendChild(document.createElement("status"));
+		for (Flight f : flights) {
+			NodeList tmp = egg.cloneNode(true).getChildNodes();
+			tmp.item(0).appendChild(document.createTextNode(f.getFlightName()));
+			tmp.item(1).appendChild(document.createTextNode(String.valueOf(f.getStartTime().getTime())));
+			tmp.item(2).appendChild(document.createTextNode(String.valueOf(f.getArriveTime().getTime())));
+			tmp.item(3).appendChild(document.createTextNode(f.getStartCity().getCityName()));
+			tmp.item(4).appendChild(document.createTextNode(f.getArriveCity().getCityName()));
+			tmp.item(5).appendChild(document.createTextNode(String.valueOf(f.getPrice())));
+			tmp.item(6).appendChild(document.createTextNode(String.valueOf(f.getSeatCapacity())));
+			tmp.item(7).appendChild(document.createTextNode(f.getFlightStatus().name()));
+			flight.appendChild(tmp.item(0).getParentNode());
+		}
+		//city
+		for (City c : cities) {
+			city.appendChild(document.createElement("item"))
+				.appendChild(document.createTextNode(c.getCityName()));
+		}
+		saveDocument(document);
 	}
 
-	private void init(boolean isCreate) throws IOException {
+	private void init(boolean isCreate) throws IOException, ParserConfigurationException {
 		file = new File(filename);
 		if (!file.exists()) {
 			if (isCreate) {				
@@ -111,13 +197,29 @@ public class DataManager {
 			flights.add(flight2);
 			flights.add(flight3);
 			if (isCreate) {
-				saveData();				
+				saveData();
 			}
+		} else {
+			readData();
 		}
 	}
 
-	private String toXMLString() {
-		return null;
+	private void readData() {
+		
 	}
 	
+	private void saveDocument(Node document) {
+        try {
+        	Transformer transformer = TransformerFactory.newInstance().newTransformer();
+        	transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        	DOMSource source=new DOMSource();
+        	source.setNode(document);
+        	StreamResult result=new StreamResult();
+        	result.setOutputStream(new FileOutputStream(file));
+			transformer.transform(source, result);
+		} catch (TransformerException e) {
+		} catch (FileNotFoundException e) {
+		}
+	}
+		
 }

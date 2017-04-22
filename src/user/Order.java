@@ -20,6 +20,26 @@ public class Order {
 		status = OrderStatus.UNPAID;
 	}
 	
+	public Passenger getPassager() {
+		return passager;
+	}
+
+	public int getSeat() {
+		return seat;
+	}
+
+	public Flight getFlight() {
+		return flight;
+	}
+
+	public Date getCreatDate() {
+		return creatDate;
+	}
+
+	public OrderStatus getStatus() {
+		return status;
+	}
+
 	public void printOrder() {
 		// TODO(Peng) printOrder
 	}
