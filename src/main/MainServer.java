@@ -1,11 +1,11 @@
 package main;
 
 import java.util.Date;
-import java.util.Timer;
-
 import exceptions.PermissionDeniedException;
+import exceptions.StatusUnavailableException;
 import flight.City;
 import flight.Flight;
+import user.Order;
 import user.Passenger;
 import user.User;
 
@@ -133,6 +133,20 @@ public class MainServer {
 	
 	public void reserveFlight(int flightID) throws PermissionDeniedException {
 		// TODO(Zhu) reserveFlight
+		if (isLogin) {
+			if (!isAdmin) {
+				Passenger passenger = (Passenger) currentUser;
+				Flight flight = getFlight(flightID);
+				Order order = new Order(passenger, flight, flight.getNumber() + 1);
+				passenger.addOrder(order);
+				try {
+					flight.addPassager(passenger);
+				} catch (StatusUnavailableException e) {
+				}
+			}
+		} else {
+			throw new PermissionDeniedException();
+		}
 	}
 	
 	public boolean unsubscribeFlight(int flightID) throws PermissionDeniedException { //return false when no flight is found
