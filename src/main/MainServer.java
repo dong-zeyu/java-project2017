@@ -135,11 +135,8 @@ public class MainServer {
 		// TODO(Zhu) reserveFlight
 		if (isLogin) {
 			if (!isAdmin) {
-				Passenger passenger = (Passenger) currentUser;
 				Flight flight = getFlight(flightID);
-				Order order = new Order(passenger, flight, flight.getNumber() + 1);
-				passenger.addOrder(order);
-				flight.addPassager(passenger);
+				flight.addPassager((Passenger) currentUser);
 			}
 		} else {
 			throw new PermissionDeniedException();
