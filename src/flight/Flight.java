@@ -133,9 +133,11 @@ public class Flight {
 
 	public void addPassager(Passenger passager) throws StatusUnavailableException {
 		/* TODO(Zhu) addPassager
+		 * you should generate and add order in this method instead of reserveFlight
+		 * for my convenience
 		 */
 		if (flightStatus == FlightStatus.AVAILABLE) {
-			 passagers.add(passager);			
+			 passagers.add(passager);	
 		} else {
 			throw new StatusUnavailableException(flightStatus);
 		}
