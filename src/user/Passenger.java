@@ -8,6 +8,7 @@ public class Passenger extends User {
 	private ArrayList<Order> orderList;
 
 	public Passenger(String identityID, String realName, String password) {
+		orderList = new ArrayList<>();
 		this.identityID = identityID;
 		this.userName = realName;
 		this.userID = User.ID;
@@ -24,7 +25,7 @@ public class Passenger extends User {
 	}
 	
 	public ArrayList<Order> getOrderList() {
-		return orderList;
+		return (ArrayList<Order>) orderList.clone();
 	}
 	
 }
