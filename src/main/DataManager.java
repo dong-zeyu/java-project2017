@@ -73,8 +73,7 @@ import user.User;
 public class DataManager {
 	
 	// TODO(Dong) This class is all of my job :(
-	public ArrayList<Admin> admins = new ArrayList<>();
-	public ArrayList<Passenger> passengers = new ArrayList<>();
+	public ArrayList<User> users = new ArrayList<>();
 	public ArrayList<Flight> flights = new ArrayList<>();
 	public ArrayList<City> cities = new ArrayList<>();
 	public static int SYNC_INTERVAL = 120; // unit: (s)
@@ -118,45 +117,49 @@ public class DataManager {
 		root.appendChild(user);
 		root.appendChild(city);
 		root.appendChild(flight);
-		Element egg;
-		//admins
-		egg = document.createElement("admin");
-		egg.appendChild(document.createElement("username"));
-		egg.appendChild(document.createElement("passhash"));
-		for (Admin admin : admins) {
-			NodeList tmp = egg.cloneNode(true).getChildNodes();
-			tmp.item(0).appendChild(document.createTextNode(admin.getUserName()));
-			tmp.item(1).appendChild(document.createTextNode(admin.getPassHash()));
-			user.appendChild(tmp.item(0).getParentNode());
-		}
-		//passengers
-		egg = document.createElement("passenger");
-		egg.appendChild(document.createElement("username"));
-		egg.appendChild(document.createElement("passhash"));
-		egg.appendChild(document.createElement("idnumber"));
-		egg.appendChild(document.createElement("order"));
-		for (Passenger passenger : passengers) {
-			NodeList tmp = egg.cloneNode(true).getChildNodes();
-			tmp.item(0).appendChild(document.createTextNode(passenger.getUserName()));
-			tmp.item(1).appendChild(document.createTextNode(passenger.getPassHash()));
-			tmp.item(2).appendChild(document.createTextNode(passenger.getIdentityID()));
-			Element otmp = (Element) tmp.item(4);
-			Element oegg = document.createElement("item");
-			oegg.appendChild(document.createElement("flightid"));
-			oegg.appendChild(document.createElement("seat"));
-			oegg.appendChild(document.createElement("date"));
-			oegg.appendChild(document.createElement("status"));
-			for (Order order : passenger.getOrderList()) {
-				NodeList item = oegg.cloneNode(true).getChildNodes();
-				item.item(0).appendChild(document.createTextNode(String.valueOf(order.getFlight().getFlightID())));
-				item.item(1).appendChild(document.createTextNode(String.valueOf(order.getSeat())));
-				item.item(2).appendChild(document.createTextNode(String.valueOf(order.getCreatDate().getTime())));
-				item.item(3).appendChild(document.createTextNode(String.valueOf(order.getStatus().name())));
-				otmp.appendChild(item.item(0).getParentNode());
+		//Users
+		Element egga;
+		Element eggp;
+		egga = document.createElement("admin");
+		egga.appendChild(document.createElement("username"));
+		egga.appendChild(document.createElement("passhash"));
+		eggp = document.createElement("passenger");
+		eggp.appendChild(document.createElement("username"));
+		eggp.appendChild(document.createElement("passhash"));
+		eggp.appendChild(document.createElement("idnumber"));
+		eggp.appendChild(document.createElement("order"));
+		for (User user0 : users) {
+			if (user0 instanceof Admin) {
+				Admin admin = (Admin) user0;
+				NodeList tmp = egga.cloneNode(true).getChildNodes();
+				tmp.item(0).appendChild(document.createTextNode(admin.getUserName()));
+				tmp.item(1).appendChild(document.createTextNode(admin.getPassHash()));
+				user.appendChild(tmp.item(0).getParentNode());				
+			} else if (user0 instanceof Passenger) {
+				Passenger passenger = (Passenger) user0;
+				NodeList tmp = eggp.cloneNode(true).getChildNodes();
+				tmp.item(0).appendChild(document.createTextNode(passenger.getUserName()));
+				tmp.item(1).appendChild(document.createTextNode(passenger.getPassHash()));
+				tmp.item(2).appendChild(document.createTextNode(passenger.getIdentityID()));
+				Element otmp = (Element) tmp.item(4);
+				Element oegg = document.createElement("item");
+				oegg.appendChild(document.createElement("flightid"));
+				oegg.appendChild(document.createElement("seat"));
+				oegg.appendChild(document.createElement("date"));
+				oegg.appendChild(document.createElement("status"));
+				for (Order order : passenger.getOrderList()) {
+					NodeList item = oegg.cloneNode(true).getChildNodes();
+					item.item(0).appendChild(document.createTextNode(String.valueOf(order.getFlight().getFlightID())));
+					item.item(1).appendChild(document.createTextNode(String.valueOf(order.getSeat())));
+					item.item(2).appendChild(document.createTextNode(String.valueOf(order.getCreatDate().getTime())));
+					item.item(3).appendChild(document.createTextNode(String.valueOf(order.getStatus().name())));
+					otmp.appendChild(item.item(0).getParentNode());
+				}
+				user.appendChild(tmp.item(0).getParentNode());
 			}
-			user.appendChild(tmp.item(0).getParentNode());
 		}
 		//flight
+		Element egg;
 		egg = document.createElement("item");
 		egg.appendChild(document.createElement("flightname"));
 		egg.appendChild(document.createElement("starttime"));
@@ -193,7 +196,7 @@ public class DataManager {
 				file.createNewFile();
 			}
 			Admin admin = new Admin("Admin", "admin");
-			admins.add(admin);
+			users.add(admin);
 			City shenz = new City("Shenzhen");
 			City beij = new City("Beijing");
 			City zhenz = new City("Zhengzhou");

@@ -3,9 +3,8 @@ package main;
 import java.util.Date;
 import exceptions.PermissionDeniedException;
 import exceptions.StatusUnavailableException;
-import flight.City;
 import flight.Flight;
-import user.Order;
+import user.Admin;
 import user.Passenger;
 import user.User;
 
@@ -25,21 +24,19 @@ public class MainServer {
 	
 	public boolean Login(String userName, String pass) {
 		User tmp;
-		for (int i = 0; i < dataManager.admins.size(); i++) {
-			tmp = dataManager.admins.get(i);
+		for (int i = 0; i < dataManager.users.size(); i++) {
+			tmp = dataManager.users.get(i);
 			if (tmp.getUserName() == userName && tmp.getPassHash().equals(User.hashPass(pass))) {
 				isLogin = true;
-				isAdmin = true;
+				if (tmp instanceof Admin) {					
+					isAdmin = true;
+				} else {
+					isAdmin = false;
+				}
 				currentUser = tmp;
 				return true;
-			}
-		}
-		for (int i = 0; i < dataManager.admins.size(); i++) {
-			tmp = dataManager.passengers.get(i);
-			if (tmp.getUserName() == userName && tmp.getPassHash().equals(User.hashPass(pass))) {
-				isLogin = true;
-				currentUser = tmp;
-				return true;
+			} else {
+				isLogin = false;
 			}
 		}
 		return false;
