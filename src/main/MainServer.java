@@ -58,20 +58,6 @@ public class MainServer {
 	 *  you can see some example(completed) below to know how to throw it
 	 *  **make full use of private method searchFlightByID & searchUserByID**
 	 */
-	private Flight searchFlightByID(int flightID) {
-		// TODO(Zhu) searchFlightByID
-		return null;
-	}
-	
-	private User searchUserByID(int userID) { // XXX whether should we return User?
-		// TODO(Zhu) searchUserByID
-		return null;
-	}
-	
-	private City searchCityByID(int CityID) {
-		// TODO(Zhu) searchCityByID
-		return null;
-	}
 	
 	public boolean createFlight(String flightName, Date startTime, Date arriveTime, int startCityID, int arriveCityID,
 			int price, int seatCapacity) throws PermissionDeniedException { // false when erroe cityID
@@ -81,7 +67,7 @@ public class MainServer {
 	
 	public Flight getFlight(int flightID) throws PermissionDeniedException { //give you flight to change freely
 		if (isLogin && isAdmin) {
-			return searchFlightByID(flightID);			
+			return dataManager.getFlightByID(flightID);			
 		} else {
 			throw new PermissionDeniedException();
 		}
@@ -110,7 +96,7 @@ public class MainServer {
 		 * first to test if user is a passenger (using instanceof)
 		 * **be sure to remove user from the flight**
 		 */
-		User u = searchUserByID(userID);
+		User u = dataManager.getUserByID(userID);
 		if (u == null) {
 			return false;
 		}

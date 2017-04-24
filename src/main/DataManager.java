@@ -25,6 +25,7 @@ import flight.Flight;
 import user.Admin;
 import user.Order;
 import user.Passenger;
+import user.User;
 
 /** 
  * This is to provide a access to write file
@@ -90,6 +91,21 @@ public class DataManager {
 			} catch (IOException | ParserConfigurationException e1) {}
 		}
 		
+	}
+	
+	public Flight getFlightByID(int flightID) {
+		// TODO(Zhu) searchFlightByID
+		return null;
+	}
+	
+	public User getUserByID(int userID) { // XXX whether should we return User?
+		// TODO(Zhu) searchUserByID
+		return null;
+	}
+	
+	public City getCityByID(int CityID) {
+		// TODO(Zhu) searchCityByID
+		return null;
 	}
 	
 	public void saveData() throws IOException, ParserConfigurationException {
