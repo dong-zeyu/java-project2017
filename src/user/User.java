@@ -27,6 +27,11 @@ public abstract class User {
 		this.userName = userName;
 	}
 	
+	@Override
+	public String toString() {
+		return userName;
+	}
+	
 	public static String hashPass(String password) {
 	    if (password  ==  null || password.length() == 0){
 	        return null;

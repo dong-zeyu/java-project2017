@@ -17,6 +17,11 @@ public class City {
 		this.cityID = ID;
 		ID++;
 	}
+	
+	@Override
+	public String toString() {
+		return cityName;
+	}
 
 	public int getCityID() {
 		return cityID;

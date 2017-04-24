@@ -40,6 +40,11 @@ public class Flight {
 		arriveCity.getFlightsIn().add(this);
 	}
 	
+	@Override
+	public String toString() {
+		return flightName;
+	}
+	
 	public int getNumber() {
 		return passagers.size();
 	}
