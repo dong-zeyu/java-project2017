@@ -215,6 +215,7 @@ public class DataManager {
 			flights.add(flight1);
 			flights.add(flight2);
 			flights.add(flight3);
+			// TODO(Zhu) finish the remain 15 flight
 			if (isCreate) {
 				saveData();
 			}
