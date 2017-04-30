@@ -2,16 +2,19 @@ package main;
 
 import java.util.Scanner;
 
+import exceptions.PermissionDeniedException;
+
 public class Main {
+
+	static MainServer server = new MainServer();
+	static Scanner scanner = new Scanner(System.in);
 
 	public static void main(String[] args) {
 		// TODO(Dong) UI design
-		MainServer server = new MainServer();
-		Scanner scanner = new Scanner(System.in);
 		String string = "";
 		String[] param;
 		printHelp(true);
-		while (!string.equals("exit")) {
+		while (!(string.equals("exit") || string.equals("e"))) {
 			System.out.print(">");
 			string = scanner.nextLine();
 			string = string.replaceAll("\\s+", " ");
@@ -32,9 +35,85 @@ public class Main {
 			}
 			switch (string) {
 			case "help":
+			case "h":
 				printHelp(false);
 				break;
 			case "exit":
+			case "e":
+				break;
+			case "login":
+			case "l":
+				if (param != null && param.length == 2) {
+					if (server.Login(param[0], param[1])) {
+						System.out.print("Login succeed: ");
+						if (server.isAdmin()) {
+							System.out.println("You are administrator");
+						} else {
+							System.out.println("You are passenger");
+						}
+					} else {
+						System.out.println("Login failed");
+					}
+				} else {
+					System.out.println("Format error");
+				}
+				break;
+			case "register":
+			case "r":
+				register();
+				break;
+			case "search":
+			case "s":
+				search();
+				break;
+			case "add":
+				if (param != null && param.length > 0) {
+					switch (param[0]) {
+					case "city":
+						addCity();
+						break;
+					case "flight":
+						addFlight();
+						break;
+					case "user":
+						addUser();
+						break;
+					default:
+						System.out.println("You can only add a city, flight or user");
+						break;
+					}
+				} else {
+					System.out.println("Format error");
+				}
+				break;
+			case "delete":
+			case "d":
+				if (param != null && param.length >= 2) {
+					switch (param[0]) {
+					case "flight":
+						try {
+							for (int i = 0; i < param.length; i++) {
+								try {
+									if (server.deleteFlight(Integer.parseInt(param[i]))) {
+										System.out.printf("Successfully delete flight '%s'!\n", param[i]);
+									} else {
+										System.out.printf("Delete flight '%s' failed: no such flight\n", param[i]);
+									}
+								} catch (NumberFormatException e) {
+									System.out.printf("'%s' is not a flight id!\n", param[i]);
+								}
+							}
+						} catch (PermissionDeniedException e) {
+							System.out.println("Permission denied: you are not a administrator");
+						}
+						break;
+					default:
+						System.out.println("You can only delete a city, flight or user");
+						break;
+					}
+				} else {
+					System.out.println("Format error");
+				}
 				break;
 			default:
 				if (!string.equals("")) {
@@ -44,6 +123,34 @@ public class Main {
 			}
 		}
 		scanner.close();
+	}
+	
+	/*
+	 * These are subUI or a wizard to lead User to do specific work
+	 */
+	private static void search() {
+		// TODO(Dong) search
+		
+	}
+	
+	private static void addUser() {
+		// TODO(Peng) addUser UI
+		
+	}
+
+	private static void register() {
+		// TODO(Zhu) register UI
+		
+	}
+
+	private static void addFlight() {
+		// TODO(Peng) addFlight UI
+		
+	}
+
+	private static void addCity() {
+		// TODO(Peng) addCity UI
+		
 	}
 
 	private static void printHelp(boolean isMini) {

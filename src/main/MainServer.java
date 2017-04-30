@@ -56,10 +56,9 @@ public class MainServer {
 	 *  **make full use of private method searchFlightByID & searchUserByID**
 	 */
 	
-	public boolean createFlight(String flightName, Date startTime, Date arriveTime, int startCityID, int arriveCityID,
+	public void createFlight(String flightName, Date startTime, Date arriveTime, int startCityID, int arriveCityID,
 			int price, int seatCapacity) throws PermissionDeniedException { // false when erroe cityID
 		// TODO(Peng) createFlight
-		return false;
 	}
 	
 	public Flight getFlight(int flightID) throws PermissionDeniedException { //give you flight to change freely
@@ -70,10 +69,11 @@ public class MainServer {
 		}
 	}
 	
-	public void deleteFlight(int flightID) throws PermissionDeniedException { 
+	public boolean deleteFlight(int flightID) throws PermissionDeniedException {
 		/* TODO(Peng) deleteFlight
 		 * **be sure to delete flight from the city**
 		 */
+		return false; 
 	}
 	
 	public void queryFlight() {
