@@ -2,6 +2,7 @@ package user;
 
 import java.util.Date;
 
+import exceptions.StatusUnavailableException;
 import flight.Flight;
 
 public class Order {
@@ -40,7 +41,19 @@ public class Order {
 		return status;
 	}
 
-	public void printOrder() {
+	public void printOrder() throws StatusUnavailableException {
 		// TODO(Peng) printOrder
-	}
+		
+			if (status==OrderStatus.PAID) {
+				System.out.println("Passager :"+getPassager());
+				System.out.println("Your Seat :"+getSeat());
+				System.out.println("Your Flight :"+getFlight());
+				System.out.println("Create date :"+getCreatDate());
+				System.out.println("OrderStatus :"+getStatus());
+		    	
+		    }
+			else {
+				 throw new StatusUnavailableException();
+			}
+		}
 }

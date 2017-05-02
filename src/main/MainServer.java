@@ -86,6 +86,11 @@ public class MainServer {
 	
 	public void addAdmin(String userName, String password) throws PermissionDeniedException {
 		// TODO(Peng) addAdmin
+		
+	}
+	
+	public void addCity(String cityName) throws PermissionDeniedException{
+		//TODO(Zhu) addCity
 	}
 	
 	public boolean deleteUser(int userID) throws PermissionDeniedException {
@@ -128,7 +133,13 @@ public class MainServer {
 	
 	public boolean unsubscribeFlight(int flightID) throws PermissionDeniedException { //return false when no flight is found
 		// TODO(Peng) unsubscribeFlight
-		return false;
+		Flight flight=getFlight(flightID);
+		if (flight!=null){
+			throw new PermissionDeniedException();
+		}
+		return false;	
+		
+		
 	}
 	
 }

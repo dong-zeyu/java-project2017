@@ -2,7 +2,10 @@ package main;
 
 import java.util.Scanner;
 
+import javax.print.DocFlavor.INPUT_STREAM;
+
 import exceptions.PermissionDeniedException;
+import flight.City;
 
 public class Main {
 
@@ -76,7 +79,7 @@ public class Main {
 						addFlight();
 						break;
 					case "user":
-						addUser();
+						addAdmin();
 						break;
 					default:
 						System.out.println("You can only add a city, flight or user");
@@ -133,8 +136,8 @@ public class Main {
 		
 	}
 	
-	private static void addUser() {
-		// TODO(Peng) addUser UI
+	private static void addAdmin() {
+		// TODO(Peng) addAdmin UI
 		
 	}
 
@@ -150,7 +153,15 @@ public class Main {
 
 	private static void addCity() {
 		// TODO(Peng) addCity UI
-		
+		System.out.println("Please enter a valid city name" );
+		Scanner input = new Scanner(System.in);
+		String cityname=input.nextLine();
+		MainServer Acity=new MainServer();
+		try {
+			Acity.addCity(cityname);
+		} catch (PermissionDeniedException e) {
+			
+		}
 	}
 
 	private static void printHelp(boolean isMini) {
