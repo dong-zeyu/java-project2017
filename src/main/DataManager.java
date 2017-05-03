@@ -142,7 +142,7 @@ public class DataManager {
 					euser.appendChild(nodes.item(0).getParentNode());				
 				} else if (user instanceof Passenger) {
 					Passenger passenger = (Passenger) user;
-					Element node = (Element) adminEgg.cloneNode(true);
+					Element node = (Element) passengerEgg.cloneNode(true);
 					node.setAttribute("uid", String.valueOf(passenger.getID()));
 					NodeList nodes = node.getChildNodes();
 					nodes.item(0).appendChild(document.createTextNode(passenger.getUserName()));
