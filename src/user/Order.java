@@ -36,11 +36,19 @@ public class Order {
 	public Date getCreatDate() {
 		return creatDate;
 	}
+	
+	public void setCreatDate(Date creatDate) {
+		this.creatDate = creatDate;
+	}
 
 	public OrderStatus getStatus() {
 		return status;
 	}
 
+	public void setStatus(OrderStatus status) {
+		this.status = status;
+	}
+	
 	public void printOrder() throws StatusUnavailableException {
 		// TODO(Peng) printOrder
 		if (status==OrderStatus.PAID) {// XXX(Peng) Do you think if the order is unpaid, it can never be printed?

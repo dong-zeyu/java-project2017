@@ -71,7 +71,7 @@ public class Main {
 				break;
 			case "delete":
 			case "d":
-				dalete(param);
+				delete(param);
 				break;
 			default:
 				if (!string.equals("")) {
@@ -105,7 +105,7 @@ public class Main {
 		}
 	}
 
-	private static void dalete(String[] param) {
+	private static void delete(String[] param) {
 		// TODO(Dong) delete
 		if (param != null && param.length >= 2) {
 			switch (param[0]) {

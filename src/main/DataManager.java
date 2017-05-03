@@ -1,13 +1,12 @@
 package main;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 
-import javax.lang.model.util.Elements;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
@@ -25,8 +24,10 @@ import org.xml.sax.SAXException;
 
 import flight.City;
 import flight.Flight;
+import flight.FlightStatus;
 import user.Admin;
 import user.Order;
+import user.OrderStatus;
 import user.Passenger;
 import user.User;
 
@@ -75,7 +76,7 @@ import user.User;
  */
 public class DataManager {
 	
-	// TODO(Dong) This class is all of my job :(
+	// DONE(Dong) This class is all of my job :(
 	public ArrayList<User> users = new ArrayList<>();
 	public ArrayList<Flight> flights = new ArrayList<>();
 	public ArrayList<City> cities = new ArrayList<>();
@@ -177,14 +178,14 @@ public class DataManager {
 			flightEgg.appendChild(document.createElement("seatcapacity"));
 			flightEgg.appendChild(document.createElement("status"));
 			for (Flight f : flights) {
-				Element node = (Element) adminEgg.cloneNode(true);
+				Element node = (Element) flightEgg.cloneNode(true);
 				node.setAttribute("fid", String.valueOf(f.getFlightID()));
 				NodeList nodes = node.getChildNodes();
 				nodes.item(0).appendChild(document.createTextNode(f.getFlightName()));
 				nodes.item(1).appendChild(document.createTextNode(String.valueOf(f.getStartTime().getTime())));
 				nodes.item(2).appendChild(document.createTextNode(String.valueOf(f.getArriveTime().getTime())));
-				nodes.item(3).appendChild(document.createTextNode(f.getStartCity().getCityName()));
-				nodes.item(4).appendChild(document.createTextNode(f.getArriveCity().getCityName()));
+				nodes.item(3).appendChild(document.createTextNode(String.valueOf((f.getStartCity().getCityID()))));
+				nodes.item(4).appendChild(document.createTextNode(String.valueOf((f.getArriveCity().getCityID()))));
 				nodes.item(5).appendChild(document.createTextNode(String.valueOf(f.getPrice())));
 				nodes.item(6).appendChild(document.createTextNode(String.valueOf(f.getSeatCapacity())));
 				nodes.item(7).appendChild(document.createTextNode(f.getFlightStatus().name()));
@@ -193,8 +194,10 @@ public class DataManager {
 			flightEgg = null;
 			//city
 			for (City c : cities) {
-				ecity.appendChild(document.createElement("item"))
-					.appendChild(document.createTextNode(c.getCityName()));
+				Element city = (Element) ecity.appendChild(document.createElement("item"))
+					.appendChild(document.createTextNode(c.getCityName()))
+					.getParentNode();
+				city.setAttribute("cid", String.valueOf(c.getCityID()));
 			}
 			saveDocument(document);
 		} catch (ParserConfigurationException e) {
@@ -226,6 +229,7 @@ public class DataManager {
 				flights.add(flight1);
 				flights.add(flight2);
 				flights.add(flight3);
+				// TODO(Zhu) add remain 
 				saveData();
 			} else {
 					readData();
@@ -238,8 +242,85 @@ public class DataManager {
 
 	private void readData() throws SAXException, FileNotFoundException, IOException {
 		try {
-			Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new FileInputStream(file));
-			Element eflight = (Element) document.getElementsByTagName("flight").item(0);
+			Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(file);
+			Element root = document.getDocumentElement();
+			NodeList list = root.getChildNodes();
+			for (int i = 0; i < list.getLength(); i++) {
+				if (list.item(i).getNodeType() == Node.ELEMENT_NODE && ((Element)list.item(i)).getTagName().equals("city")) {
+					NodeList cityList = ((Element) list.item(i)).getChildNodes();
+					for (int j = 0; j < cityList.getLength(); j++) {
+						if (cityList.item(j).getNodeType() == Node.ELEMENT_NODE) {
+							Element e = (Element) cityList.item(j);
+							City.ID = Integer.parseInt(e.getAttribute("cid"));
+							cities.add(new City(e.getTextContent()));
+						}
+					}
+				}
+			}
+			for (int i = 0; i < list.getLength(); i++) {
+				if (list.item(i).getNodeType() == Node.ELEMENT_NODE && ((Element)list.item(i)).getTagName().equals("flight")) {
+					NodeList flightList = ((Element) list.item(i)).getChildNodes();
+					for (int j = 0; j < flightList.getLength(); j++) {
+						if (flightList.item(j).getNodeType() == Node.ELEMENT_NODE) {
+							Element e = (Element) flightList.item(j);
+							Flight.ID = Integer.parseInt(e.getAttribute("fid"));
+							try {
+								Flight flight;
+								flight = new Flight(
+									e.getElementsByTagName("flightname").item(0).getTextContent(),
+									new Date(Long.parseLong(e.getElementsByTagName("starttime").item(0).getTextContent())),
+									new Date(Long.parseLong(e.getElementsByTagName("arrivetime").item(0).getTextContent())),
+									getCityByID(Integer.parseInt(e.getElementsByTagName("startcity").item(0).getTextContent())),
+									getCityByID(Integer.parseInt(e.getElementsByTagName("arrivecity").item(0).getTextContent())),
+									Integer.parseInt(e.getElementsByTagName("price").item(0).getTextContent()),
+									Integer.parseInt(e.getElementsByTagName("seatcapacity").item(0).getTextContent()));
+								flight.setFlightStatus(FlightStatus.valueOf(e.getElementsByTagName("status").item(0).getTextContent()));
+								flights.add(flight);
+							} catch (NullPointerException e1) {
+								// TODO means no city are found.... needed add
+							}
+						}
+					}
+				}
+			}
+			for (int i = 0; i < list.getLength(); i++) {
+				if (list.item(i).getNodeType() == Node.ELEMENT_NODE && ((Element)list.item(i)).getTagName().equals("user")) {
+					Element user = (Element) list.item(i);
+					NodeList userlist = user.getChildNodes();
+					for (int j = 0; j < userlist.getLength(); j++) {
+						if (userlist.item(j).getNodeType() == Node.ELEMENT_NODE && userlist.item(j).getNodeName() != null) {
+							Element u = (Element) userlist.item(j);
+							User.ID = Integer.parseInt(u.getAttribute("uid"));
+							if (u.getTagName().equals("admin")) {
+								users.add(new Admin(
+										u.getElementsByTagName("username").item(0).getTextContent(),
+										u.getElementsByTagName("passhash").item(0).getTextContent(),
+										true));
+							} else if (u.getTagName().equals("passenger")) {
+								Passenger p = new Passenger(
+										u.getElementsByTagName("idnumber").item(0).getTextContent(),
+										u.getElementsByTagName("username").item(0).getTextContent(),
+										u.getElementsByTagName("passhash").item(0).getTextContent(),
+										true);
+								NodeList orders = u.getElementsByTagName("order").item(0).getChildNodes();
+								for (int k = 0; k < orders.getLength(); k++) {
+									if (orders.item(k).getNodeType() == Node.ELEMENT_NODE && orders.item(j).getNodeName() != null) {
+										Element o = (Element) orders.item(k);
+										Order order = new Order(p,
+												getFlightByID(Integer.parseInt(o.getElementsByTagName("flightid").item(0).getTextContent())),
+												Integer.parseInt(o.getElementsByTagName("seat").item(0).getTextContent()));
+										order.setStatus(OrderStatus.valueOf(o.getElementsByTagName("status").item(0).getTextContent()));
+										order.setCreatDate(new Date(Long.parseLong(o.getElementsByTagName("date").item(0).getTextContent())));
+										p.addOrder(order);
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		} catch (IndexOutOfBoundsException | NullPointerException e) {
+			// TODO means data error, re-initialization
 		} catch (ParserConfigurationException e) {
 		}
 	}

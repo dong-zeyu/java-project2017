@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class City {
 	
-	private static int ID = 0; //ID is just the count of cities
+	public static int ID = 0; //ID is just the count of cities
 	private int cityID; //cityID needn't changing
 	private String cityName;
 	private ArrayList<Flight> flightsIn; // flights end in this city
