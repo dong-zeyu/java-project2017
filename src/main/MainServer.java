@@ -134,7 +134,7 @@ public class MainServer {
 	public boolean unsubscribeFlight(int flightID) throws PermissionDeniedException { //return false when no flight is found
 		// TODO(Peng) unsubscribeFlight
 		Flight flight=getFlight(flightID);
-		if (flight!=null){
+		if (flight!=null){ // FIXME(Peng) what's this mean?
 			throw new PermissionDeniedException();
 		}
 		return false;	

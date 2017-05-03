@@ -162,11 +162,13 @@ public class Main {
 	private static void addCity() {
 		// TODO(Peng) addCity UI
 		System.out.println("Please enter a valid city name" );
-		Scanner input = new Scanner(System.in);
-		String cityname=input.nextLine();
-		MainServer Acity=new MainServer();
+//		Scanner input = new Scanner(System.in); // no need to create a new scanner, you can use static field
+//-		String cityname=input.nextLine();
+		String cityname=scanner.nextLine();		
+//		MainServer Acity=new MainServer(); //never create new instance of MainServer, user static field instead
 		try {
-			Acity.addCity(cityname);
+//-			Actiy.addCity(cityname);
+			server.addCity(cityname);
 		} catch (PermissionDeniedException e) {
 			
 		}
