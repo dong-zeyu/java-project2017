@@ -11,7 +11,7 @@ import user.Passenger;
 
 public class Flight {
 	
-	private static int ID = 0;
+	public static int ID = 0;
 	private int flightID;
 	private String flightName;
 	private Date startTime;

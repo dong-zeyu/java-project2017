@@ -6,14 +6,22 @@ public class Passenger extends User {
 	
 	private String identityID; // XXX this should not be changed?
 	private ArrayList<Order> orderList;
-
+	
 	public Passenger(String identityID, String realName, String password) {
+		this(identityID, realName, password, false);
+	}
+
+	public Passenger(String identityID, String realName, String password, boolean isPassHash) {
 		orderList = new ArrayList<>();
 		this.identityID = identityID;
 		this.userName = realName;
 		this.userID = User.ID;
 		User.ID++;
-		passHash = hashPass(password);
+		if (isPassHash) {
+			passHash = password;
+		} else {
+			passHash = hashPass(password);
+		}
 	}
 	
 	public String getIdentityID() {

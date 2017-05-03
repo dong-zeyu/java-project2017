@@ -67,53 +67,11 @@ public class Main {
 				search();
 				break;
 			case "add":
-				if (param != null && param.length > 0) {
-					switch (param[0]) {
-					case "city":
-						addCity();
-						break;
-					case "flight":
-						addFlight();
-						break;
-					case "user":
-						addUser();
-						break;
-					default:
-						System.out.println("You can only add a city, flight or user");
-						break;
-					}
-				} else {
-					System.out.println("Format error");
-				}
+				add(param);
 				break;
 			case "delete":
 			case "d":
-				if (param != null && param.length >= 2) {
-					switch (param[0]) {
-					case "flight":
-						try {
-							for (int i = 0; i < param.length; i++) {
-								try {
-									if (server.deleteFlight(Integer.parseInt(param[i]))) {
-										System.out.printf("Successfully delete flight '%s'!\n", param[i]);
-									} else {
-										System.out.printf("Delete flight '%s' failed: no such flight\n", param[i]);
-									}
-								} catch (NumberFormatException e) {
-									System.out.printf("'%s' is not a flight id!\n", param[i]);
-								}
-							}
-						} catch (PermissionDeniedException e) {
-							System.out.println("Permission denied: you are not a administrator");
-						}
-						break;
-					default:
-						System.out.println("You can only delete a city, flight or user");
-						break;
-					}
-				} else {
-					System.out.println("Format error");
-				}
+				dalete(param);
 				break;
 			default:
 				if (!string.equals("")) {
@@ -125,6 +83,60 @@ public class Main {
 		scanner.close();
 	}
 	
+	private static void add(String[] param) {
+		// DONE(Dong) add
+		if (param != null && param.length > 0) {
+			switch (param[0]) {
+			case "city":
+				addCity();
+				break;
+			case "flight":
+				addFlight();
+				break;
+			case "user":
+				addUser();
+				break;
+			default:
+				System.out.println("You can only add a city, flight or user");
+				break;
+			}
+		} else {
+			System.out.println("Format error");
+		}
+
+	}
+
+	private static void dalete(String[] param) {
+		// TODO(Dong) delete
+		if (param != null && param.length >= 2) {
+			switch (param[0]) {
+			case "flight":
+				try {
+					for (int i = 0; i < param.length; i++) {
+						try {
+							if (server.deleteFlight(Integer.parseInt(param[i]))) {
+								System.out.printf("Successfully delete flight '%s'!\n", param[i]);
+							} else {
+								System.out.printf("Delete flight '%s' failed: no such flight\n", param[i]);
+							}
+						} catch (NumberFormatException e) {
+							System.out.printf("'%s' is not a flight id!\n", param[i]);
+						}
+					}
+				} catch (PermissionDeniedException e) {
+					System.out.println("Permission denied: you are not a administrator");
+				}
+				break;
+			// TODO(Dong) unfinished
+			default:
+				System.out.println("You can only delete a city, flight or user");
+				break;
+			}
+		} else {
+			System.out.println("Format error");
+		}
+	}
+
 	/*
 	 * These are subUI or a wizard to lead User to do specific work
 	 */

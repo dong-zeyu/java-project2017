@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.lang.model.util.Elements;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
@@ -37,11 +38,11 @@ import user.User;
 /* file format:
  * <root>
  * 	<user>
- * 		<admin>
+ * 		<admin id=>
  * 			<username></username>
  * 			<passhash></passhash>
  * 		</admin>
- * 		<passenger>
+ * 		<passenger id=>
  * 			<username></username>
  * 			<passhash></passhash>
  * 			<idnumber></idnumber>
@@ -56,7 +57,7 @@ import user.User;
  * 		</passenger>
  * 	</user>
  * 	<flight>
- * 		<item>
+ * 		<item id=>
  *			<flightname></flightname>
  *			<starttime><starttime>
  *			<arrivetime><arrivetime>
@@ -68,7 +69,7 @@ import user.User;
  * 		</item>
  * 	</flight>
  * 	<city>
- * 		<cityname></cityname>
+ * 		<cityname id=></cityname>
  * 	</city>
  * </root>
  */
@@ -132,13 +133,17 @@ public class DataManager {
 			for (User user : users) {
 				if (user instanceof Admin) {
 					Admin admin = (Admin) user;
-					NodeList nodes = adminEgg.cloneNode(true).getChildNodes();
+					Element node = (Element) adminEgg.cloneNode(true);
+					node.setAttribute("uid", String.valueOf(admin.getID()));
+					NodeList nodes = node.getChildNodes();
 					nodes.item(0).appendChild(document.createTextNode(admin.getUserName()));
 					nodes.item(1).appendChild(document.createTextNode(admin.getPassHash()));
 					euser.appendChild(nodes.item(0).getParentNode());				
 				} else if (user instanceof Passenger) {
 					Passenger passenger = (Passenger) user;
-					NodeList nodes = passengerEgg.cloneNode(true).getChildNodes();
+					Element node = (Element) adminEgg.cloneNode(true);
+					node.setAttribute("uid", String.valueOf(passenger.getID()));
+					NodeList nodes = node.getChildNodes();
 					nodes.item(0).appendChild(document.createTextNode(passenger.getUserName()));
 					nodes.item(1).appendChild(document.createTextNode(passenger.getPassHash()));
 					nodes.item(2).appendChild(document.createTextNode(passenger.getIdentityID()));
@@ -172,7 +177,9 @@ public class DataManager {
 			flightEgg.appendChild(document.createElement("seatcapacity"));
 			flightEgg.appendChild(document.createElement("status"));
 			for (Flight f : flights) {
-				NodeList nodes = flightEgg.cloneNode(true).getChildNodes();
+				Element node = (Element) adminEgg.cloneNode(true);
+				node.setAttribute("fid", String.valueOf(f.getFlightID()));
+				NodeList nodes = node.getChildNodes();
 				nodes.item(0).appendChild(document.createTextNode(f.getFlightName()));
 				nodes.item(1).appendChild(document.createTextNode(String.valueOf(f.getStartTime().getTime())));
 				nodes.item(2).appendChild(document.createTextNode(String.valueOf(f.getArriveTime().getTime())));
@@ -232,6 +239,7 @@ public class DataManager {
 	private void readData() throws SAXException, FileNotFoundException, IOException {
 		try {
 			Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new FileInputStream(file));
+			Element eflight = (Element) document.getElementsByTagName("flight").item(0);
 		} catch (ParserConfigurationException e) {
 		}
 	}
