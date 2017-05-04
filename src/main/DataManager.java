@@ -240,6 +240,9 @@ public class DataManager {
 		flights = new ArrayList<>();
 		users = new ArrayList<>();
 		cities = new ArrayList<>();
+		User.ID = 0;
+		Flight.ID = 0;
+		City.ID = 0;
 		try {
 			file = new File(filename);
 			if (!file.exists()) {	
