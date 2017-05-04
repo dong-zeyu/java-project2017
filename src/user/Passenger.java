@@ -24,6 +24,16 @@ public class Passenger extends User {
 		}
 	}
 	
+	@Override
+	public int hashCode() {
+        int hashCode = 1;
+        hashCode = 31*hashCode + userName.hashCode();
+        hashCode = 31*hashCode + passHash.hashCode();
+        hashCode = 31*hashCode + identityID.hashCode();
+        hashCode = 31*hashCode + orderList.hashCode();
+        return hashCode;
+	}
+	
 	public String getIdentityID() {
 		return identityID;
 	}

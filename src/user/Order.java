@@ -21,6 +21,11 @@ public class Order {
 		status = OrderStatus.UNPAID;
 	}
 	
+	@Override
+	public int hashCode() {
+        return status.hashCode();
+	}
+	
 	public Passenger getPassager() {
 		return passenger;
 	}
