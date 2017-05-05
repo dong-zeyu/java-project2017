@@ -45,6 +45,20 @@ public class Flight {
 		return flightName;
 	}
 	
+	@Override
+	public int hashCode() {
+        int hashCode = 1;
+        hashCode = 31*hashCode + flightName.hashCode();
+        hashCode = 31*hashCode + startCity.hashCode();
+        hashCode = 31*hashCode + startTime.hashCode();
+        hashCode = 31*hashCode + arriveCity.hashCode();
+        hashCode = 31*hashCode + arriveTime.hashCode();
+        hashCode = 31*hashCode + flightStatus.hashCode();
+        hashCode = 31*hashCode + ((Integer)price).hashCode();
+        hashCode = 31*hashCode + ((Integer)seatCapacity).hashCode();
+        return hashCode;
+	}
+	
 	public int getNumber() {
 		return passagers.size();
 	}

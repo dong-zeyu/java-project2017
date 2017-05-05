@@ -19,6 +19,11 @@ public class City {
 	}
 	
 	@Override
+	public int hashCode() {
+		return cityName.hashCode();
+	}
+	
+	@Override
 	public String toString() {
 		return cityName;
 	}
