@@ -24,17 +24,15 @@ public class MainServer {
 	}
 	
 	public boolean Login(String userName, String pass) {
-		User tmp;
-		for (int i = 0; i < dataManager.users.size(); i++) {
-			tmp = dataManager.users.get(i);
-			if (tmp.getUserName() == userName && tmp.getPassHash().equals(User.hashPass(pass))) {
+		for (User user : dataManager.users) {
+			if (user.getUserName().equals(userName) && user.getPassHash().equals(User.hashPass(pass))) {
 				isLogin = true;
-				if (tmp instanceof Admin) {					
+				if (user instanceof Admin) {					
 					isAdmin = true;
 				} else {
 					isAdmin = false;
 				}
-				currentUser = tmp;
+				currentUser = user;
 				return true;
 			} else {
 				isLogin = false;
