@@ -3,6 +3,7 @@ package main;
 import java.util.Date;
 import exceptions.PermissionDeniedException;
 import exceptions.StatusUnavailableException;
+import flight.City;
 import flight.Flight;
 import user.Admin;
 import user.Passenger;
@@ -91,7 +92,8 @@ public class MainServer {
 	
 	public void addCity(String cityName) throws PermissionDeniedException{
 		//DONE(Zhu) addCity
-		dataManager.cities.add(cityName);
+		City city =new City(cityName);
+		dataManager.cities.add(city);
 	}
 	
 	public boolean deleteUser(int userID) throws PermissionDeniedException {
