@@ -8,6 +8,7 @@ import java.util.Scanner;
 
 import exceptions.PermissionDeniedException;
 import exceptions.StatusUnavailableException;
+import flight.City;
 import flight.Flight;
 import flight.FlightStatus;
 import user.Admin;
@@ -30,17 +31,15 @@ public class MainServer {
 	}
 	
 	public boolean Login(String userName, String pass) {
-		User tmp;
-		for (int i = 0; i < dataManager.users.size(); i++) {
-			tmp = dataManager.users.get(i);
-			if (tmp.getUserName() == userName && tmp.getPassHash().equals(User.hashPass(pass))) {
+		for (User user : dataManager.users) {
+			if (user.getUserName().equals(userName) && user.getPassHash().equals(User.hashPass(pass))) {
 				isLogin = true;
-				if (tmp instanceof Admin) {					
+				if (user instanceof Admin) {					
 					isAdmin = true;
 				} else {
 					isAdmin = false;
 				}
-				currentUser = tmp;
+				currentUser = user;
 				return true;
 			} else {
 				isLogin = false;
@@ -116,7 +115,12 @@ public class MainServer {
 	}
 	
 	public void addCity(String cityName) throws PermissionDeniedException{
-		//TODO(Zhu) addCity
+		//DONE(Zhu) addCity
+		if(isAdmin){
+			dataManager.cities.add(new City(cityName));
+		}else{
+			throw new PermissionDeniedException();
+		}
 	}
 	
 	public boolean deleteUser(int userID) throws PermissionDeniedException {
@@ -146,10 +150,10 @@ public class MainServer {
 	}
 	
 	public void reserveFlight(int flightID) throws PermissionDeniedException, StatusUnavailableException {
-		// TODO(Zhu) reserveFlight
+		// DONE(Zhu) reserveFlight
 		if (isLogin) {
 			if (!isAdmin) {
-				Flight flight = getFlight(flightID);
+				Flight flight = dataManager.getFlightByID(flightID);
 				flight.addPassager((Passenger) currentUser);
 			}
 		} else {
@@ -167,9 +171,11 @@ public class MainServer {
 		}
 		   }
 		       
-		return false;	
-		
-		
+		return false;
+	}
+
+	public void stop() throws Throwable {
+		dataManager.finalize();
+	}
 	
-}	
 }
