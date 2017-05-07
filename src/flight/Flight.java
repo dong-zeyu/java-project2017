@@ -198,8 +198,11 @@ public class Flight {
 	 * @throws StatusUnavailableException when status is TERMINATE, 
 	 */
 	public boolean removePassenger(Passenger passenger) throws StatusUnavailableException {
-		// TODO(Zhu) removePassenger
-		return false;
+		// DONE(Zhu) removePassenger
+		if(flightStatus!=FlightStatus.TERMINATE)
+		return passagers.remove(passenger);
+		else
+			throw new StatusUnavailableException();
 	}
 	
 }
