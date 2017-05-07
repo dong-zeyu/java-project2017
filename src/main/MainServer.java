@@ -120,10 +120,10 @@ public class MainServer {
 	}
 	
 	public void reserveFlight(int flightID) throws PermissionDeniedException, StatusUnavailableException {
-		// TODO(Zhu) reserveFlight
+		// DONE(Zhu) reserveFlight
 		if (isLogin) {
 			if (!isAdmin) {
-				Flight flight = getFlight(flightID);
+				Flight flight = dataManager.getFlightByID(flightID);
 				flight.addPassager((Passenger) currentUser);
 			}
 		} else {

@@ -123,17 +123,32 @@ public class DataManager {
 	}
 	
 	public Flight getFlightByID(int flightID) {
-		// TODO(Zhu) searchFlightByID
+		// DONE(Zhu) searchFlightByID
+		for (Flight flight : flights) {
+			if(flight.getFlightID()==flightID){
+				return flight;
+			}
+		}
 		return null;
 	}
 	
 	public User getUserByID(int userID) {
-		// TODO(Zhu) searchUserByID
+		// DONE(Zhu) searchUserByID
+		for (User user : users) {
+			if(user.getID()==userID){
+				return user;
+			}
+		}
 		return null;
 	}
 	
-	public City getCityByID(int CityID) {
-		// TODO(Zhu) searchCityByID
+	public City getCityByID(int cityID) {
+		// DONE(Zhu) searchCityByID
+		for (City city : cities) {
+			if (city.getCityID()==cityID) {
+				return city;
+			}
+		}
 		return null;
 	}
 	
