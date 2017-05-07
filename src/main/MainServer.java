@@ -92,8 +92,11 @@ public class MainServer {
 	
 	public void addCity(String cityName) throws PermissionDeniedException{
 		//DONE(Zhu) addCity
-		City city =new City(cityName);
-		dataManager.cities.add(city);
+		if(isAdmin){
+			dataManager.cities.add(new City(cityName));
+		}else{
+			throw new PermissionDeniedException();
+		}
 	}
 	
 	public boolean deleteUser(int userID) throws PermissionDeniedException {

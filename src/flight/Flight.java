@@ -70,7 +70,7 @@ public class Flight {
 		calendar.set(year, month - 1, date, hr, min, sec);
 		return calendar.getTime();
 	}
-	/* TODO(Zhu) get and set in Flight
+	/* DONE(Zhu) get and set in Flight
 	 * getter and setter are generated automatically, and need mortifying
 	 * basically the restriction is flightStatus(seeing requirement)
 	 * if force to change, throw StatusUnavailableException(${CurrentStatus}).
@@ -84,7 +84,11 @@ public class Flight {
 	}
 	
 	public void setFlightName(String flightName) throws StatusUnavailableException {
-		this.flightName = flightName;
+		if(flightStatus==FlightStatus.UNPUBLISHED){
+			this.flightName = flightName;
+		}else{
+			throw new StatusUnavailableException(flightStatus);
+		}
 	}
 
 	public Date getStartTime() {
@@ -92,7 +96,11 @@ public class Flight {
 	}
 
 	public void setStartTime(Date startTime) throws StatusUnavailableException {
-		this.startTime = startTime;
+		if(flightStatus==FlightStatus.UNPUBLISHED){
+			this.startTime = startTime;
+		}else{
+			throw new StatusUnavailableException(flightStatus);
+		}
 	}
 
 	public Date getArriveTime() {
@@ -100,7 +108,11 @@ public class Flight {
 	}
 
 	public void setArriveTime(Date arriveTime) throws StatusUnavailableException {
-		this.arriveTime = arriveTime;
+		if(flightStatus==FlightStatus.UNPUBLISHED){
+			this.arriveTime = arriveTime;
+		}else{
+			throw new StatusUnavailableException(flightStatus);
+		}
 	}
 
 	public City getStartCity() {
@@ -108,7 +120,11 @@ public class Flight {
 	}
 
 	public void setStartCity(City startCity) throws StatusUnavailableException {
-		this.startCity = startCity;
+		if(flightStatus==FlightStatus.UNPUBLISHED){
+			this.startCity = startCity;
+		}else{
+			throw new StatusUnavailableException(flightStatus);
+		}
 	}
 
 	public City getArriveCity() {
@@ -116,7 +132,11 @@ public class Flight {
 	}
 
 	public void setArriveCity(City arriveCity) throws StatusUnavailableException {
-		this.arriveCity = arriveCity;
+		if(flightStatus==FlightStatus.UNPUBLISHED){
+			this.arriveCity = arriveCity;
+		}else{
+			throw new StatusUnavailableException(flightStatus);
+		}
 	}
 
 	public int getPrice() {
@@ -124,7 +144,11 @@ public class Flight {
 	}
 
 	public void setPrice(int price) throws StatusUnavailableException {
-		this.price = price;
+		if(flightStatus!=FlightStatus.TERMINATE){
+			this.price = price;
+		}else{
+			throw new StatusUnavailableException(flightStatus);
+		}
 	}
 
 	public int getSeatCapacity() {
@@ -132,7 +156,11 @@ public class Flight {
 	}
 
 	public void setSeatCapacity(int seatCapacity) throws StatusUnavailableException {
-		this.seatCapacity = seatCapacity;
+		if(flightStatus!=FlightStatus.TERMINATE){
+			this.seatCapacity = seatCapacity;
+		}else{
+			throw new StatusUnavailableException(flightStatus);
+		}
 	}
 
 	public FlightStatus getFlightStatus() {
@@ -140,7 +168,8 @@ public class Flight {
 	}
 
 	public void setFlightStatus(FlightStatus flightStatus) {
-		this.flightStatus = flightStatus;
+			this.flightStatus = flightStatus;
+		
 	}
 	
 	/**
