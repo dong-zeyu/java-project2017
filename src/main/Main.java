@@ -1,6 +1,9 @@
 package main;
 
+import java.nio.file.attribute.UserPrincipalLookupService;
 import java.util.Scanner;
+
+import javax.swing.plaf.synth.SynthSpinnerUI;
 
 import exceptions.PermissionDeniedException;
 
@@ -150,7 +153,27 @@ public class Main {
 	}
 
 	private static void register() {
-		// TODO(Zhu) register UI
+		// DONE(Zhu) register UI
+		System.out.println("Please import your Username");
+		String username;
+		username=scanner.nextLine();
+		System.out.println("Please import your identity card number");
+		String IDNUMBER;
+		IDNUMBER=scanner.nextLine();
+		while(IDNUMBER.length()>18||IDNUMBER.length()<18){
+			System.out.println("Please import the correct identity card number");
+		IDNUMBER=scanner.nextLine();
+		}
+		String password,password2;
+		System.out.println("Please import your password");
+		password=scanner.nextLine();
+		do {
+			System.out.println("Please import your password again");
+		password2=scanner.nextLine();	
+		} while (!(password.equals(password2)));
+		System.out.println("You succeed in creating your account!");
+		
+		server.addUser(username, IDNUMBER, password2);
 		
 	}
 
