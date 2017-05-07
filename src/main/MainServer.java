@@ -90,7 +90,7 @@ public class MainServer {
 	}
 	
 	public void addCity(String cityName) throws PermissionDeniedException{
-		//TODO(Zhu) addCity
+		//DONE(Zhu) addCity
 		dataManager.cities.add(cityName);
 	}
 	
