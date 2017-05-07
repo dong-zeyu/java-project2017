@@ -7,6 +7,7 @@ import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
 import exceptions.StatusUnavailableException;
+import main.DataManager;
 import user.Passenger;
 
 public class Flight {
@@ -151,7 +152,7 @@ public class Flight {
 	}
 
 	public void addPassager(Passenger passager) throws StatusUnavailableException {
-		/* TODO(Zhu) addPassager
+		/* DONE(Zhu) addPassager
 		 * you should generate and add order in this method instead of reserveFlight
 		 * for my convenience
 		 */
