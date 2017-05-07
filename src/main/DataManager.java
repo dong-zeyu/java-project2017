@@ -267,9 +267,21 @@ public class DataManager {
 				City shenz = new City("Shenzhen");
 				City beij = new City("Beijing");
 				City zhenz = new City("Zhengzhou");
+				City guangz = new City("Guangzhou");
+				City shangh = new City("Shanghai");
+				City xia = new City("Xi'an");
+				City Wuh = new City("Wuhan");
+				City Nanc = new City("Nanchang");
+				City Hangz = new City("Hangzhou");
 				cities.add(zhenz);
 				cities.add(beij);
 				cities.add(shenz);
+				cities.add(guangz);
+				cities.add(shangh);
+				cities.add(xia);
+				cities.add(Wuh);
+				cities.add(Nanc);
+				cities.add(Hangz);
 				Flight flight1 = new Flight("A001",
 						Flight.calendar(2017, 4, 1, 9, 30, 0),
 						Flight.calendar(2017, 4, 1, 10, 40, 0), shenz, beij, 1200, 120);
@@ -279,10 +291,74 @@ public class DataManager {
 				Flight flight3 = new Flight("A003",
 						Flight.calendar(2017, 3, 3, 16, 12, 00),
 						Flight.calendar(2017, 3, 3, 16, 52, 00), zhenz, shenz, 1200, 120);
+				Flight flight4 = new Flight("A004",
+						Flight.calendar(2017, 6, 8, 10, 55, 00), 
+						Flight.calendar(2017, 6, 8, 14, 32, 00), shenz, zhenz, 1200, 120);
+				Flight flight5 = new Flight("A005",
+						Flight.calendar(2017, 8, 8, 10, 31, 00), 
+						Flight.calendar(2017, 8, 8, 12, 32, 00), guangz, zhenz, 10000, 10);
+				Flight flight6 = new Flight("A006",
+						Flight.calendar(2017, 9, 1, 22, 46, 00), 
+						Flight.calendar(2017, 9, 2, 00, 10, 00), zhenz, Nanc, 250, 300);
+				Flight flight7 = new Flight("A007",
+						Flight.calendar(2017, 12, 30, 23, 46, 00), 
+						Flight.calendar(2018, 1, 1, 02, 10, 00), Wuh, Hangz, 900, 90);
+				Flight flight8 = new Flight("A008",
+						Flight.calendar(2017, 6, 30, 10, 46, 00), 
+						Flight.calendar(2017, 6, 30, 13, 10, 00), xia, Hangz, 900, 90);
+				Flight flight9 = new Flight("A009",
+						Flight.calendar(2017, 2, 3, 11, 46, 00), 
+						Flight.calendar(2017, 2, 3, 13, 10, 00), shangh, Hangz, 870, 100);
+				Flight flight10 = new Flight("A010",
+						Flight.calendar(2017, 3, 10, 17, 46, 00), 
+						Flight.calendar(2017, 3, 10, 19, 10, 00), shenz, Hangz, 870, 100);
+				Flight flight11 = new Flight("A011",
+						Flight.calendar(2017, 4, 10, 17, 46, 00), 
+						Flight.calendar(2017, 4, 10, 19, 10, 00), Hangz, shenz, 900, 100);
+				Flight flight12 = new Flight("A012",
+						Flight.calendar(2017, 5, 23, 17, 46, 00), 
+						Flight.calendar(2017, 5, 23, 19, 30, 00), Hangz, shangh, 1130, 100);
+				Flight flight13 = new Flight("A013",
+						Flight.calendar(2017, 9, 25, 15, 46, 00), 
+						Flight.calendar(2017, 9, 25, 17, 40, 00), Hangz, xia, 860, 120);
+				Flight flight14 = new Flight("A014",
+						Flight.calendar(2017, 11, 25, 15, 46, 00), 
+						Flight.calendar(2017, 11, 25, 16, 40, 00), shenz, Wuh, 780, 120);
+				Flight flight15 = new Flight("A015",
+						Flight.calendar(2017, 12, 19, 15, 46, 00), 
+						Flight.calendar(2017, 12, 19, 18, 40, 00), Hangz, Wuh, 860, 120);
+				Flight flight16 = new Flight("A016",
+						Flight.calendar(2017, 7, 16, 15, 46, 00), 
+						Flight.calendar(2017, 7, 16, 18, 40, 00), zhenz, xia, 900, 120);
+				Flight flight17 = new Flight("A017",
+						Flight.calendar(2017, 9, 5, 7, 46, 00), 
+						Flight.calendar(2017, 9, 5, 19, 40, 00), xia, zhenz, 1200, 120);
+				Flight flight18 = new Flight("A018",
+						Flight.calendar(2017, 9, 5, 7, 46, 00), 
+						Flight.calendar(2017, 9, 5, 19, 40, 00), shenz, xia, 1200, 120);
+				
+				
+				
+				
 				flights.add(flight1);
 				flights.add(flight2);
 				flights.add(flight3);
-				// TODO(Zhu) add remain
+				flights.add(flight4);
+				flights.add(flight5);
+				flights.add(flight6);
+				flights.add(flight7);
+				flights.add(flight8);
+				flights.add(flight9);
+				flights.add(flight10);
+				flights.add(flight11);
+				flights.add(flight12);
+				flights.add(flight13);
+				flights.add(flight14);
+				flights.add(flight15);
+				flights.add(flight16);
+				flights.add(flight17);
+				flights.add(flight18);
+				// DONE(Zhu) add remain
 				document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
 				Element root = document.createElement("root");
 				document.appendChild(root);
