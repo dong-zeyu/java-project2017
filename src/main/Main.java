@@ -12,7 +12,7 @@ public class Main {
 	static MainServer server = new MainServer();
 	static Scanner scanner = new Scanner(System.in);
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Throwable {
 		// TODO(Dong) UI design
 		String string = "";
 		String[] param;
@@ -84,6 +84,7 @@ public class Main {
 			}
 		}
 		scanner.close();
+		server.stop();
 	}
 	
 	private static void add(String[] param) {

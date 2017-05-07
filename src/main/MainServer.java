@@ -149,5 +149,9 @@ public class MainServer {
 		
 		
 	}
+
+	public void stop() throws Throwable {
+		dataManager.finalize();
+	}
 	
 }
