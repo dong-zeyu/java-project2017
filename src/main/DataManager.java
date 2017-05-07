@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -81,14 +82,15 @@ public class DataManager {
 	public ArrayList<User> users;
 	public ArrayList<Flight> flights;
 	public ArrayList<City> cities;
-	public static final int SYNC_INTERVAL = 120; // unit: (s)
+	public static final long SYNC_INTERVAL = 20*1000l; // unit: (ms)
 	private final String filename = "data.xml";
 	private File file;
 	private Document document;
 	private int usersHash;
 	private int flightsHash;
 	private int citiesHash;
-	private SaveFileTask save;
+	private Timer save;
+	private Timer flight;
 	
 	class SaveFileTask extends TimerTask {
 		
@@ -108,6 +110,25 @@ public class DataManager {
 		
 	}
 	
+	class ChangeFlight extends TimerTask {
+
+		@Override
+		public void run() {
+			for (Flight flight : flights) {
+				if (new Date().getTime() - flight.getStartTime().getTime() <= 7200000l) {
+					flight.setFlightStatus(FlightStatus.TERMINATE);
+				}
+			}
+		}
+		
+	}
+	
+	@Override
+	protected void finalize() throws Throwable {
+		save.cancel();
+		super.finalize();
+	}
+	
 	public DataManager() {
 		try {
 			init();
@@ -118,8 +139,10 @@ public class DataManager {
 		usersHash = users.hashCode();
 		flightsHash = flights.hashCode();
 		citiesHash =  cities.hashCode();
-		save = new SaveFileTask();
-		
+		save = new Timer(false);
+		save.schedule(new SaveFileTask(), SYNC_INTERVAL, SYNC_INTERVAL);
+		flight = new Timer(false);
+		flight.schedule(new ChangeFlight(), 1000, 1000);
 	}
 	
 	public Flight getFlightByID(int flightID) {
