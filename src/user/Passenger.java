@@ -2,6 +2,8 @@ package user;
 
 import java.util.ArrayList;
 
+import flight.Flight;
+
 public class Passenger extends User {
 	
 	private String identityID; // XXX this should not be changed?
@@ -46,4 +48,7 @@ public class Passenger extends User {
 		return (ArrayList<Order>) orderList.clone();
 	}
 	
+	public boolean removeOrder(Flight flight){
+		return false;
+	}
 }

@@ -1,8 +1,12 @@
 package main;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Scanner;
 
 import exceptions.PermissionDeniedException;
+import flight.Flight;
 
 public class Main {
 
@@ -146,7 +150,14 @@ public class Main {
 	
 	private static void addAdmin() {
 		// TODO(Peng) addAdmin UI
-		
+		System.out.println("Please enter the Username and Password");
+		String userName=scanner.nextLine();
+		String password=scanner.nextLine();
+		try {
+						server.addAdmin(userName, password);
+					} catch (PermissionDeniedException e) {
+						
+					}
 	}
 
 	private static void register() {
@@ -156,18 +167,45 @@ public class Main {
 
 	private static void addFlight() {
 		// TODO(Peng) addFlight UI
+		System.out.println("flightName");
+		String flightName=scanner.nextLine();
+		System.out.println("starttime formatted with:year-month-date-hr-min-sec");
+		String[] startime=scanner.nextLine().split("-");
+		int year =Integer.parseInt(startime[0]);
+		int month =Integer.parseInt(startime[1]);
+		int date =Integer.parseInt(startime[2]);
+		int hr =Integer.parseInt(startime[3]);
+		int min =Integer.parseInt(startime[4]);
+		int sec =Integer.parseInt(startime[5]);
+		Date startTime = Flight.calendar(year, month, date, hr, min, sec);
+		System.out.println("arrivetime formatted with:year-month-date-hr-min-sec");
+		String[] arrivetime=scanner.nextLine().split("-");
+		int year1 =Integer.parseInt(startime[0]);
+		int month1 =Integer.parseInt(startime[1]);
+		int date1 =Integer.parseInt(startime[2]);
+		int hr1 =Integer.parseInt(startime[3]);
+		int min1 =Integer.parseInt(startime[4]);
+		int sec1 =Integer.parseInt(startime[5]);
+		Date arriveTime = Flight.calendar(year1, month1, date1, hr1, min1, sec1);
+		System.out.println("startCityID");
+		int startCityID=scanner.nextInt();
+		System.out.println("arriveCityID");
+		int arriveCityID=scanner.nextInt();
+		System.out.println("price");
+		int price=scanner.nextInt();
+		System.out.println("seatCapacity");
+		int seatCapacity=scanner.nextInt();
 		
+		try {
+			    server.createFlight(flightName, startTime, arriveTime, startCityID, arriveCityID, price, seatCapacity);
+					} catch (PermissionDeniedException e) {
+		}
 	}
-
 	private static void addCity() {
 		// TODO(Peng) addCity UI
 		System.out.println("Please enter a valid city name" );
-//		Scanner input = new Scanner(System.in); // no need to create a new scanner, you can use static field
-//-		String cityname=input.nextLine();
 		String cityname=scanner.nextLine();		
-//		MainServer Acity=new MainServer(); //never create new instance of MainServer, user static field instead
 		try {
-//-			Actiy.addCity(cityname);
 			server.addCity(cityname);
 		} catch (PermissionDeniedException e) {
 			
