@@ -103,6 +103,10 @@ public class MainServer {
 		// XXX I think this can be changed to a class extends queryFlight
 	}
 	
+	public void addUser(String username,String IDNUMBER,String password){
+		
+	}
+	
 	public void addAdmin(String userName, String password) throws PermissionDeniedException {
 		// TODO(Peng) addAdmin
 		if (isLogin){
