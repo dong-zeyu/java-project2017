@@ -381,6 +381,7 @@ public class DataManager {
 										p.addOrder(order);
 									}
 								}
+								users.add(p);
 							}
 						}
 					}
