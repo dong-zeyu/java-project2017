@@ -1,13 +1,10 @@
 package main;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
 
-import javax.swing.plaf.synth.SynthSpinnerUI;
-
 import exceptions.PermissionDeniedException;
+import exceptions.StatusUnavailableException;
 import flight.Flight;
 
 public class Main {
@@ -131,6 +128,8 @@ public class Main {
 					}
 				} catch (PermissionDeniedException e) {
 					System.out.println("Permission denied: you are not a administrator");
+				} catch (StatusUnavailableException e) {
+					System.out.println("Can't delete! Status unavailable");
 				}
 				break;
 			// TODO(Dong) unfinished

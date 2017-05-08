@@ -1,18 +1,12 @@
 package main;
 
-import java.nio.file.attribute.UserPrincipalLookupService;
-import java.rmi.server.ServerCloneException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.Scanner;
-
 import exceptions.PermissionDeniedException;
 import exceptions.StatusUnavailableException;
 import flight.City;
 import flight.Flight;
 import flight.FlightStatus;
 import user.Admin;
-import user.Order;
 import user.Passenger;
 import user.User;
 
