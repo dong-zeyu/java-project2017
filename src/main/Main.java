@@ -183,7 +183,7 @@ public class Main {
 		} while (!(password.equals(password2)));
 		System.out.println("You succeed in creating your account!");
 		
-		server.addUser(username, IDNUMBER, password2);
+		server.addPassenger(username, IDNUMBER, password2);
 		
 	}
 

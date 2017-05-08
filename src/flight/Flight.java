@@ -157,6 +157,7 @@ public class Flight {
 
 	public void setSeatCapacity(int seatCapacity) throws StatusUnavailableException {
 		if(flightStatus!=FlightStatus.TERMINATE){
+			// FIXME(Zhu) you should consider more in changing seat capacity
 			this.seatCapacity = seatCapacity;
 		}else{
 			throw new StatusUnavailableException(flightStatus);
@@ -182,9 +183,10 @@ public class Flight {
 
 	public void addPassager(Passenger passager) throws StatusUnavailableException {
 		/* DONE(Zhu) addPassager
-		 * you should generate and add order in this method instead of reserveFlight
+		 * you should generate and add order in this method meanwhile
 		 * for my convenience
 		 */
+		// FIXME(Zhu) take care of the comment above!
 		if (flightStatus == FlightStatus.AVAILABLE) {
 			 passagers.add(passager);	
 		} else {
@@ -199,8 +201,9 @@ public class Flight {
 	 */
 	public boolean removePassenger(Passenger passenger) throws StatusUnavailableException {
 		// DONE(Zhu) removePassenger
+		// XXX(Zhu) needs review
 		if(flightStatus!=FlightStatus.TERMINATE)
-		return passagers.remove(passenger);
+			return passagers.remove(passenger);
 		else
 			throw new StatusUnavailableException();
 	}

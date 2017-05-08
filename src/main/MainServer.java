@@ -97,7 +97,7 @@ public class MainServer {
 		// XXX I think this can be changed to a class extends queryFlight
 	}
 	
-	public void addUser(String username,String IDNUMBER,String password){
+	public void addPassenger(String username,String IDNUMBER,String password){
 		
 	}
 	
