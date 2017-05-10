@@ -44,8 +44,10 @@ public class Main {
 			case "exit":
 			case "e":
 				break;
-			case "login":
+			case "list":
 			case "l":
+				break;
+			case "login":
 				if (param != null && param.length == 2) {
 					if (server.Login(param[0], param[1])) {
 						System.out.print("Login succeed: ");
@@ -67,7 +69,7 @@ public class Main {
 				break;
 			case "search":
 			case "s":
-				search();
+				search(param);
 				break;
 			case "add":
 				add(param);
@@ -115,7 +117,7 @@ public class Main {
 			switch (param[0]) {
 			case "flight":
 				try {
-					for (int i = 0; i < param.length; i++) {
+					for (int i = 1; i < param.length; i++) {
 						try {
 							if (server.deleteFlight(Integer.parseInt(param[i]))) {
 								System.out.printf("Successfully delete flight '%s'!\n", param[i]);
@@ -134,7 +136,7 @@ public class Main {
 				break;
 			case "city":
 				try {
-					for (int i = 0; i < param.length; i++) {
+					for (int i = 1; i < param.length; i++) {
 						try {
 							if (server.deleteCity(Integer.parseInt(param[i]))) {
 								System.out.printf("Successfully delete city '%s'!\n", param[i]);
@@ -153,7 +155,7 @@ public class Main {
 				break;
 			case "user":
 				try {
-					for (int i = 0; i < param.length; i++) {
+					for (int i = 1; i < param.length; i++) {
 						try {
 							if (server.deleteUser(Integer.parseInt(param[i]))) {
 								System.out.printf("Successfully delete user '%s'!\n", param[i]);
@@ -182,9 +184,11 @@ public class Main {
 	/*
 	 * These are subUI or a wizard to lead User to do specific work
 	 */
-	private static void search() {
+	private static void search(String[] param) {
 		// TODO(Dong) search
-		
+		if (param.length != 0) {
+			
+		}
 	}
 	
 	private static void addAdmin() {
