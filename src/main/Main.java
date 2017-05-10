@@ -110,7 +110,7 @@ public class Main {
 	}
 
 	private static void delete(String[] param) {
-		// TODO(Dong) delete
+		// DONE(Dong) delete
 		if (param != null && param.length >= 2) {
 			switch (param[0]) {
 			case "flight":
@@ -132,7 +132,44 @@ public class Main {
 					System.out.println("Can't delete! Status unavailable");
 				}
 				break;
-			// TODO(Dong) unfinished
+			case "city":
+				try {
+					for (int i = 0; i < param.length; i++) {
+						try {
+							if (server.deleteCity(Integer.parseInt(param[i]))) {
+								System.out.printf("Successfully delete city '%s'!\n", param[i]);
+							} else {
+								System.out.printf("Delete city '%s' failed: no such city\n", param[i]);
+							}
+						} catch (NumberFormatException e) {
+							System.out.printf("'%s' is not a city id!\n", param[i]);
+						} catch (StatusUnavailableException e) {
+							System.out.println("Cannot delete city that have fight in and out");
+						}
+					}
+				} catch (PermissionDeniedException e) {
+					System.out.println("Permission denied: you are not a administrator");
+				}
+				break;
+			case "user":
+				try {
+					for (int i = 0; i < param.length; i++) {
+						try {
+							if (server.deleteUser(Integer.parseInt(param[i]))) {
+								System.out.printf("Successfully delete user '%s'!\n", param[i]);
+							} else {
+								System.out.printf("Delete user '%s' failed: no such user\n", param[i]);
+							}
+						} catch (NumberFormatException e) {
+							System.out.printf("'%s' is not a user id!\n", param[i]);
+						} catch (StatusUnavailableException e) {
+							System.out.printf("Cannot delete user in flight that have status %s", e.getMessage());
+						}
+					}
+				} catch (PermissionDeniedException e) {
+					System.out.println("Permission denied: you are not a administrator");
+				}
+				break;
 			default:
 				System.out.println("You can only delete a city, flight or user");
 				break;

@@ -7,6 +7,7 @@ import flight.City;
 import flight.Flight;
 import flight.FlightStatus;
 import user.Admin;
+import user.Order;
 import user.Passenger;
 import user.User;
 
@@ -22,6 +23,10 @@ public class MainServer {
 		isAdmin = false;
 		dataManager = new DataManager();
 //		dataManager.init(); // constructor should include init
+	}
+
+	public void stop() throws Throwable {
+		dataManager.finalize();
 	}
 	
 	public boolean Login(String userName, String pass) {
@@ -121,7 +126,7 @@ public class MainServer {
 		}
 	}
 	
-	public boolean deleteUser(int userID) throws PermissionDeniedException {
+	public boolean deleteUser(int userID) throws PermissionDeniedException, StatusUnavailableException {
 		/* TODO(Peng) deleteUser
 		 * first to test if user is a passenger (using instanceof)
 		 * **be sure to remove user from the flight**
@@ -132,9 +137,11 @@ public class MainServer {
 		}
 		if (u instanceof Passenger) {
 			Passenger passenger = (Passenger) u;
-			
+			for (Order order : passenger.getOrderList()) {
+				order.getFlight().removePassenger(passenger);
+			}
 		} else {
-			
+			dataManager.users.remove(u);
 		}
 		return false;
 	}
@@ -172,8 +179,21 @@ public class MainServer {
 		return false;
 	}
 
-	public void stop() throws Throwable {
-		dataManager.finalize();
+	public boolean deleteCity(int cityID) throws PermissionDeniedException, StatusUnavailableException {
+		if (isAdmin) {
+			City city = dataManager.getCityByID(cityID);
+			if (city != null) {
+				if (city.getFlightsIn().size() == 0 && city.getFlightsOut().size() == 0) {
+					dataManager.cities.remove(city);					
+				} else {
+					throw new StatusUnavailableException();
+				}
+				return true;
+			} 
+		} else {
+			throw new PermissionDeniedException();
+		}
+		return false;
 	}
 	
 }
