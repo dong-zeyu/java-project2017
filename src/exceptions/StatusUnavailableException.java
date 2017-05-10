@@ -20,5 +20,9 @@ public class StatusUnavailableException extends Exception {
 	public StatusUnavailableException() {
 		super();
 	}
+
+	public StatusUnavailableException(String string) {
+		super(string);
+	}
 	
 }

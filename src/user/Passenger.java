@@ -48,7 +48,7 @@ public class Passenger extends User {
 		return (ArrayList<Order>) orderList.clone();
 	}
 	
-	public boolean removeOrder(Flight flight){
-		return false;
+	public boolean removeOrder(Order order){
+		return orderList.remove(order);
 	}
 }

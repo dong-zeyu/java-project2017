@@ -200,8 +200,10 @@ public class Flight {
 	 * @throws StatusUnavailableException when status is TERMINATE, 
 	 */
 	public boolean removePassenger(Passenger passenger) throws StatusUnavailableException {
-		// DONE(Zhu) removePassenger
-		// XXX(Zhu) needs review
+		/* DONE(Zhu) removePassenger
+		 * you should remove in this method meanwhile
+		 * XXX(Zhu) needs review
+		 */
 		if(flightStatus!=FlightStatus.TERMINATE)
 			return passagers.remove(passenger);
 		else

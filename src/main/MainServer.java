@@ -166,16 +166,22 @@ public class MainServer {
 		}
 	}
 	
-	public boolean unsubscribeFlight(int flightID) throws PermissionDeniedException { //return false when no flight is found
-		//TODO(Pegn) unsubscribeFlight
+	public boolean unsubscribeFlight(int flightID) throws PermissionDeniedException, StatusUnavailableException { //return false when no flight is found
+		//TODO(Peng) unsubscribeFlight
 		if (isLogin) {
 			if (!isAdmin) {
-				Passenger user=(Passenger) getCurrentUser();
-				
-				
+				Passenger passenger = (Passenger) getCurrentUser();
+				Flight flight = dataManager.getFlightByID(flightID);
+				if (flight != null) {
+					flight.removePassenger(passenger);
+					return true;
+				}
+			} else {
+				throw new StatusUnavailableException("Only passengers can unsubscribe flight");
+			}
+		} else {
+			throw new PermissionDeniedException();
 		}
-		   }
-		       
 		return false;
 	}
 
@@ -186,7 +192,7 @@ public class MainServer {
 				if (city.getFlightsIn().size() == 0 && city.getFlightsOut().size() == 0) {
 					dataManager.cities.remove(city);					
 				} else {
-					throw new StatusUnavailableException();
+					throw new StatusUnavailableException("Cannot delete city that have fight in and out");
 				}
 				return true;
 			} 

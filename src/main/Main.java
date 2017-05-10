@@ -144,7 +144,7 @@ public class Main {
 						} catch (NumberFormatException e) {
 							System.out.printf("'%s' is not a city id!\n", param[i]);
 						} catch (StatusUnavailableException e) {
-							System.out.println("Cannot delete city that have fight in and out");
+							System.out.println(e.getMessage());
 						}
 					}
 				} catch (PermissionDeniedException e) {
@@ -239,6 +239,7 @@ public class Main {
 		Date startTime = Flight.calendar(year, month, date, hr, min, sec);
 		System.out.println("arrivetime formatted with:year-month-date-hr-min-sec");
 		String[] arrivetime=scanner.nextLine().split("-");
+		// FIXME(Peng) 1.start time field. 2. be careful that month = 0 stand for Jan.
 		int year1 =Integer.parseInt(startime[0]);
 		int month1 =Integer.parseInt(startime[1]);
 		int date1 =Integer.parseInt(startime[2]);
