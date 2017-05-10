@@ -13,7 +13,7 @@ public class Main {
 	static Scanner scanner = new Scanner(System.in);
 
 	public static void main(String[] args) throws Throwable {
-		// TODO(Dong) UI design
+		// DONE(Dong) UI design
 		String string = "";
 		String[] param;
 		printHelp(true);
@@ -186,8 +186,10 @@ public class Main {
 	 */
 	private static void search(String[] param) {
 		// TODO(Dong) search
-		if (param.length != 0) {
+		if (param != null && param.length != 0) {
 			
+		} else {
+			System.out.println("please input the search parameter");
 		}
 	}
 	
@@ -197,10 +199,10 @@ public class Main {
 		String userName=scanner.nextLine();
 		String password=scanner.nextLine();
 		try {
-						server.addAdmin(userName, password);
-					} catch (PermissionDeniedException e) {
-						
-					}
+			server.addAdmin(userName, password);
+		} catch (PermissionDeniedException e) {
+			
+		}
 	}
 
 	private static void register() {
@@ -208,23 +210,21 @@ public class Main {
 		System.out.println("Please import your Username");
 		String username;
 		username=scanner.nextLine();
-		System.out.println("Please import your identity card number");
-		String IDNUMBER;
-		IDNUMBER=scanner.nextLine();
-		while(IDNUMBER.length()>18||IDNUMBER.length()<18){
-			System.out.println("Please import the correct identity card number");
-		IDNUMBER=scanner.nextLine();
-		}
-		String password,password2;
-		System.out.println("Please import your password");
-		password=scanner.nextLine();
+		String idNumber;
 		do {
+			System.out.println("Please import the correct identity card number");
+			idNumber=scanner.nextLine();
+		} while(idNumber.length()>18||idNumber.length()<18);
+		String password,password2;
+		do {
+			System.out.println("Please import your password");
+			password=scanner.nextLine();
 			System.out.println("Please import your password again");
-		password2=scanner.nextLine();	
+			password2=scanner.nextLine();	
 		} while (!(password.equals(password2)));
 		System.out.println("You succeed in creating your account!");
 		
-		server.addPassenger(username, IDNUMBER, password2);
+		server.addPassenger(username, idNumber, password2);
 		
 	}
 
@@ -261,8 +261,9 @@ public class Main {
 		int seatCapacity=scanner.nextInt();
 		
 		try {
-			    server.createFlight(flightName, startTime, arriveTime, startCityID, arriveCityID, price, seatCapacity);
-					} catch (PermissionDeniedException e) {
+			server.createFlight(flightName, startTime, arriveTime, startCityID, arriveCityID, price, seatCapacity);
+		} catch (PermissionDeniedException e) {
+			
 		}
 	}
 	private static void addCity() {

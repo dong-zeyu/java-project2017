@@ -126,7 +126,8 @@ public class DataManager {
 	@Override
 	protected void finalize() throws Throwable {
 		save.cancel();
-		super.finalize();
+		flight.cancel();
+		saveData();
 	}
 	
 	public DataManager() {

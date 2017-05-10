@@ -86,11 +86,14 @@ public class MainServer {
 		 */
 		if (isLogin && isAdmin) {
 			Flight f =dataManager.getFlightByID(flightID);
-			
 			if (f.getFlightStatus()==FlightStatus.UNPUBLISHED){
 				dataManager.flights.remove(f);
-			}else {throw new StatusUnavailableException();}
-		}else {throw new PermissionDeniedException();}
+			} else {
+				throw new StatusUnavailableException();
+			}
+		} else {
+			throw new PermissionDeniedException();
+		}
 		return false; 
 	}
 	
@@ -109,12 +112,11 @@ public class MainServer {
 	public void addAdmin(String userName, String password) throws PermissionDeniedException {
 		// TODO(Peng) addAdmin
 		if (isLogin){
-            if (isAdmin){
-                 password=User.hashPass(password);     	
-            	 dataManager.users.add(new Admin(userName, password));
-         }
-        else  throw new PermissionDeniedException();}
-    		
+            if (isAdmin){    	
+            	dataManager.users.add(new Admin(userName, password));
+            } else
+            	throw new PermissionDeniedException();
+		}
 	}
 	
 	public void addCity(String cityName) throws PermissionDeniedException{
