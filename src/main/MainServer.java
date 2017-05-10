@@ -63,7 +63,7 @@ public class MainServer {
 	
 	public void createFlight(String flightName, Date startTime, Date arriveTime, int startCityID, int arriveCityID,
 			int price, int seatCapacity) throws PermissionDeniedException { // false when erroe cityID
-		// TODO(Peng) creatFlight
+		// DONE(Peng) creatFlight
 		 if (isLogin&&isAdmin){
 			dataManager.flights.add(new Flight(flightName,startTime, arriveTime,dataManager.getCityByID(startCityID),dataManager.getCityByID(arriveCityID),
 				price,seatCapacity));
@@ -81,7 +81,7 @@ public class MainServer {
 	}
 	
 	public boolean deleteFlight(int flightID) throws PermissionDeniedException, StatusUnavailableException	 {
-		/* TODO(Peng) deleteFlight
+		/* DONE(Peng) deleteFlight
 		 * **be sure to delete flight from the city**
 		 */
 		if (isLogin && isAdmin) {
@@ -110,7 +110,7 @@ public class MainServer {
 	}
 	
 	public void addAdmin(String userName, String password) throws PermissionDeniedException {
-		// TODO(Peng) addAdmin
+		// DONE(Peng) addAdmin
 		if (isLogin){
             if (isAdmin){    	
             	dataManager.users.add(new Admin(userName, password));
@@ -169,7 +169,7 @@ public class MainServer {
 	}
 	
 	public boolean unsubscribeFlight(int flightID) throws PermissionDeniedException, StatusUnavailableException { //return false when no flight is found
-		//TODO(Peng) unsubscribeFlight
+		//DONE(Peng) unsubscribeFlight
 		if (isLogin) {
 			if (!isAdmin) {
 				Passenger passenger = (Passenger) getCurrentUser();

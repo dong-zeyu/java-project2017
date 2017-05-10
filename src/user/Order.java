@@ -55,7 +55,7 @@ public class Order {
 	}
 	
 	public void printOrder() throws StatusUnavailableException {
-		// TODO(Peng) printOrder
+		// DONE(Peng) printOrder
 		if (status==OrderStatus.PAID) {
 			System.out.println("Passager :"+getPassager());
 			System.out.println("Your Seat :"+getSeat());
