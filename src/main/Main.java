@@ -229,10 +229,10 @@ public class Main {
 	}
 
 	private static void addFlight() {
-		// TODO(Peng) addFlight UI
+		// DONE(Peng) addFlight UI
 		System.out.println("flightName");
 		String flightName=scanner.nextLine();
-		System.out.println("starttime formatted with:year-month-date-hr-min-sec");
+		System.out.println("Please enter the Starttime,formatted with : year-month-date-hr-min-sec (Note: number 0 stand for January) :");
 		String[] startime=scanner.nextLine().split("-");
 		int year =Integer.parseInt(startime[0]);
 		int month =Integer.parseInt(startime[1]);
@@ -241,9 +241,8 @@ public class Main {
 		int min =Integer.parseInt(startime[4]);
 		int sec =Integer.parseInt(startime[5]);
 		Date startTime = Flight.calendar(year, month, date, hr, min, sec);
-		System.out.println("arrivetime formatted with:year-month-date-hr-min-sec");
+		System.out.println("Please enter the arrivetime,formatted with : year-month-date-hr-min-sec (Note: number 0 stand for January) :");
 		String[] arrivetime=scanner.nextLine().split("-");
-		// FIXME(Peng) 1.start time field. 2. be careful that month = 0 stand for Jan.
 		int year1 =Integer.parseInt(startime[0]);
 		int month1 =Integer.parseInt(startime[1]);
 		int date1 =Integer.parseInt(startime[2]);
@@ -267,7 +266,7 @@ public class Main {
 		}
 	}
 	private static void addCity() {
-		// TODO(Peng) addCity UI
+		// DONE(Peng) addCity UI
 		System.out.println("Please enter a valid city name" );
 		String cityname=scanner.nextLine();		
 		try {
