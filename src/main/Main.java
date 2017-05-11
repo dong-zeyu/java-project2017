@@ -12,7 +12,7 @@ public class Main {
 	static MainServer server = new MainServer();
 	static Scanner scanner = new Scanner(System.in);
 
-	public static void main(String[] args) throws Throwable {
+	public static void main(String[] args) {
 		// DONE(Dong) UI design
 		String string = "";
 		String[] param;

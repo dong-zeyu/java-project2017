@@ -25,8 +25,11 @@ public class MainServer {
 //		dataManager.init(); // constructor should include init
 	}
 
-	public void stop() throws Throwable {
-		dataManager.finalize();
+	public void stop() {
+		try {
+			dataManager.finalize();
+		} catch (Throwable e) {
+		}
 	}
 	
 	public boolean Login(String userName, String pass) {
