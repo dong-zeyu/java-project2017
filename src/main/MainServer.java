@@ -26,10 +26,7 @@ public class MainServer {
 	}
 
 	public void stop() {
-		try {
-			dataManager.finalize();
-		} catch (Throwable e) {
-		}
+		dataManager.stop();
 	}
 	
 	public boolean Login(String userName, String pass) {
@@ -161,16 +158,20 @@ public class MainServer {
 		}
 	}
 	
-	public void reserveFlight(int flightID) throws PermissionDeniedException, StatusUnavailableException {
+	public boolean reserveFlight(int flightID) throws PermissionDeniedException, StatusUnavailableException {
 		// DONE(Zhu) reserveFlight
 		if (isLogin) {
 			if (!isAdmin) {
 				Flight flight = dataManager.getFlightByID(flightID);
-				flight.addPassager((Passenger) currentUser);
+				if (flight != null) {
+					flight.addPassager((Passenger) currentUser);
+					return true;
+				}
 			}
 		} else {
 			throw new PermissionDeniedException();
 		}
+		return false;
 	}
 	
 	public boolean unsubscribeFlight(int flightID) throws PermissionDeniedException, StatusUnavailableException { //return false when no flight is found

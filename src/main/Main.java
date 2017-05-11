@@ -78,6 +78,31 @@ public class Main {
 			case "d":
 				delete(param);
 				break;
+			case "reserve":
+			case "re":
+				if (param != null && param.length >= 1) {
+					for (String para : param) {
+						try {
+							if (server.reserveFlight(Integer.parseInt(para))) {
+								System.out.println("succeed in " + para);
+							} else {
+								System.out.printf("no flight with id " + para);
+							}
+						} catch (NumberFormatException e) {
+							System.out.printf("error: %s is not a flight id\n", para);
+						} catch (PermissionDeniedException e) {
+							System.out.println("adminstrator cannot reserve flight");
+						} catch (StatusUnavailableException e) {
+							System.out.printf("error in reserve filght id %s with status %s\n", para, e.getMessage());
+						}
+					}
+				}
+				break;
+			case "publish":
+			case "pub":
+				break;
+			case "change":
+				break;
 			default:
 				if (!string.equals("")) {
 					System.out.println("Unknown command: Type 'help' for more information.");

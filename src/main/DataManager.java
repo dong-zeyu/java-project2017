@@ -123,11 +123,14 @@ public class DataManager {
 		
 	}
 	
-	@Override
-	protected void finalize() throws Throwable {
+	protected void stop() {
 		save.cancel();
 		flight.cancel();
-		saveData();
+		try {
+			saveData();
+		} catch (FileNotFoundException e) {
+			System.out.println("Saving data faild, continue to stop...");
+		}
 	}
 	
 	public DataManager() {
