@@ -65,17 +65,30 @@ public class MainServer {
 	 *  **make full use of private method searchFlightByID & searchUserByID**
 	 */
 	
-	public void createFlight(String flightName, Date startTime, Date arriveTime, int startCityID, int arriveCityID,
-			int price, int seatCapacity) throws PermissionDeniedException { // false when erroe cityID
+	public boolean createFlight(String flightName, Date startTime, Date arriveTime, int startCityID, int arriveCityID,
+			int price, int seatCapacity) throws PermissionDeniedException { // false when error cityID
 		// DONE(Peng) creatFlight
 		 if (isLogin&&isAdmin){
-			dataManager.flights.add(new Flight(flightName,startTime, arriveTime,dataManager.getCityByID(startCityID),dataManager.getCityByID(arriveCityID),
-				price,seatCapacity));
+			try {
+				dataManager.flights.add(new Flight(flightName,startTime, arriveTime,dataManager.getCityByID(startCityID),dataManager.getCityByID(arriveCityID),
+					price,seatCapacity));
+				return true;
+			} catch (NullPointerException e) {
+				return false;
+			}
 		} else {
 			throw new PermissionDeniedException();
 		}
 	}
 	
+	public boolean changeFlight(String flightName, Date startTime, Date arriveTime, int startCityID, int arriveCityID,
+			int price, int seatCapacity, int flightId) throws PermissionDeniedException { // false when error cityID
+		if (isLogin && isAdmin){
+			return false;
+		} else {
+			throw new PermissionDeniedException();
+		}
+	}
 	
 	public Flight getFlight(int flightID) throws PermissionDeniedException { //give you flight to change freely
 		if (isLogin && isAdmin) {

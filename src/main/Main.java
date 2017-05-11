@@ -393,7 +393,9 @@ public class Main {
 		int seatCapacity=scanner.nextInt();
 		
 		try {
-			server.createFlight(flightName, startTime, arriveTime, startCityID, arriveCityID, price, seatCapacity);
+			if (!server.createFlight(flightName, startTime, arriveTime, startCityID, arriveCityID, price, seatCapacity)) {
+				System.out.println("error in city id, please retry");
+			}
 		} catch (PermissionDeniedException e) {
 			
 		}
