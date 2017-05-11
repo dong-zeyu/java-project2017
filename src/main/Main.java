@@ -1,5 +1,6 @@
 package main;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.Scanner;
 
@@ -21,12 +22,9 @@ public class Main {
 			System.out.print(">");
 			string = scanner.nextLine();
 			string = string.replaceAll("\\s+", " ");
+			string = string.replaceAll("^\\s+", "");
+			string = string.replaceAll("\\s+$", "");
 			if (string.contains(" ")) {
-				if (string.equals(" ")) {
-					continue;
-				} else if (string.startsWith(" ")) {
-					string = string.replaceAll("^\\s+", "");
-				}
 				String[] cmd = string.split(" ");
 				string = cmd[0];
 				param = new String[cmd.length - 1];
@@ -46,6 +44,27 @@ public class Main {
 				break;
 			case "list":
 			case "l":
+				if (param != null) {
+					switch (param[0]) {
+					case "city":
+						System.out.println(server.displayCity());
+						break;
+					case "flight":
+						if (param.length == 1) {
+							System.out.println(server.displayFlight());						
+						} else {
+							for (int i = 1; i < param.length; i++) {
+								System.out.println(server.displayFlight(i));								
+							}
+						}						
+						break;
+					case "user":
+						System.out.println(server.dispalyUser());
+						break;
+					default:
+						break;
+					}
+				}
 				break;
 			case "login":
 				if (param != null && param.length == 2) {
@@ -69,7 +88,7 @@ public class Main {
 				break;
 			case "search":
 			case "s":
-				search(param);
+				search();
 				break;
 			case "add":
 				add(param);
@@ -80,23 +99,7 @@ public class Main {
 				break;
 			case "reserve":
 			case "re":
-				if (param != null && param.length >= 1) {
-					for (String para : param) {
-						try {
-							if (server.reserveFlight(Integer.parseInt(para))) {
-								System.out.println("succeed in " + para);
-							} else {
-								System.out.println("no flight with id " + para);
-							}
-						} catch (NumberFormatException e) {
-							System.out.printf("error: '%s' is not a flight id\n", para);
-						} catch (PermissionDeniedException e) {
-							System.out.println("adminstrator cannot reserve flight");
-						} catch (StatusUnavailableException e) {
-							System.out.printf("error in reserve filght id '%s' with status %s\n", para, e.getMessage());
-						}
-					}
-				}
+				reserve(param);
 				break;
 			case "publish":
 			case "pub":
@@ -114,6 +117,29 @@ public class Main {
 		server.stop();
 	}
 	
+	private static void reserve(String[] param) {
+		if (param != null && param.length >= 1) {
+			for (String para : param) {
+				try {
+					if (server.reserveFlight(Integer.parseInt(para))) {
+						System.out.println("succeed in " + para);
+					} else {
+						System.out.println("no flight with id " + para);
+					}
+				} catch (NumberFormatException e) {
+					System.out.printf("error: '%s' is not a flight id\n", para);
+				} catch (PermissionDeniedException e) {
+					System.out.println("adminstrator cannot reserve flight");
+				} catch (StatusUnavailableException e) {
+					System.out.printf("error in reserve filght id '%s' with status %s\n", para, e.getMessage());
+				}
+			}
+		}
+	}
+
+	/*
+	 * These are subUI or a wizard to lead User to do specific work
+	 */
 	private static void add(String[] param) {
 		// DONE(Dong) add
 		if (param != null && param.length > 0) {
@@ -206,16 +232,77 @@ public class Main {
 		}
 	}
 
-	/*
-	 * These are subUI or a wizard to lead User to do specific work
-	 */
-	private static void search(String[] param) {
+	private static void search() {
 		// TODO(Dong) search
-		if (param != null && param.length != 0) {
-			
-		} else {
-			System.out.println("please input the search parameter");
-		}
+		String cmd = "";
+		int cityFromId = -1;
+		int cityToId = -1;
+		Date date1 = new Date();
+		Date date2 = null;
+		System.out.print("welcome to search wizard! you can input: \n"
+				+ "\tcity CityFromId-CityToId | -(clear) "
+				+ "\t\tset fliter of city\n"
+				+ "\tdate yyyy-mm-dd~yyyy-mm-dd | ~yyyy-mm-dd | yyyy-mm-dd~"
+				+ "\t\tset fliter of 'set off date' interval\n"
+				+ "\tprint\tprint result\n"
+				+ "\texit|e\texit wizard\n\n"
+				+ "\tavailibal city: \n"
+				+ server.displayCity() + "\n\n");
+		do {
+			System.out.print("current fliter: \n"
+					+ String.format("\tcity: %s-%s\n", cityFromId == -1 ? "unset" : String.valueOf(cityFromId), cityToId == -1 ? "unset" : String.valueOf(cityToId))
+					+ String.format("\tdate: %s~%s\n\n", date1 == null ? "unset" : date1.toString(), date2 == null ? "unset" : date2.toString())
+					+ "use 'print' to print result\n");
+			System.out.print(">>");
+			String param;
+			String input = scanner.nextLine();
+			input = input.replaceAll("\\s+", " ");
+			input = input.replaceAll("^\\s+", "");
+			input = input.replaceAll("\\s+$", "");
+			if (input.contains(" ")) {
+				cmd = input.split(" ")[0];
+				param = input.split(" ")[1];
+			} else {
+				cmd = input;
+				param = "";
+			}
+			switch (cmd) {
+			case "city":
+				try {
+					String[] cityid = param.split("-");
+					cityFromId = Integer.valueOf(cityid[0]);
+					cityToId = Integer.valueOf(param.split("-")[1]);
+				} catch (NumberFormatException | IndexOutOfBoundsException e) {
+					System.out.println("city ID format error");
+				}
+				break;
+			case "date":
+				try {
+					String[] sdate1 = param.split("~")[0].split("-");
+					String[] sdate2 = param.split("~")[1].split("-");
+					date1 = Flight.calendar(
+							Integer.valueOf(sdate1[0]),
+							Integer.valueOf(sdate1[1]),
+							Integer.valueOf(sdate1[2]), 0, 0, 0);
+					date2 = Flight.calendar(
+							Integer.valueOf(sdate2[0]),
+							Integer.valueOf(sdate2[1]),
+							Integer.valueOf(sdate2[2]), 0, 0, 0);
+				} catch (NumberFormatException | IndexOutOfBoundsException e) {
+					System.out.println("date format error");
+				}
+				break;
+			case "exit":
+			case "e":
+				break;
+			case "print":
+				System.out.println(server.search(cityFromId, cityToId, date1, date2));
+				break;
+			default:
+				System.out.println("unknown command");
+				break;
+			}
+		} while (!(cmd.equals("exit") || cmd.equals("e")));
 	}
 	
 	private static void addAdmin() {
@@ -232,20 +319,22 @@ public class Main {
 
 	private static void register() {
 		// DONE(Zhu) register UI
-		System.out.println("Please import your Username");
+		System.out.println("Please import your Username"); // XXX(Zhu) did you mean 'input'? :D
 		String username;
 		username=scanner.nextLine();
+		System.out.println("Please import your identity card number");
 		String idNumber;
-		do {
+		idNumber=scanner.nextLine();
+		while(idNumber.length()>18||idNumber.length()<18){
 			System.out.println("Please import the correct identity card number");
-			idNumber=scanner.nextLine();
-		} while(idNumber.length()>18||idNumber.length()<18);
+		idNumber=scanner.nextLine();
+		}
 		String password,password2;
+		System.out.println("Please import your password");
+		password=scanner.nextLine();
 		do {
-			System.out.println("Please import your password");
-			password=scanner.nextLine();
 			System.out.println("Please import your password again");
-			password2=scanner.nextLine();	
+		password2=scanner.nextLine();	
 		} while (!(password.equals(password2)));
 		System.out.println("You succeed in creating your account!");
 		
@@ -255,9 +344,12 @@ public class Main {
 
 	private static void addFlight() {
 		// DONE(Peng) addFlight UI
-		// FIXME(Dong)
+		/* FIXME(Peng) Please consider more when design your UI
+		 * be sure to enhance the tolerance to user input, such as: empty input, error format, etc.
+		 */
 		System.out.println("flightName");
 		String flightName=scanner.nextLine();
+		// XXX(Peng) How about 1 stand for Jan. but add (month - 1) to final result?
 		System.out.println("Please enter the Starttime,formatted with : year-month-date-hr-min-sec (Note: number 0 stand for January) :");
 		String[] startime=scanner.nextLine().split("-");
 		int year =Integer.parseInt(startime[0]);

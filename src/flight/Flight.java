@@ -43,7 +43,14 @@ public class Flight {
 	
 	@Override
 	public String toString() {
-		return flightName;
+		return String.valueOf(flightID) + "\t" +
+				flightName + "\t" + 
+				startCity.toString() + "\t" +
+				arriveCity.toString() + "\t" +
+				startTime.toString() + "\t" +
+				arriveTime.toString() + "\t" +
+				String.valueOf(price) + "\t" +
+				String.valueOf(seatCapacity - passagers.size());
 	}
 	
 	@Override

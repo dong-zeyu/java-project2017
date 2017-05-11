@@ -26,6 +26,20 @@ public class Order {
         return status.hashCode();
 	}
 	
+	@Override
+	public String toString() {
+		return String.format("Passenger: %s\n"
+				+ "Flight: %s\n"
+				+ "Seat: %d"
+				+ "Date: %s"
+				+ "Status: %s", 
+				passenger.userName,
+				flight.getFlightName(),
+				seat,
+				creatDate.toString(),
+				status.name());
+	}
+	
 	public Passenger getPassager() {
 		return passenger;
 	}
@@ -68,8 +82,5 @@ public class Order {
 			 throw new StatusUnavailableException();
 		}
 	}
-	
-	public void displayOrder() throws StatusUnavailableException {
-		
-	}
+
 }

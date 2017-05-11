@@ -1,6 +1,10 @@
 package main;
 
+import java.text.ParseException;
 import java.util.Date;
+
+import org.omg.CosNaming.NamingContextExtOperations;
+
 import exceptions.PermissionDeniedException;
 import exceptions.StatusUnavailableException;
 import flight.City;
@@ -206,6 +210,49 @@ public class MainServer {
 			throw new PermissionDeniedException();
 		}
 		return false;
+	}
+	
+	/*
+	 * return a string with this format:
+	 * ID	Name	....
+	 * 1	A001	....
+	 * .	.
+	 * .	.
+	 * tips: see <Flight>.toString()
+	 */
+	public String displayCity() {
+		// TODO(Zhu)
+		return null;
+	}
+
+	public String displayFlight() {
+		// TODO(Zhu) 
+		return null;
+	}
+
+	public String dispalyUser() {
+		// TODO(Peng)
+		return null;
+	}
+	
+	public String displayFlight(int i) {
+		// DONE(Dong)
+		StringBuilder resultbuilder = new StringBuilder();
+		Flight flight = dataManager.getFlightByID(i);
+		resultbuilder.append(flight.toString() + "\n");
+		if (isAdmin) {
+			resultbuilder.append("\tPasengers:\n");
+			for (Passenger passenger : flight.getPassagers()) {
+				resultbuilder.append("\t\t" + passenger.toString() + "\n");
+			}
+		}
+		return resultbuilder.toString();
+	}
+	//------------boundary-----------------
+
+	public String search(int cityFromId, int cityToId, Date date1, Date date2) {
+		// TODO(Dong) The most difficult one
+		return null;
 	}
 	
 }
