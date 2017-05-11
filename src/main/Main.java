@@ -230,6 +230,7 @@ public class Main {
 
 	private static void addFlight() {
 		// DONE(Peng) addFlight UI
+		// FIXME(Dong)
 		System.out.println("flightName");
 		String flightName=scanner.nextLine();
 		System.out.println("Please enter the Starttime,formatted with : year-month-date-hr-min-sec (Note: number 0 stand for January) :");
@@ -267,12 +268,13 @@ public class Main {
 	}
 	private static void addCity() {
 		// DONE(Peng) addCity UI
-		System.out.println("Please enter a valid city name" );
+		System.out.print("Please enter a valid city name: ");
 		String cityname=scanner.nextLine();		
 		try {
 			server.addCity(cityname);
 		} catch (PermissionDeniedException e) {
-			
+			// FIXME(Peng) be sure to finish exception handler!(also in other method)
+			System.out.println("");
 		}
 	}
 

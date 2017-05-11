@@ -67,7 +67,8 @@ public class MainServer {
 		 if (isLogin&&isAdmin){
 			dataManager.flights.add(new Flight(flightName,startTime, arriveTime,dataManager.getCityByID(startCityID),dataManager.getCityByID(arriveCityID),
 				price,seatCapacity));
-		} else { throw new PermissionDeniedException();
+		} else {
+			throw new PermissionDeniedException();
 		}
 	}
 	
@@ -83,6 +84,7 @@ public class MainServer {
 	public boolean deleteFlight(int flightID) throws PermissionDeniedException, StatusUnavailableException	 {
 		/* DONE(Peng) deleteFlight
 		 * **be sure to delete flight from the city**
+		 * FIXME (Peng) be careful about the comment above!
 		 */
 		if (isLogin && isAdmin) {
 			Flight f =dataManager.getFlightByID(flightID);
