@@ -1,5 +1,6 @@
 package main;
 
+import java.sql.PseudoColumnUsage;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.Scanner;
@@ -237,19 +238,19 @@ public class Main {
 		String cmd = "";
 		int cityFromId = -1;
 		int cityToId = -1;
-		Date date1 = new Date();
+		Date date1 = null;
 		Date date2 = null;
 		System.out.print("welcome to search wizard! you can input: \n"
-				+ "\tcity CityFromId-CityToId | -(clear) "
-				+ "\t\tset fliter of city\n"
-				+ "\tdate yyyy-mm-dd~yyyy-mm-dd | ~yyyy-mm-dd | yyyy-mm-dd~"
-				+ "\t\tset fliter of 'set off date' interval\n"
-				+ "\tprint\tprint result\n"
+				+ "\tcity CityFromId-CityToId | - (clear) \n"
+				+ "\t\tset filter of city\n"
+				+ "\tdate yyyy-mm-dd~yyyy-mm-dd | ~yyyy-mm-dd | yyyy-mm-dd~\n"
+				+ "\t\tset filter of 'set off date' interval\n"
+				+ "\tprint\tprint result using filter\n"
 				+ "\texit|e\texit wizard\n\n"
 				+ "\tavailibal city: \n"
 				+ server.displayCity() + "\n\n");
 		do {
-			System.out.print("current fliter: \n"
+			System.out.print("current filter: \n"
 					+ String.format("\tcity: %s-%s\n", cityFromId == -1 ? "unset" : String.valueOf(cityFromId), cityToId == -1 ? "unset" : String.valueOf(cityToId))
 					+ String.format("\tdate: %s~%s\n\n", date1 == null ? "unset" : date1.toString(), date2 == null ? "unset" : date2.toString())
 					+ "use 'print' to print result\n");
@@ -270,24 +271,38 @@ public class Main {
 			case "city":
 				try {
 					String[] cityid = param.split("-");
-					cityFromId = Integer.valueOf(cityid[0]);
-					cityToId = Integer.valueOf(param.split("-")[1]);
+					cityFromId = param.equals("-") ? -1 :
+						param.startsWith("-") ? -1 :
+							Integer.valueOf(cityid[0]);
+					cityToId = param.equals("-") ? -1 :
+						param.endsWith("-") ? -1 :
+							Integer.valueOf(cityid[1]);
 				} catch (NumberFormatException | IndexOutOfBoundsException e) {
 					System.out.println("city ID format error");
 				}
 				break;
 			case "date":
 				try {
-					String[] sdate1 = param.split("~")[0].split("-");
-					String[] sdate2 = param.split("~")[1].split("-");
-					date1 = Flight.calendar(
-							Integer.valueOf(sdate1[0]),
-							Integer.valueOf(sdate1[1]),
-							Integer.valueOf(sdate1[2]), 0, 0, 0);
-					date2 = Flight.calendar(
-							Integer.valueOf(sdate2[0]),
-							Integer.valueOf(sdate2[1]),
-							Integer.valueOf(sdate2[2]), 0, 0, 0);
+					String[] s0 = null;
+					String[] s1 = null;
+					if (param.split("~").length >= 1) {
+						s0 = param.split("~")[0].split("-");						
+					} 
+					if (param.split("~").length == 2) {
+						s1 = param.split("~")[1].split("-");
+					}
+					date1 = param.equals("~") ? null : 
+						param.startsWith("~") ? null :
+							Flight.calendar(
+									Integer.valueOf(s0[0]),
+									Integer.valueOf(s0[1]),
+									Integer.valueOf(s0[2]), 0, 0, 0);
+					date2 = param.equals("~") ? null : 
+						param.endsWith("~") ? null : 
+							Flight.calendar(
+									Integer.valueOf(s1[0]),
+									Integer.valueOf(s1[1]),
+									Integer.valueOf(s1[2]), 0, 0, 0);
 				} catch (NumberFormatException | IndexOutOfBoundsException e) {
 					System.out.println("date format error");
 				}
