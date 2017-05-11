@@ -185,6 +185,7 @@ public class Flight {
 		/* DONE(Zhu) addPassager
 		 * you should generate and add order in this method meanwhile
 		 * for my convenience
+		 * and check for status
 		 */
 		// FIXME(Zhu) take care of the comment above!
 		if (flightStatus == FlightStatus.AVAILABLE) {
@@ -202,6 +203,7 @@ public class Flight {
 	public boolean removePassenger(Passenger passenger) throws StatusUnavailableException {
 		/* DONE(Zhu) removePassenger
 		 * you should remove in this method meanwhile
+		 * and check for status
 		 * XXX(Zhu) needs review
 		 */
 		if(flightStatus!=FlightStatus.TERMINATE)

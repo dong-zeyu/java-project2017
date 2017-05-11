@@ -147,7 +147,7 @@ public class MainServer {
 		} else {
 			dataManager.users.remove(u);
 		}
-		return false;
+		return true;
 	}
 	
 	public User getCurrentUser() throws PermissionDeniedException { // to update user info
@@ -160,13 +160,11 @@ public class MainServer {
 	
 	public boolean reserveFlight(int flightID) throws PermissionDeniedException, StatusUnavailableException {
 		// DONE(Zhu) reserveFlight
-		if (isLogin) {
-			if (!isAdmin) {
-				Flight flight = dataManager.getFlightByID(flightID);
-				if (flight != null) {
-					flight.addPassager((Passenger) currentUser);
-					return true;
-				}
+		if (isLogin && !isAdmin) {
+			Flight flight = dataManager.getFlightByID(flightID);
+			if (flight != null) {
+				flight.addPassager((Passenger) currentUser);
+				return true;
 			}
 		} else {
 			throw new PermissionDeniedException();

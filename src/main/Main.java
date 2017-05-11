@@ -86,14 +86,14 @@ public class Main {
 							if (server.reserveFlight(Integer.parseInt(para))) {
 								System.out.println("succeed in " + para);
 							} else {
-								System.out.printf("no flight with id " + para);
+								System.out.println("no flight with id " + para);
 							}
 						} catch (NumberFormatException e) {
-							System.out.printf("error: %s is not a flight id\n", para);
+							System.out.printf("error: '%s' is not a flight id\n", para);
 						} catch (PermissionDeniedException e) {
 							System.out.println("adminstrator cannot reserve flight");
 						} catch (StatusUnavailableException e) {
-							System.out.printf("error in reserve filght id %s with status %s\n", para, e.getMessage());
+							System.out.printf("error in reserve filght id '%s' with status %s\n", para, e.getMessage());
 						}
 					}
 				}
