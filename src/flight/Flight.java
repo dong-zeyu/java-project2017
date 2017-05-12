@@ -218,5 +218,13 @@ public class Flight {
 		else
 			throw new StatusUnavailableException();
 	}
+
+	public void publish() throws StatusUnavailableException {
+		if (flightStatus == FlightStatus.UNPUBLISHED) {
+			flightStatus = FlightStatus.AVAILABLE;
+		} else {
+			throw new StatusUnavailableException(flightStatus);
+		}
+	}
 	
 }

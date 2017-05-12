@@ -1,7 +1,5 @@
 package main;
 
-import java.sql.PseudoColumnUsage;
-import java.text.ParseException;
 import java.util.Date;
 import java.util.Scanner;
 
@@ -102,10 +100,34 @@ public class Main {
 			case "re":
 				reserve(param);
 				break;
+			case "unsubscribe":
+			case "unsub":
+				break;
 			case "publish":
 			case "pub":
+				if (param != null && param.length >= 1) {
+					for (String p : param) {
+						try {
+							Flight flight = server.getFlight(Integer.valueOf(p));
+							if (flight != null) {
+								flight.publish();
+							} else {
+								System.out.printf("can't find flight with id 'p'\n", p);
+							}
+						} catch (NumberFormatException e) {
+							System.out.printf("'%s' is not a flight ID\n", p);
+						} catch (PermissionDeniedException e) {
+							System.out.println("permission denied");
+						} catch (StatusUnavailableException e) {
+							System.out.printf("cannot publish flight id '%s' with status %s\n", p, e.getMessage());
+						}
+					} 
+				} else {
+					System.out.println("format error");
+				}
 				break;
 			case "change":
+				changeFlight(param);
 				break;
 			default:
 				if (!string.equals("")) {
@@ -118,6 +140,11 @@ public class Main {
 		server.stop();
 	}
 	
+	private static void changeFlight(String[] param) {
+		// TODO
+		
+	}
+
 	private static void reserve(String[] param) {
 		if (param != null && param.length >= 1) {
 			for (String para : param) {
@@ -151,7 +178,7 @@ public class Main {
 			case "flight":
 				addFlight();
 				break;
-			case "user":
+			case "admin":
 				addAdmin();
 				break;
 			default:

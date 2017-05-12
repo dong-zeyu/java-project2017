@@ -78,49 +78,6 @@ public class MainServer {
 		}
 	}
 	
-	public boolean changeFlight(String flightName, Date startTime, Date arriveTime, int startCityID, int arriveCityID,
-			int price, int seatCapacity, int flightID) throws PermissionDeniedException, StatusUnavailableException { // false when error cityID
-		if (isLogin && isAdmin){
-			Flight flight = dataManager.getFlightByID(flightID);
-			if (flight != null) {
-				if (startCityID != -1) {
-					City startCity = dataManager.getCityByID(startCityID);
-					if (startCity == null) {
-						return false;
-					} 
-					flight.setStartCity(startCity);
-				}
-				if (startCityID != -1) {
-					City arriveCity = dataManager.getCityByID(arriveCityID);
-					if (arriveCity == null) {
-						return false;
-					} 
-					flight.setStartCity(arriveCity);
-				}
-				if (flightName != null) {
-					flight.setFlightName(flightName);
-				}
-				if (startTime != null) {
-					flight.setStartTime(startTime);
-				}
-				if (arriveTime != null) {
-					flight.setArriveTime(arriveTime);
-				}
-				if (seatCapacity != -1) {
-					flight.setSeatCapacity(seatCapacity);
-				}
-				if (price != -1) {
-					flight.setPrice(price);
-				}
-				return true;
-			} else {
-				return false;
-			}
-		} else {
-			throw new PermissionDeniedException();
-		}
-	}
-	
 	public Flight getFlight(int flightID) throws PermissionDeniedException { //give you flight to change freely
 		if (isLogin && isAdmin) {
 			return dataManager.getFlightByID(flightID);			
