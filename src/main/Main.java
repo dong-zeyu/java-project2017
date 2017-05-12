@@ -141,14 +141,16 @@ public class Main {
 				}
 				break;
 			case "change":
-				if (param.length == 1) {
+				if (param != null && param.length == 1) {
 					try {
 						changeFlight(Integer.valueOf(param[0]));
 					} catch (NumberFormatException e) {
 						System.out.printf("'%s' is not a flight ID", param[0]);
 					} catch (PermissionDeniedException e) {
 						System.out.println("permissiion denied");
-					}					
+					}			
+				} else {
+					System.out.println("please input the flightID to change");
 				}
 				break;
 			default:
@@ -175,15 +177,16 @@ public class Main {
 				+ "\tarrivecity=cityID\n"
 				+ "\tprice=newprice\n"
 				+ "\tcapacity=newcapacity\n"
-				+ "\texit|e");
+				+ "\texit|e\n");
 		String[] input;
 		do {
 			System.out.print("please input what to change: ");
-			input = scanner.nextLine().split("=");
+			input = scanner.nextLine().replace(" ", "").split("=");
 			try {
 				switch (input[0]) {
 				case "name":
 					flight.setFlightName(input[1]);
+					System.out.println("succeed!");
 					break;
 				case "starttime":
 					String[] sdate = input[1].split("-");
@@ -194,6 +197,7 @@ public class Main {
 							Integer.valueOf(sdate[3]), 
 							Integer.valueOf(sdate[4]),
 							Integer.valueOf(sdate[5])));
+					System.out.println("succeed!");
 					break;
 				case "arrivetime":
 					String[] adate = input[1].split("-");
@@ -204,18 +208,26 @@ public class Main {
 							Integer.valueOf(adate[3]), 
 							Integer.valueOf(adate[4]),
 							Integer.valueOf(adate[5])));
+					System.out.println("succeed!");
 					break;
 				case "startcity":
 					flight.setStartCity(server.getCity(Integer.valueOf(input[1])));
+					System.out.println("succeed!");
 					break;
 				case "arrivecity":
 					flight.setArriveCity(server.getCity(Integer.valueOf(input[1])));
+					System.out.println("succeed!");
 					break;
 				case "price":
 					flight.setPrice(Integer.valueOf(input[1]));
+					System.out.println("succeed!");
 					break;
 				case "capacity":
 					flight.setSeatCapacity(Integer.valueOf(input[1]));
+					System.out.println("succeed!");
+					break;
+				case "exit":
+				case "e":
 					break;
 				default:
 					System.out.println("command error");
