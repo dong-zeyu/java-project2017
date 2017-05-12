@@ -254,7 +254,11 @@ public class Main {
 		if (param != null && param.length > 0) {
 			switch (param[0]) {
 			case "city":
-				addCity();
+				try {
+					addCity(param[1]);
+				} catch (IndexOutOfBoundsException e) {
+					addCity(null);
+				}
 				break;
 			case "flight":
 				addFlight();
@@ -509,10 +513,12 @@ public class Main {
 		}
 	}
 	
-	private static void addCity() {
+	private static void addCity(String cityname) {
 		// DONE(Peng) addCity UI
-		System.out.print("Please enter a valid city name: ");
-		String cityname=scanner.nextLine();		
+		if (cityname == null) {
+			System.out.print("Please enter a valid city name: ");
+			cityname = scanner.nextLine();
+		}
 		try {
 			server.addCity(cityname);
 		} catch (PermissionDeniedException e) {
