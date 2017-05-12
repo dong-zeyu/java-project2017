@@ -101,10 +101,13 @@ public class MainServer {
 		 */
 		if (isLogin && isAdmin) {
 			Flight f =dataManager.getFlightByID(flightID);
-			if (f.getFlightStatus()==FlightStatus.UNPUBLISHED){
-				dataManager.flights.remove(f);
-			} else {
-				throw new StatusUnavailableException();
+			if (f != null) {
+				if (f.getFlightStatus() == FlightStatus.UNPUBLISHED) {
+					dataManager.flights.remove(f);
+					return true;
+				} else {
+					throw new StatusUnavailableException();
+				}
 			}
 		} else {
 			throw new PermissionDeniedException();
