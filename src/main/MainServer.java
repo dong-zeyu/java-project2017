@@ -230,7 +230,7 @@ public class MainServer {
 	 * 1	A001	....
 	 * .	.		.
 	 * .	.		 .
-	 * tips: see <Flight>.toString()
+	 * tips: see <Flight>.toString() and <Order>.toString()
 	 */
 	public String displayCity() {
 		// TODO(Zhu)

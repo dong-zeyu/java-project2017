@@ -30,9 +30,9 @@ public class Order {
 	public String toString() {
 		return String.format("Passenger: %s\n"
 				+ "Flight: %s\n"
-				+ "Seat: %d"
-				+ "Date: %s"
-				+ "Status: %s", 
+				+ "Seat: %d\n"
+				+ "Date: %s\n"
+				+ "Status: %s\n", 
 				passenger.userName,
 				flight.getFlightName(),
 				seat,
