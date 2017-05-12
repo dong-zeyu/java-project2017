@@ -67,7 +67,7 @@ public class Main {
 				break;
 			case "login":
 				if (param != null && param.length == 2) {
-					if (server.Login(param[0], param[1])) {
+					if (server.login(param[0], param[1])) {
 						System.out.print("Login succeed: ");
 						if (server.isAdmin()) {
 							System.out.println("You are administrator");

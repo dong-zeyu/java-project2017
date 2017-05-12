@@ -30,7 +30,7 @@ public class MainServer {
 		dataManager.stop();
 	}
 	
-	public boolean Login(String userName, String pass) {
+	public boolean login(String userName, String pass) {
 		for (User user : dataManager.users) {
 			if (user.getUserName().equals(userName) && user.getPassHash().equals(User.hashPass(pass))) {
 				isLogin = true;
