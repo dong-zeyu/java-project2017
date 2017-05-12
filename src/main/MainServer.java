@@ -34,7 +34,7 @@ public class MainServer {
 		for (User user : dataManager.users) {
 			if (user.getUserName().equals(userName) && user.getPassHash().equals(User.hashPass(pass))) {
 				isLogin = true;
-				if (user instanceof Admin) {					
+				if (user instanceof Admin) {				
 					isAdmin = true;
 				} else {
 					isAdmin = false;
