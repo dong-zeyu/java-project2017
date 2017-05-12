@@ -228,8 +228,8 @@ public class MainServer {
 	 * return a string with this format:
 	 * ID	Name	....
 	 * 1	A001	....
-	 * .	.
-	 * .	.
+	 * .	.		.
+	 * .	.		 .
 	 * tips: see <Flight>.toString()
 	 */
 	public String displayCity() {
@@ -247,10 +247,10 @@ public class MainServer {
 		return null;
 	}
 	
-	public String displayFlight(int i) {
+	public String displayFlight(int flightID) {
 		// DONE(Dong)
 		StringBuilder resultbuilder = new StringBuilder();
-		Flight flight = dataManager.getFlightByID(i);
+		Flight flight = dataManager.getFlightByID(flightID);
 		resultbuilder.append(flight.toString() + "\n");
 		if (isAdmin) {
 			resultbuilder.append("\tPasengers:\n");
@@ -259,6 +259,18 @@ public class MainServer {
 			}
 		}
 		return resultbuilder.toString();
+	}
+	/*
+	 * when it comes to display a object with specific id, you need provide more specific information(see above)
+	 */
+	public String displayCity(int CityID) {
+		// TODO(Peng) print flightIn and flightOut as well
+		return null;
+	}
+	
+	public String dispalyUser(int UserID) {
+		// TODO(Zhu) print User order(if it is passenger) as well
+		return null;
 	}
 	//------------boundary-----------------
 

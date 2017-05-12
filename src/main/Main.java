@@ -3,6 +3,8 @@ package main;
 import java.util.Date;
 import java.util.Scanner;
 
+import javax.crypto.spec.PBEParameterSpec;
+
 import exceptions.PermissionDeniedException;
 import exceptions.StatusUnavailableException;
 import flight.Flight;
@@ -46,7 +48,13 @@ public class Main {
 				if (param != null) {
 					switch (param[0]) {
 					case "city":
-						System.out.println(server.displayCity());
+						if (param.length == 1) {
+							System.out.println(server.displayCity());							
+						} else {
+							for (int i = 1; i < param.length; i++) {
+								System.out.println(server.displayCity(Integer.valueOf(param[i])));
+							}
+						}
 						break;
 					case "flight":
 						if (param.length == 1) {
@@ -58,7 +66,13 @@ public class Main {
 						}						
 						break;
 					case "user":
-						System.out.println(server.dispalyUser());
+						if (param.length == 1) {
+							System.out.println(server.dispalyUser());							
+						} else {
+							for (int i = 1; i < param.length; i++) {
+								System.out.println(server.dispalyUser(Integer.valueOf(param[i])));								
+							}
+						}
 						break;
 					default:
 						break;
