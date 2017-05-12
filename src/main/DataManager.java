@@ -423,7 +423,7 @@ public class DataManager {
 							cities.add(new City(e.getTextContent()));
 						}
 					}
-					City.ID = MAX_ID;
+					City.ID = MAX_ID + 1;
 				}
 			}
 			for (int i = 0; i < list.getLength(); i++) {
@@ -448,7 +448,7 @@ public class DataManager {
 							flights.add(flight);
 						}
 					}
-					Flight.ID = MAX_ID;
+					Flight.ID = MAX_ID + 1;
 				}
 			}
 			for (int i = 0; i < list.getLength(); i++) {
@@ -488,7 +488,7 @@ public class DataManager {
 							}
 						}
 					}
-					User.ID = MAX_ID;
+					User.ID = MAX_ID + 1;
 				}
 			}
 		} catch (IndexOutOfBoundsException | NullPointerException e) {
