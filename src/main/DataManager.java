@@ -89,8 +89,7 @@ public class DataManager {
 	private int usersHash;
 	private int flightsHash;
 	private int citiesHash;
-	private Timer save;
-	private Timer flight;
+	private Timer timer;
 	
 	class SaveFileTask extends TimerTask {
 		
@@ -124,8 +123,7 @@ public class DataManager {
 	}
 	
 	protected void stop() {
-		save.cancel();
-		flight.cancel();
+		timer.cancel();
 		try {
 			saveData();
 		} catch (FileNotFoundException e) {
@@ -143,10 +141,9 @@ public class DataManager {
 		usersHash = users.hashCode();
 		flightsHash = flights.hashCode();
 		citiesHash =  cities.hashCode();
-		save = new Timer(false);
-		save.schedule(new SaveFileTask(), SYNC_INTERVAL, SYNC_INTERVAL);
-		flight = new Timer(false);
-		flight.schedule(new ChangeFlight(), 1000, 1000);
+		timer = new Timer(false);
+		timer.schedule(new SaveFileTask(), SYNC_INTERVAL, SYNC_INTERVAL);
+		timer.schedule(new ChangeFlight(), 1000, 1000);
 	}
 	
 	public Flight getFlightByID(int flightID) {
