@@ -3,8 +3,6 @@ package main;
 import java.util.Date;
 import java.util.Scanner;
 
-import javax.crypto.spec.PBEParameterSpec;
-
 import exceptions.PermissionDeniedException;
 import exceptions.StatusUnavailableException;
 import flight.Flight;
@@ -145,7 +143,7 @@ public class Main {
 					try {
 						changeFlight(Integer.valueOf(param[0]));
 					} catch (NumberFormatException e) {
-						System.out.printf("'%s' is not a flight ID", param[0]);
+						System.out.printf("'%s' is not a flight ID\n", param[0]);
 					} catch (PermissionDeniedException e) {
 						System.out.println("permissiion denied");
 					}			
@@ -515,6 +513,7 @@ public class Main {
 		int price=scanner.nextInt();
 		System.out.println("seatCapacity");
 		int seatCapacity=scanner.nextInt();
+		scanner.nextLine();
 		
 		try {
 			if (!server.createFlight(flightName, startTime, arriveTime, startCityID, arriveCityID, price, seatCapacity)) {
