@@ -86,6 +86,14 @@ public class MainServer {
 		}
 	}
 	
+	public City getCity(int cityID) throws PermissionDeniedException { //give you city to change freely
+		if (isLogin && isAdmin) {
+			return dataManager.getCityByID(cityID);			
+		} else {
+			throw new PermissionDeniedException();
+		}
+	}
+	
 	public boolean deleteFlight(int flightID) throws PermissionDeniedException, StatusUnavailableException	 {
 		/* DONE(Peng) deleteFlight
 		 * **be sure to delete flight from the city**

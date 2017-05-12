@@ -127,7 +127,15 @@ public class Main {
 				}
 				break;
 			case "change":
-				changeFlight(param);
+				if (param.length == 1) {
+					try {
+						changeFlight(Integer.valueOf(param[0]));
+					} catch (NumberFormatException e) {
+						System.out.printf("'%s' is not a flight ID", param[0]);
+					} catch (PermissionDeniedException e) {
+						System.out.println("permissiion denied");
+					}					
+				}
 				break;
 			default:
 				if (!string.equals("")) {
@@ -140,9 +148,71 @@ public class Main {
 		server.stop();
 	}
 	
-	private static void changeFlight(String[] param) {
-		// TODO
-		
+	/*
+	 * These are subUI or a wizard to lead User to do specific work
+	 */
+	private static void changeFlight(int flightID) throws PermissionDeniedException {
+		Flight flight = server.getFlight(flightID);
+		System.out.print("Usage: "
+				+ "\tname=newname\n"
+				+ "\tstarttime=yyyy-mm-dd-hr-mim-sec\n"
+				+ "\tarrivetime=yyyy-mm-dd-hr-mim-sec\n"
+				+ "\tstartcity=cityID\n"
+				+ "\tarrivecity=cityID\n"
+				+ "\tprice=newprice\n"
+				+ "\tcapacity=newcapacity\n"
+				+ "\texit|e");
+		String[] input;
+		do {
+			System.out.print("please input what to change: ");
+			input = scanner.nextLine().split("=");
+			try {
+				switch (input[0]) {
+				case "name":
+					flight.setFlightName(input[1]);
+					break;
+				case "starttime":
+					String[] sdate = input[1].split("-");
+					flight.setStartTime(Flight.calendar(
+							Integer.valueOf(sdate[0]), 
+							Integer.valueOf(sdate[1]), 
+							Integer.valueOf(sdate[2]), 
+							Integer.valueOf(sdate[3]), 
+							Integer.valueOf(sdate[4]),
+							Integer.valueOf(sdate[5])));
+					break;
+				case "arrivetime":
+					String[] adate = input[1].split("-");
+					flight.setArriveTime(Flight.calendar(
+							Integer.valueOf(adate[0]), 
+							Integer.valueOf(adate[1]), 
+							Integer.valueOf(adate[2]), 
+							Integer.valueOf(adate[3]), 
+							Integer.valueOf(adate[4]),
+							Integer.valueOf(adate[5])));
+					break;
+				case "startcity":
+					flight.setStartCity(server.getCity(Integer.valueOf(input[1])));
+					break;
+				case "arrivecity":
+					flight.setArriveCity(server.getCity(Integer.valueOf(input[1])));
+					break;
+				case "price":
+					flight.setPrice(Integer.valueOf(input[1]));
+					break;
+				case "capacity":
+					flight.setSeatCapacity(Integer.valueOf(input[1]));
+					break;
+				default:
+					System.out.println("command error");
+					break;
+				}
+			} catch (StatusUnavailableException e) {
+				System.out.printf("cannot change %s with flight status %s", input[0], e.getMessage());
+			} catch (IndexOutOfBoundsException | NumberFormatException e) {
+				System.out.println("format error");
+			}
+		} while (!(input[0].equals("e") || input[0].equals("exit")));
 	}
 
 	private static void reserve(String[] param) {
@@ -165,9 +235,6 @@ public class Main {
 		}
 	}
 
-	/*
-	 * These are subUI or a wizard to lead User to do specific work
-	 */
 	private static void add(String[] param) {
 		// DONE(Dong) add
 		if (param != null && param.length > 0) {
@@ -427,6 +494,7 @@ public class Main {
 			
 		}
 	}
+	
 	private static void addCity() {
 		// DONE(Peng) addCity UI
 		System.out.print("Please enter a valid city name: ");
