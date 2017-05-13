@@ -472,7 +472,7 @@ public class DataManager {
 										true);
 								NodeList orders = u.getElementsByTagName("order").item(0).getChildNodes();
 								for (int k = 0; k < orders.getLength(); k++) {
-									if (orders.item(k).getNodeType() == Node.ELEMENT_NODE && orders.item(j).getNodeName() != null) {
+									if (orders.item(k).getNodeType() == Node.ELEMENT_NODE && orders.item(k).getNodeName() != null) {
 										Element o = (Element) orders.item(k);
 										Order order;
 										try {
@@ -493,6 +493,7 @@ public class DataManager {
 				}
 			}
 		} catch (IndexOutOfBoundsException | NullPointerException e) {
+			e.printStackTrace();
 			file.delete();
 			init();
 		}
