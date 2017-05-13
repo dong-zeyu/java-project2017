@@ -8,6 +8,7 @@ import java.util.TimeZone;
 
 import exceptions.StatusUnavailableException;
 import main.DataManager;
+import user.Order;
 import user.Passenger;
 
 public class Flight {
@@ -164,8 +165,13 @@ public class Flight {
 
 	public void setSeatCapacity(int seatCapacity) throws StatusUnavailableException {
 		if(flightStatus!=FlightStatus.TERMINATE){
-			// FIXME(Zhu) you should consider more in changing seat capacity
-			this.seatCapacity = seatCapacity;
+			// DONE(Zhu) you should consider more in changing seat capacity
+           if(flightStatus == FlightStatus.FULL &&
+        		   this.seatCapacity< seatCapacity){
+        	   this.seatCapacity=seatCapacity;
+           }else{
+        	   System.out.println("This change is illegal");
+           }    
 		}else{
 			throw new StatusUnavailableException(flightStatus);
 		}
@@ -188,15 +194,17 @@ public class Flight {
 		return (ArrayList<Passenger>) passagers.clone();
 	}
 
-	public void addPassager(Passenger passager) throws StatusUnavailableException {
+	public void addPassager(Passenger passager , int seat) throws StatusUnavailableException {
 		/* DONE(Zhu) addPassager
 		 * you should generate and add order in this method meanwhile
 		 * for my convenience
 		 * and check for status
 		 */
-		// FIXME(Zhu) take care of the comment above!
+		// DONE(Zhu) take care of the comment above!
 		if (flightStatus == FlightStatus.AVAILABLE) {
-			 passagers.add(passager);	
+			 passagers.add(passager);
+			 Order order = new Order(passager , this , seat);
+			 passager.addOrder(order);
 		} else {
 			throw new StatusUnavailableException(flightStatus);
 		}
