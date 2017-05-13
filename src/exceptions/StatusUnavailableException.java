@@ -10,11 +10,11 @@ import user.OrderStatus;
 public class StatusUnavailableException extends Exception {
 
 	public StatusUnavailableException(FlightStatus status) {
-		super(status.name());
+		super("flight has status " + status.name());
 	}
 	
 	public StatusUnavailableException(OrderStatus status) {
-		super(status.name());
+		super("order has status: " + status.name());
 	}
 	
 	public StatusUnavailableException() {

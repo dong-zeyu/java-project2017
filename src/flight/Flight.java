@@ -246,7 +246,7 @@ public class Flight {
 				return false;
 			}
 		} else
-			throw new StatusUnavailableException();
+			throw new StatusUnavailableException(flightStatus);
 	}
 
 	public void publish() throws StatusUnavailableException {

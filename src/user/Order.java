@@ -23,7 +23,6 @@ public class Order {
 	public Order(Passenger passenger, Flight flight) throws StatusUnavailableException {
 		this.passenger = passenger;
 		this.flight = flight;
-		// TODO
 		createDate = new Date(); //now
 		status = OrderStatus.UNPAID;
 		flight.addPassenger(passenger);
@@ -102,6 +101,12 @@ public class Order {
 		else {
 			 throw new StatusUnavailableException();
 		}
+	}
+
+	public void remove() {
+		try {
+			cancle();
+		} catch (StatusUnavailableException e) {}
 	}
 
 }

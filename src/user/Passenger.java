@@ -42,6 +42,11 @@ public class Passenger extends User {
 	}
 	
 	public void reserveFlight(Flight flight) throws StatusUnavailableException {
+		for (Order order : orderList) {
+			if (order.getFlight() == flight) {
+				throw new StatusUnavailableException("has already reserved");
+			}
+		}
 		 Order order = new Order(this, flight);
 		 this.addOrder(order);
 	}

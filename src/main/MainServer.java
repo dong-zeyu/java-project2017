@@ -106,7 +106,7 @@ public class MainServer {
 					dataManager.flights.remove(f);
 					return true;
 				} else {
-					throw new StatusUnavailableException();
+					throw new StatusUnavailableException(f.getFlightStatus());
 				}
 			}
 		} else {

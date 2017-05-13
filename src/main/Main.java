@@ -192,7 +192,7 @@ public class Main {
 				} catch (PermissionDeniedException e) {
 					System.out.println("permission denied");
 				} catch (StatusUnavailableException e) {
-					System.out.printf("cannot publish flight id '%s' with status %s\n", p, e.getMessage());
+					System.out.printf("cannot publish flight with id '%s': %s\n", p, e.getMessage());
 				}
 			} 
 		} else {
@@ -284,7 +284,7 @@ public class Main {
 					break;
 				}
 			} catch (StatusUnavailableException e) {
-				System.out.printf("cannot change %s with flight status %s", input[0], e.getMessage());
+				System.out.printf("cannot change %s: %s\n", input[0], e.getMessage());
 			} catch (IndexOutOfBoundsException | NumberFormatException e) {
 				System.out.println("format error");
 			}
@@ -305,7 +305,7 @@ public class Main {
 				} catch (PermissionDeniedException e) {
 					System.out.println("adminstrator cannot reserve flight");
 				} catch (StatusUnavailableException e) {
-					System.out.printf("error in reserve filght id '%s' with status %s\n", para, e.getMessage());
+					System.out.printf("cannot reserve filght with id '%s': %s\n", para, e.getMessage());
 				}
 			}
 		}
@@ -357,7 +357,7 @@ public class Main {
 				} catch (PermissionDeniedException e) {
 					System.out.println("Permission denied: you are not a administrator");
 				} catch (StatusUnavailableException e) {
-					System.out.println("Can't delete! Status unavailable");
+					System.out.println(e.getMessage());
 				}
 				break;
 			case "city":
@@ -391,7 +391,7 @@ public class Main {
 						} catch (NumberFormatException e) {
 							System.out.printf("'%s' is not a user id!\n", param[i]);
 						} catch (StatusUnavailableException e) {
-							System.out.printf("Cannot delete user in flight that have status %s", e.getMessage());
+							System.out.printf("Cannot delete user in flight: ", e.getMessage());
 						}
 					}
 				} catch (PermissionDeniedException e) {
