@@ -179,7 +179,7 @@ public class MainServer {
 		if (isLogin && !isAdmin) {
 			Flight flight = dataManager.getFlightByID(flightID);
 			if (flight != null) {
-				flight.addPassager((Passenger) currentUser);
+				((Passenger) currentUser).reserveFlight(flight);
 				return true;
 			}
 		} else {
@@ -195,7 +195,7 @@ public class MainServer {
 				Passenger passenger = (Passenger) getCurrentUser();
 				Flight flight = dataManager.getFlightByID(flightID);
 				if (flight != null) {
-					flight.removePassenger(passenger);
+					passenger.unsubscribeFlight(flight);
 					return true;
 				}
 			} else {
@@ -254,7 +254,7 @@ public class MainServer {
 		resultbuilder.append(flight.toString() + "\n");
 		if (isAdmin) {
 			resultbuilder.append("\tPasengers:\n");
-			for (Passenger passenger : flight.getPassagers()) {
+			for (Passenger passenger : flight.getPassagers().keySet()) {
 				resultbuilder.append("\t\t" + passenger.toString() + "\n");
 			}
 		}

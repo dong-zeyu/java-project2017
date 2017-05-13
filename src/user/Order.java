@@ -8,22 +8,25 @@ import flight.Flight;
 public class Order {
 	
 	private Passenger passenger;
-	private int seat;
 	private Flight flight;
 	private Date createDate;
 	private OrderStatus status;
 	
-	public Order(Passenger passenger, Flight flight, int seat) {
+	public Order(Passenger passenger, Flight flight, int seat) throws StatusUnavailableException {
 		this.passenger = passenger;
 		this.flight = flight;
-		this.seat = seat;
 		createDate = new Date(); //now
 		status = OrderStatus.UNPAID;
+		flight.addPassenger(passenger, seat, true);
 	}
 	
-	public Order(Passenger passenger, Flight flight) {
-		// TODO 
-		this(passenger, flight, flight.getPassagers().size());
+	public Order(Passenger passenger, Flight flight) throws StatusUnavailableException {
+		this.passenger = passenger;
+		this.flight = flight;
+		// TODO
+		createDate = new Date(); //now
+		status = OrderStatus.UNPAID;
+		flight.addPassenger(passenger);
 	}
 
 	@Override
@@ -40,7 +43,7 @@ public class Order {
 				+ "Status: %s\n", 
 				passenger.userName,
 				flight.getFlightName(),
-				seat,
+				getSeat(),
 				createDate.toString(),
 				status.name());
 	}
@@ -50,7 +53,7 @@ public class Order {
 	}
 
 	public int getSeat() {
-		return flight.getPassagers().indexOf(passenger);
+		return flight.getPassagers().get(passenger);
 	}
 
 	public Flight getFlight() {
@@ -68,9 +71,22 @@ public class Order {
 	public OrderStatus getStatus() {
 		return status;
 	}
-
+	
 	public void setStatus(OrderStatus status) {
 		this.status = status;
+	}
+	
+	public void pay() throws StatusUnavailableException {
+		if (status == OrderStatus.UNPAID) {
+			status = OrderStatus.PAID;
+		} else {
+			throw new StatusUnavailableException(status);
+		}
+	}
+	
+	public void cancle() throws StatusUnavailableException {
+		status = OrderStatus.CANCLE;
+		flight.removePassenger(passenger);
 	}
 	
 	public void printOrder() throws StatusUnavailableException {

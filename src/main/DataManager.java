@@ -24,6 +24,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import exceptions.StatusUnavailableException;
 import flight.City;
 import flight.Flight;
 import flight.FlightStatus;
@@ -473,12 +474,15 @@ public class DataManager {
 								for (int k = 0; k < orders.getLength(); k++) {
 									if (orders.item(k).getNodeType() == Node.ELEMENT_NODE && orders.item(j).getNodeName() != null) {
 										Element o = (Element) orders.item(k);
-										Order order = new Order(p,
-												getFlightByID(Integer.parseInt(o.getElementsByTagName("flightid").item(0).getTextContent())),
-												Integer.parseInt(o.getElementsByTagName("seat").item(0).getTextContent()));
-										order.setStatus(OrderStatus.valueOf(o.getElementsByTagName("status").item(0).getTextContent()));
-										order.setCreatDate(new Date(Long.parseLong(o.getElementsByTagName("date").item(0).getTextContent())));
-										p.addOrder(order);
+										Order order;
+										try {
+											order = new Order(p,
+													getFlightByID(Integer.parseInt(o.getElementsByTagName("flightid").item(0).getTextContent())),
+													Integer.parseInt(o.getElementsByTagName("seat").item(0).getTextContent()));
+											order.setStatus(OrderStatus.valueOf(o.getElementsByTagName("status").item(0).getTextContent()));
+											order.setCreatDate(new Date(Long.parseLong(o.getElementsByTagName("date").item(0).getTextContent())));
+											p.addOrder(order);
+										} catch (StatusUnavailableException e) {/* ignored */}
 									}
 								}
 								users.add(p);

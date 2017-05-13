@@ -2,6 +2,7 @@ package user;
 
 import java.util.ArrayList;
 
+import exceptions.StatusUnavailableException;
 import flight.Flight;
 
 public class Passenger extends User {
@@ -40,6 +41,21 @@ public class Passenger extends User {
 		return identityID;
 	}
 	
+	public void reserveFlight(Flight flight) throws StatusUnavailableException {
+		 Order order = new Order(this, flight, 1);
+		 this.addOrder(order);
+	}
+	
+	public boolean unsubscribeFlight(Flight flight) throws StatusUnavailableException {
+		for (Order order : orderList) {
+			if (order.getFlight() == flight) {
+				order.cancle();
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public void addOrder(Order order) {
 		orderList.add(order);
 	}
@@ -51,4 +67,5 @@ public class Passenger extends User {
 	public boolean removeOrder(Order order){
 		return orderList.remove(order);
 	}
+	
 }

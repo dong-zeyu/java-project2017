@@ -1,13 +1,14 @@
 package flight;
 
-import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Random;
 import java.util.TimeZone;
 
 import exceptions.StatusUnavailableException;
-import main.DataManager;
 import user.Order;
 import user.Passenger;
 
@@ -23,11 +24,11 @@ public class Flight {
 	private int price;
 	private int seatCapacity;
 	private FlightStatus flightStatus;
-	private ArrayList<Passenger> passagers;
+	private HashMap<Passenger, Integer> passagers;
 	
 	public Flight(String flightName, Date startTime, Date arriveTime, City startCity, City arriveCity, int price,
 			int seatCapacity) {
-		passagers = new ArrayList<>();
+		passagers = new HashMap<>();
 		this.flightName = flightName;
 		this.startTime = startTime;
 		this.arriveTime = arriveTime;
@@ -170,7 +171,7 @@ public class Flight {
         		   this.seatCapacity< seatCapacity){
         	   this.seatCapacity=seatCapacity;
            }else{
-        	   System.out.println("This change is illegal");
+        	   throw new StatusUnavailableException("Set Failed!");
            }    
 		}else{
 			throw new StatusUnavailableException(flightStatus);
@@ -190,24 +191,36 @@ public class Flight {
 	 * read only, use add/remove to operate
 	 * @return a clone of field passengers
 	 */
-	public ArrayList<Passenger> getPassagers() {
-		return (ArrayList<Passenger>) passagers.clone();
+	public HashMap<Passenger, Integer> getPassagers() {
+		return (HashMap<Passenger, Integer>) passagers.clone();
 	}
 
-	public void addPassager(Passenger passager , int seat) throws StatusUnavailableException {
-		/* DONE(Zhu) addPassager
-		 * you should generate and add order in this method meanwhile
-		 * for my convenience
-		 * and check for status
-		 */
-		// DONE(Zhu) take care of the comment above!
-		if (flightStatus == FlightStatus.AVAILABLE) {
-			 passagers.add(passager);
-			 Order order = new Order(passager , this , seat);
-			 passager.addOrder(order);
+	public void addPassenger(Passenger passenger, int seat, boolean ignore) throws StatusUnavailableException {
+		if (!ignore) {
+			/* DONE(Zhu) addPassager
+			 * you should generate and add order in this method meanwhile
+			 * for my convenience
+			 * and check for status
+			 */
+			if (flightStatus == FlightStatus.AVAILABLE) {
+				passagers.put(passenger, seat);
+				if (passagers.size() == seatCapacity) {
+					flightStatus = FlightStatus.FULL;
+				}
+			} else {
+				throw new StatusUnavailableException(flightStatus);
+			}
 		} else {
-			throw new StatusUnavailableException(flightStatus);
+			passagers.put(passenger, seat);			
 		}
+	}
+	
+	public void addPassenger(Passenger passenger, int seat) throws StatusUnavailableException {
+		addPassenger(passenger, seat, false);
+	}
+	
+	public void addPassenger(Passenger passenger) throws StatusUnavailableException {
+		addPassenger(passenger, getAvailableSeat());
 	}
 	
 	/**
@@ -221,9 +234,18 @@ public class Flight {
 		 * and check for status
 		 * XXX(Zhu) needs review
 		 */
-		if(flightStatus!=FlightStatus.TERMINATE)
-			return passagers.remove(passenger);
-		else
+		if(flightStatus!=FlightStatus.TERMINATE) {
+			if (passagers.remove(passenger) != null) {
+				if (passagers.size() < seatCapacity && flightStatus == FlightStatus.FULL) {
+					flightStatus = FlightStatus.AVAILABLE;
+				} else if (passagers.size() == seatCapacity) {
+					flightStatus = FlightStatus.FULL;
+				}
+				return true;
+			} else {
+				return false;
+			}
+		} else
 			throw new StatusUnavailableException();
 	}
 
@@ -233,6 +255,19 @@ public class Flight {
 		} else {
 			throw new StatusUnavailableException(flightStatus);
 		}
+	}
+
+	public int getAvailableSeat() {
+		Collection<Integer> seat = passagers.values();
+		if (seat.size() == seatCapacity) {
+			return -1;
+		}
+		Random random = new Random(28435051L);
+		int result;
+		do {
+			result = random.nextInt(seatCapacity) + 1;			
+		} while (seat.contains(result));
+		return result;
 	}
 	
 }
