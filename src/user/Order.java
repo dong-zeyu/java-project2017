@@ -21,6 +21,11 @@ public class Order {
 		status = OrderStatus.UNPAID;
 	}
 	
+	public Order(Passenger passenger, Flight flight) {
+		// TODO 
+		this(passenger, flight, flight.getPassagers().size());
+	}
+
 	@Override
 	public int hashCode() {
         return status.hashCode();
@@ -45,7 +50,7 @@ public class Order {
 	}
 
 	public int getSeat() {
-		return seat;
+		return flight.getPassagers().indexOf(passenger);
 	}
 
 	public Flight getFlight() {
