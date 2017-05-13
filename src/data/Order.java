@@ -51,7 +51,7 @@ public class Order {
 	}
 
 	public int getSeat() {
-		return flight.getPassagers().get(passenger);
+		return flight.passagers().get(passenger);
 	}
 
 	public Flight getFlight() {
@@ -62,7 +62,7 @@ public class Order {
 		return createDate;
 	}
 	
-	public void setCreatDate(Date creatDate) {
+	protected void setCreatDate(Date creatDate) {
 		this.createDate = creatDate;
 	}
 
@@ -70,8 +70,15 @@ public class Order {
 		return status;
 	}
 	
-	public void setStatus(OrderStatus status) {
+	protected void setStatus(OrderStatus status) {
 		this.status = status;
+		if (status == OrderStatus.CANCLE) {
+			for (Passenger passenger : flight.getPassagers().keySet()) {
+				if (passenger == this.passenger) {
+					flight.getPassagers().remove(passenger);
+				}
+			}
+		}
 	}
 	
 	public void pay() throws StatusUnavailableException {
@@ -103,9 +110,15 @@ public class Order {
 	}
 
 	public void remove() {
-		try {
-			cancle();
-		} catch (StatusUnavailableException e) {}
+		for (Passenger passenger : flight.getPassagers().keySet()) {
+			if (passenger == this.passenger) {
+				flight.getPassagers().remove(passenger);
+			}
+		}
+		passenger.getOrderList().remove(this);
+		if (flight.getPassagers().size() < flight.getSeatCapacity()) {
+			flight.setFlightStatus(FlightStatus.AVAILABLE);
+		}
 	}
 
 }

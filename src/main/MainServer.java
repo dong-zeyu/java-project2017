@@ -24,7 +24,6 @@ public class MainServer {
 		isLogin = false;
 		isAdmin = false;
 		dataManager = new DataManager();
-//		dataManager.init(); // constructor should include init
 	}
 
 	public void stop() {
@@ -56,43 +55,43 @@ public class MainServer {
 	public boolean isAdmin() {
 		return isAdmin;
 	}
+	
+	private void checkPermission(boolean requireAdmin) throws PermissionDeniedException {
+		// Require
+		if (!isLogin) {
+			throw new PermissionDeniedException("please login");
+		} else if (requireAdmin && !isAdmin) {
+			throw new PermissionDeniedException("you are not administrator");
+		}
+	}
+	
 	/*
 	 *  TODO(all) main function(search, add, ...) at here, each should decide whether isLogin and isAdmin
 	 *  if having no permission, throw PermissionDeniedException
 	 *  you can see some example(completed) below to know how to throw it
 	 *  **make full use of private method searchFlightByID & searchUserByID**
 	 */
-	
 	public boolean createFlight(String flightName, Date startTime, Date arriveTime, int startCityID, int arriveCityID,
 			int price, int seatCapacity) throws PermissionDeniedException { // false when error cityID
 		// DONE(Peng) creatFlight
-		 if (isLogin&&isAdmin){
-			try {
-				dataManager.flights.add(new Flight(flightName,startTime, arriveTime,dataManager.getCityByID(startCityID),dataManager.getCityByID(arriveCityID),
+		checkPermission(true);
+		try {
+			dataManager.flights.add(new Flight(flightName,startTime, arriveTime,dataManager.getCityByID(startCityID),dataManager.getCityByID(arriveCityID),
 					price,seatCapacity));
-				return true;
-			} catch (NullPointerException e) {
-				return false;
-			}
-		} else {
-			throw new PermissionDeniedException();
+			return true;
+		} catch (NullPointerException e) {
+			return false;
 		}
 	}
 	
 	public Flight getFlight(int flightID) throws PermissionDeniedException { //give you flight to change freely
-		if (isLogin && isAdmin) {
-			return dataManager.getFlightByID(flightID);			
-		} else {
-			throw new PermissionDeniedException();
-		}
+		checkPermission(true);
+		return dataManager.getFlightByID(flightID);
 	}
 	
 	public City getCity(int cityID) throws PermissionDeniedException { //give you city to change freely
-		if (isLogin && isAdmin) {
-			return dataManager.getCityByID(cityID);			
-		} else {
-			throw new PermissionDeniedException();
-		}
+		checkPermission(true);
+		return dataManager.getCityByID(cityID);	
 	}
 	
 	public boolean deleteFlight(int flightID) throws PermissionDeniedException, StatusUnavailableException	 {
@@ -100,18 +99,15 @@ public class MainServer {
 		 * **be sure to delete flight from the city**
 		 * FIXME (Peng) be careful about the comment above!
 		 */
-		if (isLogin && isAdmin) {
-			Flight f =dataManager.getFlightByID(flightID);
-			if (f != null) {
-				if (f.getFlightStatus() == FlightStatus.UNPUBLISHED) {
-					dataManager.flights.remove(f);
-					return true;
-				} else {
-					throw new StatusUnavailableException(f.getFlightStatus());
-				}
+		checkPermission(true);
+		Flight f =dataManager.getFlightByID(flightID);
+		if (f != null) {
+			if (f.getFlightStatus() == FlightStatus.UNPUBLISHED) {
+				dataManager.flights.remove(f);
+				return true;
+			} else {
+				throw new StatusUnavailableException(f.getFlightStatus());
 			}
-		} else {
-			throw new PermissionDeniedException();
 		}
 		return false; 
 	}
@@ -130,37 +126,32 @@ public class MainServer {
 	
 	public void addAdmin(String userName, String password) throws PermissionDeniedException {
 		// DONE(Peng) addAdmin
-		if (isLogin){
-            if (isAdmin){    	
-            	dataManager.users.add(new Admin(userName, password));
-            } else
-            	throw new PermissionDeniedException();
-		}
+		checkPermission(true);
+		dataManager.users.add(new Admin(userName, password));
 	}
 	
 	public void addCity(String cityName) throws PermissionDeniedException{
 		//DONE(Zhu) addCity
-		if(isAdmin){
-			dataManager.cities.add(new City(cityName));
-		}else{
-			throw new PermissionDeniedException();
-		}
+		checkPermission(true);
+		dataManager.cities.add(new City(cityName));
 	}
 	
-	public boolean deleteUser(int userID) throws PermissionDeniedException, StatusUnavailableException {
+	public boolean deleteUser(int userID) throws PermissionDeniedException {
 		/* TODO(Peng) deleteUser
 		 * first to test if user is a passenger (using instanceof)
 		 * **be sure to remove user from the flight**
 		 */
+		checkPermission(true);
 		User u = dataManager.getUserByID(userID);
 		if (u == null) {
 			return false;
 		}
 		if (u instanceof Passenger) {
 			Passenger passenger = (Passenger) u;
-			for (Order order : passenger.getOrderList()) {
-				order.getFlight().removePassenger(passenger);
+			for (Order order : passenger.orderList()) {
+				order.remove();
 			}
+			dataManager.users.remove(u);
 		} else {
 			dataManager.users.remove(u);
 		}
@@ -168,42 +159,36 @@ public class MainServer {
 	}
 	
 	public User getCurrentUser() throws PermissionDeniedException { // to update user info
-		if (isLogin && isAdmin) {
-			return currentUser;
-		} else {
-			throw new PermissionDeniedException();
-		}
+		checkPermission(true);
+		return currentUser;
 	}
 	
 	public boolean reserveFlight(int flightID) throws PermissionDeniedException, StatusUnavailableException {
 		// DONE(Zhu) reserveFlight
-		if (isLogin && !isAdmin) {
-			Flight flight = dataManager.getFlightByID(flightID);
-			if (flight != null) {
-				((Passenger) currentUser).reserveFlight(flight);
-				return true;
-			}
-		} else {
-			throw new PermissionDeniedException();
+		checkPermission(false);
+		if (isAdmin) {
+			throw new PermissionDeniedException("adminstrator cannot reserve flight");
+		}
+		Flight flight = dataManager.getFlightByID(flightID);
+		if (flight != null) {
+			((Passenger) currentUser).reserveFlight(flight);
+			return true;
 		}
 		return false;
 	}
 	
 	public boolean unsubscribeFlight(int flightID) throws PermissionDeniedException, StatusUnavailableException { //return false when no flight is found
 		//DONE(Peng) unsubscribeFlight
-		if (isLogin) {
-			if (!isAdmin) {
-				Passenger passenger = (Passenger) getCurrentUser();
-				Flight flight = dataManager.getFlightByID(flightID);
-				if (flight != null) {
-					passenger.unsubscribeFlight(flight);
-					return true;
-				}
-			} else {
-				throw new StatusUnavailableException("Only passengers can unsubscribe flight");
+		checkPermission(false);
+		if (!isAdmin) {
+			Passenger passenger = (Passenger) getCurrentUser();
+			Flight flight = dataManager.getFlightByID(flightID);
+			if (flight != null) {
+				passenger.unsubscribeFlight(flight);
+				return true;
 			}
 		} else {
-			throw new PermissionDeniedException();
+			throw new StatusUnavailableException("Only passengers can unsubscribe flight");
 		}
 		return false;
 	}
@@ -218,18 +203,15 @@ public class MainServer {
 	}
 	
 	public boolean deleteCity(int cityID) throws PermissionDeniedException, StatusUnavailableException {
-		if (isAdmin) {
-			City city = dataManager.getCityByID(cityID);
-			if (city != null) {
-				if (city.getFlightsIn().size() == 0 && city.getFlightsOut().size() == 0) {
-					dataManager.cities.remove(city);					
-				} else {
-					throw new StatusUnavailableException("Cannot delete city that have fight in and out");
-				}
-				return true;
-			} 
-		} else {
-			throw new PermissionDeniedException();
+		checkPermission(true);
+		City city = dataManager.getCityByID(cityID);
+		if (city != null) {
+			if (city.getFlightsIn().size() == 0 && city.getFlightsOut().size() == 0) {
+				dataManager.cities.remove(city);					
+			} else {
+				throw new StatusUnavailableException("Cannot delete city that have fight in and out");
+			}
+			return true;
 		}
 		return false;
 	}
@@ -264,7 +246,7 @@ public class MainServer {
 		resultbuilder.append(flight.toString() + "\n");
 		if (isAdmin) {
 			resultbuilder.append("\tPasengers:\n");
-			for (Passenger passenger : flight.getPassagers().keySet()) {
+			for (Passenger passenger : flight.passagers().keySet()) {
 				resultbuilder.append("\t\t" + passenger.toString() + "\n");
 			}
 		}

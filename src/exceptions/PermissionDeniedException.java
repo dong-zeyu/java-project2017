@@ -6,11 +6,11 @@ package exceptions;
 public class PermissionDeniedException extends Exception {
 
 	public PermissionDeniedException() {
-		super();
+		super("Permission denied!");
 	}
 	
 	public PermissionDeniedException(String msg) {
-		super(msg);
+		super("Permission denied: " + msg);
 	}
 	
 }

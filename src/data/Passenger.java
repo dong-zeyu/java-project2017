@@ -8,22 +8,14 @@ public class Passenger extends User {
 	
 	private String identityID; // XXX this should not be changed?
 	private ArrayList<Order> orderList;
-	
-	public Passenger(String identityID, String realName, String password) {
-		this(identityID, realName, password, false);
-	}
 
-	public Passenger(String identityID, String realName, String password, boolean isPassHash) {
+	public Passenger(String identityID, String realName, String password) {
 		orderList = new ArrayList<>();
 		this.identityID = identityID;
 		this.userName = realName;
 		this.userID = User.ID;
 		User.ID++;
-		if (isPassHash) {
-			passHash = password;
-		} else {
-			passHash = hashPass(password);
-		}
+		passHash = hashPass(password);
 	}
 	
 	@Override
@@ -64,12 +56,16 @@ public class Passenger extends User {
 		orderList.add(order);
 	}
 	
-	public ArrayList<Order> getOrderList() {
+	protected ArrayList<Order> getOrderList() {
+		return orderList;
+	}
+	
+	public ArrayList<Order> orderList() {
 		return (ArrayList<Order>) orderList.clone();
 	}
 	
 	public boolean removeOrder(Order order){
 		return orderList.remove(order);
 	}
-	
+
 }

@@ -85,7 +85,7 @@ public class Main {
 					} catch (NumberFormatException e) {
 						System.out.printf("'%s' is not a flight ID\n", param[0]);
 					} catch (PermissionDeniedException e) {
-						System.out.println("permissiion denied");
+						System.out.println(e.getMessage());
 					}			
 				} else {
 					System.out.println("please input the flightID to change");
@@ -109,10 +109,14 @@ public class Main {
 		try {
 			System.out.println(server.displayOrder());
 			do {
-				System.out.println("please select the index of order to pay(-1 to exit)");
+				System.out.print("please select the index of order to pay(-1 to exit): ");
 				try {
 					int index = Integer.valueOf(scanner.nextLine());
+					if (index == -1) {
+						break;
+					}
 					server.pay(index);
+					System.out.println("succeed!");
 				} catch (NumberFormatException e) {
 					System.out.println("please input the right index");
 				} catch (StatusUnavailableException e) {
@@ -120,7 +124,7 @@ public class Main {
 				} 
 			} while (true);
 		} catch (PermissionDeniedException e) {
-			System.err.println("permission denied");
+			System.err.println(e.getMessage());
 		}
 	}
 
@@ -133,7 +137,7 @@ public class Main {
 				} catch (NumberFormatException e) {
 					System.out.printf("'%s' is not a flight id\n", id);
 				} catch (PermissionDeniedException e) {
-					System.out.println("permission denied");
+					System.out.println(e.getMessage());
 				} catch (StatusUnavailableException e) {
 					System.out.printf("Unsbcribe flight with id %s failed: %s\n", id, e.getMessage());
 				}
@@ -190,7 +194,7 @@ public class Main {
 				} catch (NumberFormatException e) {
 					System.out.printf("'%s' is not a flight ID\n", p);
 				} catch (PermissionDeniedException e) {
-					System.out.println("permission denied");
+					System.out.println(e.getMessage());
 				} catch (StatusUnavailableException e) {
 					System.out.printf("cannot publish flight with id '%s': %s\n", p, e.getMessage());
 				}
@@ -303,7 +307,7 @@ public class Main {
 				} catch (NumberFormatException e) {
 					System.out.printf("error: '%s' is not a flight id\n", para);
 				} catch (PermissionDeniedException e) {
-					System.out.println("adminstrator cannot reserve flight");
+					System.out.println(e.getMessage());
 				} catch (StatusUnavailableException e) {
 					System.out.printf("cannot reserve filght with id '%s': %s\n", para, e.getMessage());
 				}
@@ -355,7 +359,7 @@ public class Main {
 						}
 					}
 				} catch (PermissionDeniedException e) {
-					System.out.println("Permission denied: you are not a administrator");
+					System.out.println(e.getMessage());
 				} catch (StatusUnavailableException e) {
 					System.out.println(e.getMessage());
 				}
@@ -390,8 +394,6 @@ public class Main {
 							}
 						} catch (NumberFormatException e) {
 							System.out.printf("'%s' is not a user id!\n", param[i]);
-						} catch (StatusUnavailableException e) {
-							System.out.printf("Cannot delete user in flight: ", e.getMessage());
 						}
 					}
 				} catch (PermissionDeniedException e) {
@@ -502,7 +504,7 @@ public class Main {
 		try {
 			server.addAdmin(userName, password);
 		} catch (PermissionDeniedException e) {
-			
+			System.out.println(e.getMessage());
 		}
 	}
 
@@ -572,7 +574,7 @@ public class Main {
 				System.out.println("error in city id, please retry");
 			}
 		} catch (PermissionDeniedException e) {
-			
+			System.out.println(e.getMessage());
 		}
 	}
 	
@@ -586,7 +588,7 @@ public class Main {
 			server.addCity(cityname);
 		} catch (PermissionDeniedException e) {
 			// FIXME(Peng) be sure to finish exception handler!(also in other method)
-			System.out.println("");
+			System.out.println(e.getMessage());
 		}
 	}
 

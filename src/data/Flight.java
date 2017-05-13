@@ -180,7 +180,7 @@ public class Flight {
 		return flightStatus;
 	}
 
-	public void setFlightStatus(FlightStatus flightStatus) {
+	protected void setFlightStatus(FlightStatus flightStatus) {
 			this.flightStatus = flightStatus;
 		
 	}
@@ -189,11 +189,15 @@ public class Flight {
 	 * read only, use add/remove to operate
 	 * @return a clone of field passengers
 	 */
-	public HashMap<Passenger, Integer> getPassagers() {
+	public HashMap<Passenger, Integer> passagers() {
 		return (HashMap<Passenger, Integer>) passagers.clone();
 	}
+	
+	protected HashMap<Passenger, Integer> getPassagers() {
+		return passagers;
+	}
 
-	public void addPassenger(Passenger passenger, int seat, boolean ignore) throws StatusUnavailableException {
+	protected void addPassenger(Passenger passenger, int seat, boolean ignore) throws StatusUnavailableException {
 		if (!ignore) {
 			/* DONE(Zhu) addPassager
 			 * you should generate and add order in this method meanwhile
@@ -213,11 +217,11 @@ public class Flight {
 		}
 	}
 	
-	public void addPassenger(Passenger passenger, int seat) throws StatusUnavailableException {
+	protected void addPassenger(Passenger passenger, int seat) throws StatusUnavailableException {
 		addPassenger(passenger, seat, false);
 	}
 	
-	public void addPassenger(Passenger passenger) throws StatusUnavailableException {
+	protected void addPassenger(Passenger passenger) throws StatusUnavailableException {
 		addPassenger(passenger, getAvailableSeat());
 	}
 	
@@ -226,7 +230,7 @@ public class Flight {
 	 * @return return false when no one can found
 	 * @throws StatusUnavailableException when status is TERMINATE, 
 	 */
-	public boolean removePassenger(Passenger passenger) throws StatusUnavailableException {
+	protected boolean removePassenger(Passenger passenger) throws StatusUnavailableException {
 		/* DONE(Zhu) removePassenger
 		 * you should remove in this method meanwhile
 		 * and check for status
@@ -260,7 +264,7 @@ public class Flight {
 		if (seat.size() == seatCapacity) {
 			return -1;
 		}
-		Random random = new Random(28435051L);
+		Random random = new Random(this.hashCode() * this.hashCode());
 		int result;
 		do {
 			result = random.nextInt(seatCapacity) + 1;			

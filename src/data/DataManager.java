@@ -454,16 +454,18 @@ public class DataManager {
 							User.ID = Integer.parseInt(u.getAttribute("uid"));
 							MAX_ID = User.ID > MAX_ID ? User.ID : MAX_ID;
 							if (u.getTagName().equals("admin")) {
-								users.add(new Admin(
+								Admin admin = new Admin(
 										u.getElementsByTagName("username").item(0).getTextContent(),
-										u.getElementsByTagName("passhash").item(0).getTextContent(),
-										true));
+										null
+										);
+								admin.setPassHash(u.getElementsByTagName("passhash").item(0).getTextContent());
+								users.add(admin);
 							} else if (u.getTagName().equals("passenger")) {
 								Passenger p = new Passenger(
 										u.getElementsByTagName("idnumber").item(0).getTextContent(),
 										u.getElementsByTagName("username").item(0).getTextContent(),
-										u.getElementsByTagName("passhash").item(0).getTextContent(),
-										true);
+										null);
+								p.setPassHash(u.getElementsByTagName("passhash").item(0).getTextContent());
 								NodeList orders = u.getElementsByTagName("order").item(0).getChildNodes();
 								for (int k = 0; k < orders.getLength(); k++) {
 									if (orders.item(k).getNodeType() == Node.ELEMENT_NODE && orders.item(k).getNodeName() != null) {
