@@ -3,9 +3,9 @@ package main;
 import java.util.Date;
 import java.util.Scanner;
 
+import data.Flight;
 import exceptions.PermissionDeniedException;
 import exceptions.StatusUnavailableException;
-import flight.Flight;
 
 public class Main {
 

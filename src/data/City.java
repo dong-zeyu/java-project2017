@@ -1,4 +1,4 @@
-package flight;
+package data;
 
 import java.util.ArrayList;
 

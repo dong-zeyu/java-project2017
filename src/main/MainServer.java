@@ -2,15 +2,16 @@ package main;
 
 import java.util.Date;
 
+import data.Admin;
+import data.City;
+import data.DataManager;
+import data.Flight;
+import data.FlightStatus;
+import data.Order;
+import data.Passenger;
+import data.User;
 import exceptions.PermissionDeniedException;
 import exceptions.StatusUnavailableException;
-import flight.City;
-import flight.Flight;
-import flight.FlightStatus;
-import user.Admin;
-import user.Order;
-import user.Passenger;
-import user.User;
 
 public class MainServer {
 	

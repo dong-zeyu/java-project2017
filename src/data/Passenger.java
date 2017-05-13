@@ -1,9 +1,8 @@
-package user;
+package data;
 
 import java.util.ArrayList;
 
 import exceptions.StatusUnavailableException;
-import flight.Flight;
 
 public class Passenger extends User {
 	

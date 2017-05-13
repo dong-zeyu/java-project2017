@@ -1,4 +1,4 @@
-package flight;
+package data;
 
 import java.util.Calendar;
 import java.util.Collection;
@@ -9,8 +9,6 @@ import java.util.Random;
 import java.util.TimeZone;
 
 import exceptions.StatusUnavailableException;
-import user.Order;
-import user.Passenger;
 
 public class Flight {
 	

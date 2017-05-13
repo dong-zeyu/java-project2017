@@ -1,4 +1,4 @@
-package main;
+package data;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -25,14 +25,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import exceptions.StatusUnavailableException;
-import flight.City;
-import flight.Flight;
-import flight.FlightStatus;
-import user.Admin;
-import user.Order;
-import user.OrderStatus;
-import user.Passenger;
-import user.User;
 
 /** 
  * This is to provide a access to write file
@@ -129,7 +121,7 @@ public class DataManager {
 		
 	}
 	
-	protected void stop() {
+	public void stop() {
 		timer.cancel();
 		try {
 			saveData();
