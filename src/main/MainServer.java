@@ -206,7 +206,16 @@ public class MainServer {
 		}
 		return false;
 	}
-
+	
+	public void pay(int index) throws PermissionDeniedException, StatusUnavailableException {
+		// TODO(Peng) pay an order (index is the index of the order in ArrayList<Order>)
+		
+	}
+	
+	public void cancel(int index) throws PermissionDeniedException, StatusUnavailableException{
+		// TODO(Peng) cancel an order (index is the index of the order in ArrayList<Order>)
+	}
+	
 	public boolean deleteCity(int cityID) throws PermissionDeniedException, StatusUnavailableException {
 		if (isAdmin) {
 			City city = dataManager.getCityByID(cityID);
@@ -272,11 +281,17 @@ public class MainServer {
 		// TODO(Zhu) print User order(if it is passenger) as well
 		return null;
 	}
+	
+	public String displayOrder() throws PermissionDeniedException {
+		// TODO(Zhu) print all the order in order (if isLogin)
+		return null;
+		
+	}
 	//------------boundary-----------------
 
 	public String search(int cityFromId, int cityToId, Date date1, Date date2) {
 		// TODO(Dong) The most difficult one
 		return null;
 	}
-	
+
 }

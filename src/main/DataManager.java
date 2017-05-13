@@ -115,8 +115,14 @@ public class DataManager {
 		@Override
 		public void run() {
 			for (Flight flight : flights) {
-				if (new Date().getTime() - flight.getStartTime().getTime() <= 7200000l) {
+				if (flight.getStartTime().getTime() - new Date().getTime() <= 7200000l) {
 					flight.setFlightStatus(FlightStatus.TERMINATE);
+				} else  {
+					if (flight.getNumber() == flight.getSeatCapacity()) {
+						flight.setFlightStatus(FlightStatus.FULL);
+					} else {
+						flight.setFlightStatus(FlightStatus.AVAILABLE);
+					}
 				}
 			}
 		}
@@ -361,10 +367,6 @@ public class DataManager {
 				Flight flight18 = new Flight("A018",
 						Flight.calendar(2017, 9, 5, 7, 46, 00), 
 						Flight.calendar(2017, 9, 5, 19, 40, 00), shenz, xia, 1200, 120);
-				
-				
-				
-				
 				flights.add(flight1);
 				flights.add(flight2);
 				flights.add(flight3);
@@ -493,7 +495,6 @@ public class DataManager {
 				}
 			}
 		} catch (IndexOutOfBoundsException | NullPointerException e) {
-			e.printStackTrace();
 			file.delete();
 			init();
 		}

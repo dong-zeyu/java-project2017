@@ -43,55 +43,10 @@ public class Main {
 				break;
 			case "list":
 			case "l":
-				if (param != null) {
-					switch (param[0]) {
-					case "city":
-						if (param.length == 1) {
-							System.out.println(server.displayCity());							
-						} else {
-							for (int i = 1; i < param.length; i++) {
-								System.out.println(server.displayCity(Integer.valueOf(param[i])));
-							}
-						}
-						break;
-					case "flight":
-						if (param.length == 1) {
-							System.out.println(server.displayFlight());						
-						} else {
-							for (int i = 1; i < param.length; i++) {
-								System.out.println(server.displayFlight(i));								
-							}
-						}						
-						break;
-					case "user":
-						if (param.length == 1) {
-							System.out.println(server.dispalyUser());							
-						} else {
-							for (int i = 1; i < param.length; i++) {
-								System.out.println(server.dispalyUser(Integer.valueOf(param[i])));								
-							}
-						}
-						break;
-					default:
-						break;
-					}
-				}
+				list(param);
 				break;
 			case "login":
-				if (param != null && param.length == 2) {
-					if (server.login(param[0], param[1])) {
-						System.out.print("Login succeed: ");
-						if (server.isAdmin()) {
-							System.out.println("You are administrator");
-						} else {
-							System.out.println("You are passenger");
-						}
-					} else {
-						System.out.println("Login failed");
-					}
-				} else {
-					System.out.println("Format error");
-				}
+				login(param);
 				break;
 			case "register":
 			case "r":
@@ -114,29 +69,14 @@ public class Main {
 				break;
 			case "unsubscribe":
 			case "unsub":
+				unsubscribe(param);
+				break;
+			case "pay":
+				pay();
 				break;
 			case "publish":
 			case "pub":
-				if (param != null && param.length >= 1) {
-					for (String p : param) {
-						try {
-							Flight flight = server.getFlight(Integer.valueOf(p));
-							if (flight != null) {
-								flight.publish();
-							} else {
-								System.out.printf("can't find flight with id 'p'\n", p);
-							}
-						} catch (NumberFormatException e) {
-							System.out.printf("'%s' is not a flight ID\n", p);
-						} catch (PermissionDeniedException e) {
-							System.out.println("permission denied");
-						} catch (StatusUnavailableException e) {
-							System.out.printf("cannot publish flight id '%s' with status %s\n", p, e.getMessage());
-						}
-					} 
-				} else {
-					System.out.println("format error");
-				}
+				pub(param);
 				break;
 			case "change":
 				if (param != null && param.length == 1) {
@@ -165,6 +105,118 @@ public class Main {
 	/*
 	 * These are subUI or a wizard to lead User to do specific work
 	 */
+	private static void pay() {
+		try {
+			System.out.println(server.displayOrder());
+			do {
+				System.out.println("please select the index of order to pay(-1 to exit)");
+				try {
+					int index = Integer.valueOf(scanner.nextLine());
+					server.pay(index);
+				} catch (NumberFormatException e) {
+					System.out.println("please input the right index");
+				} catch (StatusUnavailableException e) {
+					System.out.println("Pay failed: " + e.getMessage());
+				} 
+			} while (true);
+		} catch (PermissionDeniedException e) {
+			System.err.println("permission denied");
+		}
+	}
+
+	private static void unsubscribe(String[] param) {
+		if (param != null && param.length >= 1) {
+			for (String id : param) {
+				try {
+					server.unsubscribeFlight(Integer.valueOf(id));
+					System.out.printf("succeed in reserving '%s'\n", id);
+				} catch (NumberFormatException e) {
+					System.out.printf("'%s' is not a flight id\n", id);
+				} catch (PermissionDeniedException e) {
+					System.out.println("permission denied");
+				} catch (StatusUnavailableException e) {
+					System.out.printf("Unsbcribe flight with id %s failed: %s\n", id, e.getMessage());
+				}
+			}
+		}
+	}
+
+	private static void list(String[] param) {
+		if (param != null && param.length == 1) {
+			switch (param[0]) {
+			case "city":
+				if (param.length == 1) {
+					System.out.println(server.displayCity());							
+				} else {
+					for (int i = 1; i < param.length; i++) {
+						System.out.println(server.displayCity(Integer.valueOf(param[i])));
+					}
+				}
+				break;
+			case "flight":
+				if (param.length == 1) {
+					System.out.println(server.displayFlight());						
+				} else {
+					for (int i = 1; i < param.length; i++) {
+						System.out.println(server.displayFlight(i));								
+					}
+				}						
+				break;
+			case "user":
+				if (param.length == 1) {
+					System.out.println(server.dispalyUser());							
+				} else {
+					for (int i = 1; i < param.length; i++) {
+						System.out.println(server.dispalyUser(Integer.valueOf(param[i])));								
+					}
+				}
+				break;
+			default:
+				break;
+			}
+		}
+	}
+
+	private static void pub(String[] param) {
+		if (param != null && param.length >= 1) {
+			for (String p : param) {
+				try {
+					Flight flight = server.getFlight(Integer.valueOf(p));
+					if (flight != null) {
+						flight.publish();
+					} else {
+						System.out.printf("can't find flight with id 'p'\n", p);
+					}
+				} catch (NumberFormatException e) {
+					System.out.printf("'%s' is not a flight ID\n", p);
+				} catch (PermissionDeniedException e) {
+					System.out.println("permission denied");
+				} catch (StatusUnavailableException e) {
+					System.out.printf("cannot publish flight id '%s' with status %s\n", p, e.getMessage());
+				}
+			} 
+		} else {
+			System.out.println("format error");
+		}
+	}
+
+	private static void login(String[] param) {
+		if (param != null && param.length == 2) {
+			if (server.login(param[0], param[1])) {
+				System.out.print("Login succeed: ");
+				if (server.isAdmin()) {
+					System.out.println("You are administrator");
+				} else {
+					System.out.println("You are passenger");
+				}
+			} else {
+				System.out.println("Login failed");
+			}
+		} else {
+			System.out.println("Format error");
+		}
+	}
+
 	private static void changeFlight(int flightID) throws PermissionDeniedException {
 		Flight flight = server.getFlight(flightID);
 		System.out.print("Usage: "
