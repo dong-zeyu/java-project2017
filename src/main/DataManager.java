@@ -223,7 +223,7 @@ public class DataManager {
 						item.item(2)
 								.appendChild(document.createTextNode(String.valueOf(order.getCreatDate().getTime())));
 						item.item(3).appendChild(document.createTextNode(String.valueOf(order.getStatus().name())));
-						nodes.item(4).appendChild(item.item(0).getParentNode());
+						nodes.item(3).appendChild(item.item(0).getParentNode());
 					}
 					euser.appendChild(nodes.item(0).getParentNode());
 				}

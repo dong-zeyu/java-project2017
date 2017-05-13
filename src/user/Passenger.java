@@ -42,7 +42,7 @@ public class Passenger extends User {
 	}
 	
 	public void reserveFlight(Flight flight) throws StatusUnavailableException {
-		 Order order = new Order(this, flight, 1);
+		 Order order = new Order(this, flight);
 		 this.addOrder(order);
 	}
 	
