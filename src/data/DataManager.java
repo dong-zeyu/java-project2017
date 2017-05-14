@@ -1,4 +1,4 @@
-package main;
+package data;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -24,14 +24,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import flight.City;
-import flight.Flight;
-import flight.FlightStatus;
-import user.Admin;
-import user.Order;
-import user.OrderStatus;
-import user.Passenger;
-import user.User;
+import exceptions.StatusUnavailableException;
 
 /** 
  * This is to provide a access to write file
@@ -89,8 +82,7 @@ public class DataManager {
 	private int usersHash;
 	private int flightsHash;
 	private int citiesHash;
-	private Timer save;
-	private Timer flight;
+	private Timer timer;
 	
 	class SaveFileTask extends TimerTask {
 		
@@ -115,17 +107,22 @@ public class DataManager {
 		@Override
 		public void run() {
 			for (Flight flight : flights) {
-				if (new Date().getTime() - flight.getStartTime().getTime() <= 7200000l) {
+				if (flight.getStartTime().getTime() - new Date().getTime() <= 7200000l) {
 					flight.setFlightStatus(FlightStatus.TERMINATE);
+				} else  {
+					if (flight.getNumber() == flight.getSeatCapacity()) {
+						flight.setFlightStatus(FlightStatus.FULL);
+					} else {
+						flight.setFlightStatus(FlightStatus.AVAILABLE);
+					}
 				}
 			}
 		}
 		
 	}
 	
-	protected void stop() {
-		save.cancel();
-		flight.cancel();
+	public void stop() {
+		timer.cancel();
 		try {
 			saveData();
 		} catch (FileNotFoundException e) {
@@ -143,10 +140,9 @@ public class DataManager {
 		usersHash = users.hashCode();
 		flightsHash = flights.hashCode();
 		citiesHash =  cities.hashCode();
-		save = new Timer(false);
-		save.schedule(new SaveFileTask(), SYNC_INTERVAL, SYNC_INTERVAL);
-		flight = new Timer(false);
-		flight.schedule(new ChangeFlight(), 1000, 1000);
+		timer = new Timer(false);
+		timer.schedule(new SaveFileTask(), SYNC_INTERVAL, SYNC_INTERVAL);
+		timer.schedule(new ChangeFlight(), 1000, 1000);
 	}
 	
 	public Flight getFlightByID(int flightID) {
@@ -225,7 +221,7 @@ public class DataManager {
 						item.item(2)
 								.appendChild(document.createTextNode(String.valueOf(order.getCreatDate().getTime())));
 						item.item(3).appendChild(document.createTextNode(String.valueOf(order.getStatus().name())));
-						nodes.item(4).appendChild(item.item(0).getParentNode());
+						nodes.item(3).appendChild(item.item(0).getParentNode());
 					}
 					euser.appendChild(nodes.item(0).getParentNode());
 				}
@@ -363,10 +359,6 @@ public class DataManager {
 				Flight flight18 = new Flight("A018",
 						Flight.calendar(2017, 9, 5, 7, 46, 00), 
 						Flight.calendar(2017, 9, 5, 19, 40, 00), shenz, xia, 1200, 120);
-				
-				
-				
-				
 				flights.add(flight1);
 				flights.add(flight2);
 				flights.add(flight3);
@@ -462,26 +454,31 @@ public class DataManager {
 							User.ID = Integer.parseInt(u.getAttribute("uid"));
 							MAX_ID = User.ID > MAX_ID ? User.ID : MAX_ID;
 							if (u.getTagName().equals("admin")) {
-								users.add(new Admin(
+								Admin admin = new Admin(
 										u.getElementsByTagName("username").item(0).getTextContent(),
-										u.getElementsByTagName("passhash").item(0).getTextContent(),
-										true));
+										null
+										);
+								admin.setPassHash(u.getElementsByTagName("passhash").item(0).getTextContent());
+								users.add(admin);
 							} else if (u.getTagName().equals("passenger")) {
 								Passenger p = new Passenger(
 										u.getElementsByTagName("idnumber").item(0).getTextContent(),
 										u.getElementsByTagName("username").item(0).getTextContent(),
-										u.getElementsByTagName("passhash").item(0).getTextContent(),
-										true);
+										null);
+								p.setPassHash(u.getElementsByTagName("passhash").item(0).getTextContent());
 								NodeList orders = u.getElementsByTagName("order").item(0).getChildNodes();
 								for (int k = 0; k < orders.getLength(); k++) {
-									if (orders.item(k).getNodeType() == Node.ELEMENT_NODE && orders.item(j).getNodeName() != null) {
+									if (orders.item(k).getNodeType() == Node.ELEMENT_NODE && orders.item(k).getNodeName() != null) {
 										Element o = (Element) orders.item(k);
-										Order order = new Order(p,
-												getFlightByID(Integer.parseInt(o.getElementsByTagName("flightid").item(0).getTextContent())),
-												Integer.parseInt(o.getElementsByTagName("seat").item(0).getTextContent()));
-										order.setStatus(OrderStatus.valueOf(o.getElementsByTagName("status").item(0).getTextContent()));
-										order.setCreatDate(new Date(Long.parseLong(o.getElementsByTagName("date").item(0).getTextContent())));
-										p.addOrder(order);
+										Order order;
+										try {
+											order = new Order(p,
+													getFlightByID(Integer.parseInt(o.getElementsByTagName("flightid").item(0).getTextContent())),
+													Integer.parseInt(o.getElementsByTagName("seat").item(0).getTextContent()));
+											order.setStatus(OrderStatus.valueOf(o.getElementsByTagName("status").item(0).getTextContent()));
+											order.setCreatDate(new Date(Long.parseLong(o.getElementsByTagName("date").item(0).getTextContent())));
+											p.addOrder(order);
+										} catch (StatusUnavailableException e) {/* ignored */}
 									}
 								}
 								users.add(p);

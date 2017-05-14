@@ -1,14 +1,14 @@
-package flight;
+package data;
 
-import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Random;
 import java.util.TimeZone;
 
 import exceptions.StatusUnavailableException;
-import main.DataManager;
-import user.Passenger;
 
 public class Flight {
 	
@@ -22,11 +22,11 @@ public class Flight {
 	private int price;
 	private int seatCapacity;
 	private FlightStatus flightStatus;
-	private ArrayList<Passenger> passagers;
+	private HashMap<Passenger, Integer> passagers;
 	
 	public Flight(String flightName, Date startTime, Date arriveTime, City startCity, City arriveCity, int price,
 			int seatCapacity) {
-		passagers = new ArrayList<>();
+		passagers = new HashMap<>();
 		this.flightName = flightName;
 		this.startTime = startTime;
 		this.arriveTime = arriveTime;
@@ -164,8 +164,13 @@ public class Flight {
 
 	public void setSeatCapacity(int seatCapacity) throws StatusUnavailableException {
 		if(flightStatus!=FlightStatus.TERMINATE){
-			// FIXME(Zhu) you should consider more in changing seat capacity
-			this.seatCapacity = seatCapacity;
+			// DONE(Zhu) you should consider more in changing seat capacity
+           if(flightStatus == FlightStatus.FULL &&
+        		   this.seatCapacity< seatCapacity){
+        	   this.seatCapacity=seatCapacity;
+           }else{
+        	   throw new StatusUnavailableException("Set Failed!");
+           }    
 		}else{
 			throw new StatusUnavailableException(flightStatus);
 		}
@@ -175,7 +180,7 @@ public class Flight {
 		return flightStatus;
 	}
 
-	public void setFlightStatus(FlightStatus flightStatus) {
+	protected void setFlightStatus(FlightStatus flightStatus) {
 			this.flightStatus = flightStatus;
 		
 	}
@@ -184,22 +189,40 @@ public class Flight {
 	 * read only, use add/remove to operate
 	 * @return a clone of field passengers
 	 */
-	public ArrayList<Passenger> getPassagers() {
-		return (ArrayList<Passenger>) passagers.clone();
+	public HashMap<Passenger, Integer> passagers() {
+		return (HashMap<Passenger, Integer>) passagers.clone();
+	}
+	
+	protected HashMap<Passenger, Integer> getPassagers() {
+		return passagers;
 	}
 
-	public void addPassager(Passenger passager) throws StatusUnavailableException {
-		/* DONE(Zhu) addPassager
-		 * you should generate and add order in this method meanwhile
-		 * for my convenience
-		 * and check for status
-		 */
-		// FIXME(Zhu) take care of the comment above!
-		if (flightStatus == FlightStatus.AVAILABLE) {
-			 passagers.add(passager);	
+	protected void addPassenger(Passenger passenger, int seat, boolean ignore) throws StatusUnavailableException {
+		if (!ignore) {
+			/* DONE(Zhu) addPassager
+			 * you should generate and add order in this method meanwhile
+			 * for my convenience
+			 * and check for status
+			 */
+			if (flightStatus == FlightStatus.AVAILABLE) {
+				passagers.put(passenger, seat);
+				if (passagers.size() == seatCapacity) {
+					flightStatus = FlightStatus.FULL;
+				}
+			} else {
+				throw new StatusUnavailableException(flightStatus);
+			}
 		} else {
-			throw new StatusUnavailableException(flightStatus);
+			passagers.put(passenger, seat);			
 		}
+	}
+	
+	protected void addPassenger(Passenger passenger, int seat) throws StatusUnavailableException {
+		addPassenger(passenger, seat, false);
+	}
+	
+	protected void addPassenger(Passenger passenger) throws StatusUnavailableException {
+		addPassenger(passenger, getAvailableSeat());
 	}
 	
 	/**
@@ -207,16 +230,25 @@ public class Flight {
 	 * @return return false when no one can found
 	 * @throws StatusUnavailableException when status is TERMINATE, 
 	 */
-	public boolean removePassenger(Passenger passenger) throws StatusUnavailableException {
+	protected boolean removePassenger(Passenger passenger) throws StatusUnavailableException {
 		/* DONE(Zhu) removePassenger
 		 * you should remove in this method meanwhile
 		 * and check for status
 		 * XXX(Zhu) needs review
 		 */
-		if(flightStatus!=FlightStatus.TERMINATE)
-			return passagers.remove(passenger);
-		else
-			throw new StatusUnavailableException();
+		if(flightStatus!=FlightStatus.TERMINATE) {
+			if (passagers.remove(passenger) != null) {
+				if (passagers.size() < seatCapacity && flightStatus == FlightStatus.FULL) {
+					flightStatus = FlightStatus.AVAILABLE;
+				} else if (passagers.size() == seatCapacity) {
+					flightStatus = FlightStatus.FULL;
+				}
+				return true;
+			} else {
+				return false;
+			}
+		} else
+			throw new StatusUnavailableException(flightStatus);
 	}
 
 	public void publish() throws StatusUnavailableException {
@@ -225,6 +257,19 @@ public class Flight {
 		} else {
 			throw new StatusUnavailableException(flightStatus);
 		}
+	}
+
+	public int getAvailableSeat() {
+		Collection<Integer> seat = passagers.values();
+		if (seat.size() == seatCapacity) {
+			return -1;
+		}
+		Random random = new Random(this.hashCode() * this.hashCode());
+		int result;
+		do {
+			result = random.nextInt(seatCapacity) + 1;			
+		} while (seat.contains(result));
+		return result;
 	}
 	
 }

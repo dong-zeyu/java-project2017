@@ -1,7 +1,7 @@
 package exceptions;
 
-import flight.FlightStatus;
-import user.OrderStatus;
+import data.FlightStatus;
+import data.OrderStatus;
 
 /**
  *  throws when status has already changed to not UNPUBLISH or TERMINATE but still trying to change something
@@ -10,11 +10,11 @@ import user.OrderStatus;
 public class StatusUnavailableException extends Exception {
 
 	public StatusUnavailableException(FlightStatus status) {
-		super(status.name());
+		super("flight has status " + status.name());
 	}
 	
 	public StatusUnavailableException(OrderStatus status) {
-		super(status.name());
+		super("order has status: " + status.name());
 	}
 	
 	public StatusUnavailableException() {

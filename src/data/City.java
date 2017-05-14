@@ -1,4 +1,4 @@
-package flight;
+package data;
 
 import java.util.ArrayList;
 
@@ -41,11 +41,11 @@ public class City {
 	}
 	
 	public ArrayList<Flight> getFlightsIn() {
-		return flightsIn;
+		return (ArrayList<Flight>) flightsIn.clone();
 	}
 
 	public ArrayList<Flight> getFlightsOut() {
-		return flightsOut;
+		return (ArrayList<Flight>) flightsOut.clone();
 	}
 	
 }

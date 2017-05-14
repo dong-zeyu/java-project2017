@@ -1,4 +1,4 @@
-package user;
+package data;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -12,11 +12,14 @@ public abstract class User {
 	
 	public void changePass(String newPass) { 
 		passHash = hashPass(newPass);
-		// XXX(Dong) password change should be written to file immediately
 	}
 	
 	public int getID() {
 		return userID;
+	}
+	
+	protected void setPassHash(String passHash) {
+		this.passHash = passHash;
 	}
 	
 	public String getPassHash() {
