@@ -458,11 +458,10 @@ public class Main {
 		 */
 		System.out.println("flightName");
 		String flightName=scanner.nextLine();
-		// XXX(Peng) How about 1 stand for Jan. but add (month - 1) to final result?
 		System.out.println("Please enter the Starttime,formatted with : year-month-date-hr-min-sec (Note: number 0 stand for January) :");
 		String[] startime=scanner.nextLine().split("-");
 		int year =Integer.parseInt(startime[0]);
-		int month =Integer.parseInt(startime[1]);
+		int month =Integer.parseInt(startime[1])-1;
 		int date =Integer.parseInt(startime[2]);
 		int hr =Integer.parseInt(startime[3]);
 		int min =Integer.parseInt(startime[4]);
