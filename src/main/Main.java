@@ -3,7 +3,11 @@ package main;
 import java.util.Date;
 import java.util.Scanner;
 
+import javax.jws.soap.SOAPBinding.Use;
+
+import data.City;
 import data.Flight;
+import data.User;
 import exceptions.PermissionDeniedException;
 import exceptions.StatusUnavailableException;
 
@@ -79,17 +83,7 @@ public class Main {
 				pub(param);
 				break;
 			case "change":
-				if (param != null && param.length == 1) {
-					try {
-						changeFlight(Integer.valueOf(param[0]));
-					} catch (NumberFormatException e) {
-						System.out.printf("'%s' is not a flight ID\n", param[0]);
-					} catch (PermissionDeniedException e) {
-						System.out.println(e.getMessage());
-					}			
-				} else {
-					System.out.println("please input the flightID to change");
-				}
+				change(param);
 				break;
 			default:
 				if (!string.equals("")) {
@@ -105,10 +99,63 @@ public class Main {
 	/*
 	 * These are subUI or a wizard to lead User to do specific work
 	 */
+	private static void change(String[] param) {
+		try {
+			switch (param[0]) {
+			case "flight":
+				try {
+					changeFlight(Integer.valueOf(param[1]));
+				} catch (NumberFormatException e) {
+					System.out.printf("'%s' is not a flight ID\n", param[1]);
+				} catch (PermissionDeniedException e) {
+					System.out.println(e.getMessage());
+				}						
+				break;
+			case "city":
+				try {
+					City city = server.getCity(Integer.valueOf(param[1]));
+					if (city != null) {
+						city.setCityName(param[2]);
+						System.out.println("Succeed!");
+					} else {
+						System.out.println("Failed: no such city");
+					}
+				} catch (NumberFormatException e) {
+					System.out.printf("'%s' is not a city ID\n", param[0]);
+				} catch (PermissionDeniedException e) {
+					System.out.println(e.getMessage());
+				}
+				break;
+			case "username":
+				try {
+					User user = server.getCurrentUser();
+					user.setUserName(param[1]);
+					System.out.println("Succeed!");
+				} catch (PermissionDeniedException e) {
+					System.out.println(e.getMessage());
+				}
+				break;
+			case "password":
+				try {
+					User user = server.getCurrentUser();
+					user.changePass(param[1]);
+					System.out.println("Succeed!");
+				} catch (PermissionDeniedException e) {
+					System.out.println(e.getMessage());
+				}
+				break;
+			default:
+				break;
+			}
+		} catch (NullPointerException | IndexOutOfBoundsException e) {
+			System.out.println("Format error");
+		}		
+	}
+
 	private static void pay() {
 		try {
-			System.out.println(server.displayOrder());
 			do {
+				System.out.println(server.displayOrder());
 				System.out.print("please select the index of order to pay(-1 to exit): ");
 				try {
 					int index = Integer.valueOf(scanner.nextLine());
@@ -124,7 +171,7 @@ public class Main {
 				} 
 			} while (true);
 		} catch (PermissionDeniedException e) {
-			System.err.println(e.getMessage());
+			System.out.println(e.getMessage());
 		}
 	}
 
@@ -136,9 +183,7 @@ public class Main {
 					System.out.printf("succeed in reserving '%s'\n", id);
 				} catch (NumberFormatException e) {
 					System.out.printf("'%s' is not a flight id\n", id);
-				} catch (PermissionDeniedException e) {
-					System.out.println(e.getMessage());
-				} catch (StatusUnavailableException e) {
+				} catch (PermissionDeniedException | StatusUnavailableException e) {
 					System.out.printf("Unsbcribe flight with id %s failed: %s\n", id, e.getMessage());
 				}
 			}
@@ -193,9 +238,7 @@ public class Main {
 					}
 				} catch (NumberFormatException e) {
 					System.out.printf("'%s' is not a flight ID\n", p);
-				} catch (PermissionDeniedException e) {
-					System.out.println(e.getMessage());
-				} catch (StatusUnavailableException e) {
+				} catch (StatusUnavailableException | PermissionDeniedException e) {
 					System.out.printf("cannot publish flight with id '%s': %s\n", p, e.getMessage());
 				}
 			} 
@@ -231,6 +274,7 @@ public class Main {
 				+ "\tarrivecity=cityID\n"
 				+ "\tprice=newprice\n"
 				+ "\tcapacity=newcapacity\n"
+				+ "\tdistance=newdistance\n"
 				+ "\texit|e\n");
 		String[] input;
 		do {
@@ -280,6 +324,10 @@ public class Main {
 					flight.setSeatCapacity(Integer.valueOf(input[1]));
 					System.out.println("succeed!");
 					break;
+				case "distance":
+					flight.setDistance(Integer.valueOf(input[1]));
+					System.out.println("succeed!");
+					break;
 				case "exit":
 				case "e":
 					break;
@@ -306,10 +354,8 @@ public class Main {
 					}
 				} catch (NumberFormatException e) {
 					System.out.printf("error: '%s' is not a flight id\n", para);
-				} catch (PermissionDeniedException e) {
-					System.out.println(e.getMessage());
-				} catch (StatusUnavailableException e) {
-					System.out.printf("cannot reserve filght with id '%s': %s\n", para, e.getMessage());
+				} catch (PermissionDeniedException | StatusUnavailableException e) {
+					System.out.printf("cannot reserve filght with id '%s': %s\n",para, e.getMessage());
 				}
 			}
 		}
@@ -356,11 +402,11 @@ public class Main {
 							}
 						} catch (NumberFormatException e) {
 							System.out.printf("'%s' is not a flight id!\n", param[i]);
+						} catch (StatusUnavailableException e) {
+							System.out.printf("Delete flight '%s' failed: %s", param[i], e.getMessage());
 						}
 					}
 				} catch (PermissionDeniedException e) {
-					System.out.println(e.getMessage());
-				} catch (StatusUnavailableException e) {
 					System.out.println(e.getMessage());
 				}
 				break;
@@ -376,11 +422,11 @@ public class Main {
 						} catch (NumberFormatException e) {
 							System.out.printf("'%s' is not a city id!\n", param[i]);
 						} catch (StatusUnavailableException e) {
-							System.out.println(e.getMessage());
+							System.out.printf("Delete city '%s' failed: %s\n", param[i], e.getMessage());
 						}
 					}
 				} catch (PermissionDeniedException e) {
-					System.out.println("Permission denied: you are not a administrator");
+					System.out.println(e.getMessage());
 				}
 				break;
 			case "user":
@@ -397,7 +443,7 @@ public class Main {
 						}
 					}
 				} catch (PermissionDeniedException e) {
-					System.out.println("Permission denied: you are not a administrator");
+					System.out.println(e.getMessage());
 				}
 				break;
 			default:
@@ -410,7 +456,7 @@ public class Main {
 	}
 
 	private static void search() {
-		// TODO(Dong) search
+		// DONE(Dong) search
 		String cmd = "";
 		int cityFromId = -1;
 		int cityToId = -1;
@@ -566,10 +612,12 @@ public class Main {
 		int price=scanner.nextInt();
 		System.out.println("seatCapacity");
 		int seatCapacity=scanner.nextInt();
+		System.out.print("distance: ");
+		int distance = scanner.nextInt();
 		scanner.nextLine();
 		
 		try {
-			if (!server.createFlight(flightName, startTime, arriveTime, startCityID, arriveCityID, price, seatCapacity)) {
+			if (!server.createFlight(flightName, startTime, arriveTime, startCityID, arriveCityID, price, seatCapacity, distance)) {
 				System.out.println("error in city id, please retry");
 			}
 		} catch (PermissionDeniedException e) {

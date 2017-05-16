@@ -31,6 +31,9 @@ public class MainServer {
 	}
 	
 	public boolean login(String userName, String pass) {
+		isLogin = false;
+		isAdmin = false;
+		currentUser = null;
 		for (User user : dataManager.users) {
 			if (user.getUserName().equals(userName) && user.getPassHash().equals(User.hashPass(pass))) {
 				isLogin = true;
@@ -66,18 +69,18 @@ public class MainServer {
 	}
 	
 	/*
-	 *  TODO(all) main function(search, add, ...) at here, each should decide whether isLogin and isAdmin
+	 *  DONE(all) main function(search, add, ...) at here, each should decide whether isLogin and isAdmin
 	 *  if having no permission, throw PermissionDeniedException
 	 *  you can see some example(completed) below to know how to throw it
 	 *  **make full use of private method searchFlightByID & searchUserByID**
 	 */
 	public boolean createFlight(String flightName, Date startTime, Date arriveTime, int startCityID, int arriveCityID,
-			int price, int seatCapacity) throws PermissionDeniedException { // false when error cityID
+			int price, int seatCapacity, int distence) throws PermissionDeniedException { // false when error cityID
 		// DONE(Peng) creatFlight
 		checkPermission(true);
 		try {
 			dataManager.flights.add(new Flight(flightName,startTime, arriveTime,dataManager.getCityByID(startCityID),dataManager.getCityByID(arriveCityID),
-					price,seatCapacity));
+					price,seatCapacity, distence));
 			return true;
 		} catch (NullPointerException e) {
 			return false;
@@ -159,7 +162,7 @@ public class MainServer {
 	}
 	
 	public User getCurrentUser() throws PermissionDeniedException { // to update user info
-		checkPermission(true);
+		checkPermission(false);
 		return currentUser;
 	}
 	
