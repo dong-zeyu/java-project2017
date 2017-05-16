@@ -396,7 +396,7 @@ public class DataManager {
 			}
 		} catch (FileNotFoundException | SAXException e) {
 			System.gc();
-			System.out.println(file.delete());
+			file.delete();
 			init();
 		} catch (ParserConfigurationException e) {
 		}
