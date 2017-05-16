@@ -104,9 +104,9 @@ public class Main {
 			switch (param[0]) {
 			case "flight":
 				try {
-					changeFlight(Integer.valueOf(param[0]));
+					changeFlight(Integer.valueOf(param[1]));
 				} catch (NumberFormatException e) {
-					System.out.printf("'%s' is not a flight ID\n", param[0]);
+					System.out.printf("'%s' is not a flight ID\n", param[1]);
 				} catch (PermissionDeniedException e) {
 					System.out.println(e.getMessage());
 				}						
@@ -274,6 +274,7 @@ public class Main {
 				+ "\tarrivecity=cityID\n"
 				+ "\tprice=newprice\n"
 				+ "\tcapacity=newcapacity\n"
+				+ "\tdistance=newdistance\n"
 				+ "\texit|e\n");
 		String[] input;
 		do {
@@ -321,6 +322,10 @@ public class Main {
 					break;
 				case "capacity":
 					flight.setSeatCapacity(Integer.valueOf(input[1]));
+					System.out.println("succeed!");
+					break;
+				case "distance":
+					flight.setDistance(Integer.valueOf(input[1]));
 					System.out.println("succeed!");
 					break;
 				case "exit":
@@ -608,10 +613,12 @@ public class Main {
 		int price=scanner.nextInt();
 		System.out.println("seatCapacity");
 		int seatCapacity=scanner.nextInt();
+		System.out.print("distance: ");
+		int distance = scanner.nextInt();
 		scanner.nextLine();
 		
 		try {
-			if (!server.createFlight(flightName, startTime, arriveTime, startCityID, arriveCityID, price, seatCapacity)) {
+			if (!server.createFlight(flightName, startTime, arriveTime, startCityID, arriveCityID, price, seatCapacity, distance)) {
 				System.out.println("error in city id, please retry");
 			}
 		} catch (PermissionDeniedException e) {

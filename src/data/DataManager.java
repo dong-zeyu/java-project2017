@@ -243,6 +243,7 @@ public class DataManager {
 			flightEgg.appendChild(document.createElement("arrivecity"));
 			flightEgg.appendChild(document.createElement("price"));
 			flightEgg.appendChild(document.createElement("seatcapacity"));
+			flightEgg.appendChild(document.createElement("distance"));
 			flightEgg.appendChild(document.createElement("status"));
 			for (Flight f : flights) {
 				Element node = (Element) flightEgg.cloneNode(true);
@@ -255,7 +256,8 @@ public class DataManager {
 				nodes.item(4).appendChild(document.createTextNode(String.valueOf((f.getArriveCity().getCityID()))));
 				nodes.item(5).appendChild(document.createTextNode(String.valueOf(f.getPrice())));
 				nodes.item(6).appendChild(document.createTextNode(String.valueOf(f.getSeatCapacity())));
-				nodes.item(7).appendChild(document.createTextNode(f.getFlightStatus().name()));
+				nodes.item(7).appendChild(document.createTextNode(String.valueOf(f.getDistance())));
+				nodes.item(8).appendChild(document.createTextNode(f.getFlightStatus().name()));
 				eflight.appendChild(nodes.item(0).getParentNode());
 			}
 			flightEgg = null;
@@ -307,58 +309,58 @@ public class DataManager {
 				cities.add(Hangz);
 				Flight flight1 = new Flight("A001",
 						Flight.calendar(2017, 4, 1, 9, 30, 0),
-						Flight.calendar(2017, 4, 1, 10, 40, 0), shenz, beij, 1200, 120);
+						Flight.calendar(2017, 4, 1, 10, 40, 0), shenz, beij, 1200, 120, 1800000);
 				Flight flight2 = new Flight("A002",
 						Flight.calendar(2017, 5, 2, 9, 12, 0),
-						Flight.calendar(2017, 5, 2, 10, 42, 0), beij, shenz, 1200, 120);
+						Flight.calendar(2017, 5, 2, 10, 42, 0), beij, shenz, 1200, 120, 1800000);
 				Flight flight3 = new Flight("A003",
 						Flight.calendar(2017, 3, 3, 16, 12, 00),
-						Flight.calendar(2017, 3, 3, 16, 52, 00), zhenz, shenz, 1200, 120);
+						Flight.calendar(2017, 3, 3, 16, 52, 00), zhenz, shenz, 1200, 120, 1200000);
 				Flight flight4 = new Flight("A004",
 						Flight.calendar(2017, 6, 8, 10, 55, 00), 
-						Flight.calendar(2017, 6, 8, 14, 32, 00), shenz, zhenz, 1200, 120);
+						Flight.calendar(2017, 6, 8, 14, 32, 00), shenz, zhenz, 1200, 120, 1200000);
 				Flight flight5 = new Flight("A005",
 						Flight.calendar(2017, 8, 8, 10, 31, 00), 
-						Flight.calendar(2017, 8, 8, 12, 32, 00), guangz, zhenz, 10000, 10);
+						Flight.calendar(2017, 8, 8, 12, 32, 00), guangz, zhenz, 10000, 10, 120000);
 				Flight flight6 = new Flight("A006",
 						Flight.calendar(2017, 9, 1, 22, 46, 00), 
-						Flight.calendar(2017, 9, 2, 00, 10, 00), zhenz, Nanc, 250, 300);
+						Flight.calendar(2017, 9, 2, 00, 10, 00), zhenz, Nanc, 250, 300, 950000);
 				Flight flight7 = new Flight("A007",
 						Flight.calendar(2017, 12, 30, 23, 46, 00), 
-						Flight.calendar(2018, 1, 1, 02, 10, 00), Wuh, Hangz, 900, 90);
+						Flight.calendar(2018, 1, 1, 02, 10, 00), Wuh, Hangz, 900, 90, 470000);
 				Flight flight8 = new Flight("A008",
 						Flight.calendar(2017, 6, 30, 10, 46, 00), 
-						Flight.calendar(2017, 6, 30, 13, 10, 00), xia, Hangz, 900, 90);
+						Flight.calendar(2017, 6, 30, 13, 10, 00), xia, Hangz, 900, 90, 840000);
 				Flight flight9 = new Flight("A009",
 						Flight.calendar(2017, 2, 3, 11, 46, 00), 
-						Flight.calendar(2017, 2, 3, 13, 10, 00), shangh, Hangz, 870, 100);
+						Flight.calendar(2017, 2, 3, 13, 10, 00), shangh, Hangz, 870, 100, 240000);
 				Flight flight10 = new Flight("A010",
 						Flight.calendar(2017, 3, 10, 17, 46, 00), 
-						Flight.calendar(2017, 3, 10, 19, 10, 00), shenz, Hangz, 870, 100);
+						Flight.calendar(2017, 3, 10, 19, 10, 00), shenz, Hangz, 870, 100, 660000);
 				Flight flight11 = new Flight("A011",
 						Flight.calendar(2017, 4, 10, 17, 46, 00), 
-						Flight.calendar(2017, 4, 10, 19, 10, 00), Hangz, shenz, 900, 100);
+						Flight.calendar(2017, 4, 10, 19, 10, 00), Hangz, shenz, 900, 100, 660000);
 				Flight flight12 = new Flight("A012",
 						Flight.calendar(2017, 5, 23, 17, 46, 00), 
-						Flight.calendar(2017, 5, 23, 19, 30, 00), Hangz, shangh, 1130, 100);
+						Flight.calendar(2017, 5, 23, 19, 30, 00), Hangz, shangh, 1130, 100, 240000);
 				Flight flight13 = new Flight("A013",
 						Flight.calendar(2017, 9, 25, 15, 46, 00), 
-						Flight.calendar(2017, 9, 25, 17, 40, 00), Hangz, xia, 860, 120);
+						Flight.calendar(2017, 9, 25, 17, 40, 00), Hangz, xia, 860, 120, 1000000);
 				Flight flight14 = new Flight("A014",
 						Flight.calendar(2017, 11, 25, 15, 46, 00), 
-						Flight.calendar(2017, 11, 25, 16, 40, 00), shenz, Wuh, 780, 120);
+						Flight.calendar(2017, 11, 25, 16, 40, 00), shenz, Wuh, 780, 120, 780000);
 				Flight flight15 = new Flight("A015",
 						Flight.calendar(2017, 12, 19, 15, 46, 00), 
-						Flight.calendar(2017, 12, 19, 18, 40, 00), Hangz, Wuh, 860, 120);
+						Flight.calendar(2017, 12, 19, 18, 40, 00), Hangz, Wuh, 860, 120, 340000);
 				Flight flight16 = new Flight("A016",
 						Flight.calendar(2017, 7, 16, 15, 46, 00), 
-						Flight.calendar(2017, 7, 16, 18, 40, 00), zhenz, xia, 900, 120);
+						Flight.calendar(2017, 7, 16, 18, 40, 00), zhenz, xia, 900, 120, 1400000);
 				Flight flight17 = new Flight("A017",
 						Flight.calendar(2017, 9, 5, 7, 46, 00), 
-						Flight.calendar(2017, 9, 5, 19, 40, 00), xia, zhenz, 1200, 120);
+						Flight.calendar(2017, 9, 5, 19, 40, 00), xia, zhenz, 1200, 120, 1400000);
 				Flight flight18 = new Flight("A018",
 						Flight.calendar(2017, 9, 5, 7, 46, 00), 
-						Flight.calendar(2017, 9, 5, 19, 40, 00), shenz, xia, 1200, 120);
+						Flight.calendar(2017, 9, 5, 19, 40, 00), shenz, xia, 1200, 120, 1400000);
 				flights.add(flight1);
 				flights.add(flight2);
 				flights.add(flight3);
@@ -393,7 +395,8 @@ public class DataManager {
 				readData();
 			}
 		} catch (FileNotFoundException | SAXException e) {
-			file.delete();
+			System.gc();
+			System.out.println(file.delete());
 			init();
 		} catch (ParserConfigurationException e) {
 		}
@@ -435,7 +438,8 @@ public class DataManager {
 								getCityByID(Integer.parseInt(e.getElementsByTagName("startcity").item(0).getTextContent())),
 								getCityByID(Integer.parseInt(e.getElementsByTagName("arrivecity").item(0).getTextContent())),
 								Integer.parseInt(e.getElementsByTagName("price").item(0).getTextContent()),
-								Integer.parseInt(e.getElementsByTagName("seatcapacity").item(0).getTextContent()));
+								Integer.parseInt(e.getElementsByTagName("seatcapacity").item(0).getTextContent()),
+								Integer.parseInt(e.getElementsByTagName("distance").item(0).getTextContent()));
 							flight.setFlightStatus(FlightStatus.valueOf(e.getElementsByTagName("status").item(0).getTextContent()));
 							flights.add(flight);
 						}
@@ -489,6 +493,7 @@ public class DataManager {
 				}
 			}
 		} catch (IndexOutOfBoundsException | NullPointerException e) {
+			System.gc();
 			file.delete();
 			init();
 		}

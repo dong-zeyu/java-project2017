@@ -23,9 +23,10 @@ public class Flight {
 	private int seatCapacity;
 	private FlightStatus flightStatus;
 	private HashMap<Passenger, Integer> passagers;
+	private int distance;
 	
 	public Flight(String flightName, Date startTime, Date arriveTime, City startCity, City arriveCity, int price,
-			int seatCapacity) {
+			int seatCapacity, int distance) {
 		passagers = new HashMap<>();
 		this.flightName = flightName;
 		this.startTime = startTime;
@@ -34,6 +35,7 @@ public class Flight {
 		this.arriveCity = arriveCity;
 		this.price = price;
 		this.seatCapacity = seatCapacity;
+		this.distance = distance;
 		this.flightStatus = FlightStatus.UNPUBLISHED;
 		flightID = Flight.ID;
 		ID++;
@@ -114,6 +116,14 @@ public class Flight {
 		return arriveTime;
 	}
 
+	public int getDistance() {
+		return distance;
+	}
+	
+	public void setDistance(int distance) {
+		this.distance = distance;
+	}
+	
 	public void setArriveTime(Date arriveTime) throws StatusUnavailableException {
 		if(flightStatus==FlightStatus.UNPUBLISHED){
 			this.arriveTime = arriveTime;
