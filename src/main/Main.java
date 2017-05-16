@@ -154,8 +154,8 @@ public class Main {
 
 	private static void pay() {
 		try {
-			System.out.println(server.displayOrder());
 			do {
+				System.out.println(server.displayOrder());
 				System.out.print("please select the index of order to pay(-1 to exit): ");
 				try {
 					int index = Integer.valueOf(scanner.nextLine());
@@ -171,7 +171,7 @@ public class Main {
 				} 
 			} while (true);
 		} catch (PermissionDeniedException e) {
-			System.err.println(e.getMessage());
+			System.out.println(e.getMessage());
 		}
 	}
 

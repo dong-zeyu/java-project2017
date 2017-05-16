@@ -31,6 +31,9 @@ public class MainServer {
 	}
 	
 	public boolean login(String userName, String pass) {
+		isLogin = false;
+		isAdmin = false;
+		currentUser = null;
 		for (User user : dataManager.users) {
 			if (user.getUserName().equals(userName) && user.getPassHash().equals(User.hashPass(pass))) {
 				isLogin = true;
@@ -66,7 +69,7 @@ public class MainServer {
 	}
 	
 	/*
-	 *  TODO(all) main function(search, add, ...) at here, each should decide whether isLogin and isAdmin
+	 *  DONE(all) main function(search, add, ...) at here, each should decide whether isLogin and isAdmin
 	 *  if having no permission, throw PermissionDeniedException
 	 *  you can see some example(completed) below to know how to throw it
 	 *  **make full use of private method searchFlightByID & searchUserByID**
