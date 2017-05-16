@@ -159,7 +159,7 @@ public class MainServer {
 	}
 	
 	public User getCurrentUser() throws PermissionDeniedException { // to update user info
-		checkPermission(true);
+		checkPermission(false);
 		return currentUser;
 	}
 	

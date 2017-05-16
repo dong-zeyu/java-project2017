@@ -3,7 +3,11 @@ package main;
 import java.util.Date;
 import java.util.Scanner;
 
+import javax.jws.soap.SOAPBinding.Use;
+
+import data.City;
 import data.Flight;
+import data.User;
 import exceptions.PermissionDeniedException;
 import exceptions.StatusUnavailableException;
 
@@ -79,17 +83,7 @@ public class Main {
 				pub(param);
 				break;
 			case "change":
-				if (param != null && param.length == 1) {
-					try {
-						changeFlight(Integer.valueOf(param[0]));
-					} catch (NumberFormatException e) {
-						System.out.printf("'%s' is not a flight ID\n", param[0]);
-					} catch (PermissionDeniedException e) {
-						System.out.println(e.getMessage());
-					}			
-				} else {
-					System.out.println("please input the flightID to change");
-				}
+				change(param);
 				break;
 			default:
 				if (!string.equals("")) {
@@ -105,6 +99,59 @@ public class Main {
 	/*
 	 * These are subUI or a wizard to lead User to do specific work
 	 */
+	private static void change(String[] param) {
+		try {
+			switch (param[0]) {
+			case "flight":
+				try {
+					changeFlight(Integer.valueOf(param[0]));
+				} catch (NumberFormatException e) {
+					System.out.printf("'%s' is not a flight ID\n", param[0]);
+				} catch (PermissionDeniedException e) {
+					System.out.println(e.getMessage());
+				}						
+				break;
+			case "city":
+				try {
+					City city = server.getCity(Integer.valueOf(param[1]));
+					if (city != null) {
+						city.setCityName(param[2]);
+						System.out.println("Succeed!");
+					} else {
+						System.out.println("Failed: no such city");
+					}
+				} catch (NumberFormatException e) {
+					System.out.printf("'%s' is not a city ID\n", param[0]);
+				} catch (PermissionDeniedException e) {
+					System.out.println(e.getMessage());
+				}
+				break;
+			case "username":
+				try {
+					User user = server.getCurrentUser();
+					user.setUserName(param[1]);
+					System.out.println("Succeed!");
+				} catch (PermissionDeniedException e) {
+					System.out.println(e.getMessage());
+				}
+				break;
+			case "password":
+				try {
+					User user = server.getCurrentUser();
+					user.changePass(param[1]);
+					System.out.println("Succeed!");
+				} catch (PermissionDeniedException e) {
+					System.out.println(e.getMessage());
+				}
+				break;
+			default:
+				break;
+			}
+		} catch (NullPointerException | IndexOutOfBoundsException e) {
+			System.out.println("Format error");
+		}		
+	}
+
 	private static void pay() {
 		try {
 			System.out.println(server.displayOrder());
