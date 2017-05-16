@@ -136,9 +136,7 @@ public class Main {
 					System.out.printf("succeed in reserving '%s'\n", id);
 				} catch (NumberFormatException e) {
 					System.out.printf("'%s' is not a flight id\n", id);
-				} catch (PermissionDeniedException e) {
-					System.out.println(e.getMessage());
-				} catch (StatusUnavailableException e) {
+				} catch (PermissionDeniedException | StatusUnavailableException e) {
 					System.out.printf("Unsbcribe flight with id %s failed: %s\n", id, e.getMessage());
 				}
 			}
@@ -193,9 +191,7 @@ public class Main {
 					}
 				} catch (NumberFormatException e) {
 					System.out.printf("'%s' is not a flight ID\n", p);
-				} catch (PermissionDeniedException e) {
-					System.out.println(e.getMessage());
-				} catch (StatusUnavailableException e) {
+				} catch (StatusUnavailableException | PermissionDeniedException e) {
 					System.out.printf("cannot publish flight with id '%s': %s\n", p, e.getMessage());
 				}
 			} 
@@ -306,10 +302,8 @@ public class Main {
 					}
 				} catch (NumberFormatException e) {
 					System.out.printf("error: '%s' is not a flight id\n", para);
-				} catch (PermissionDeniedException e) {
-					System.out.println(e.getMessage());
-				} catch (StatusUnavailableException e) {
-					System.out.printf("cannot reserve filght with id '%s': %s\n", para, e.getMessage());
+				} catch (PermissionDeniedException | StatusUnavailableException e) {
+					System.out.printf("cannot reserve filght with id '%s': %s\n",para, e.getMessage());
 				}
 			}
 		}
@@ -356,11 +350,11 @@ public class Main {
 							}
 						} catch (NumberFormatException e) {
 							System.out.printf("'%s' is not a flight id!\n", param[i]);
+						} catch (StatusUnavailableException e) {
+							System.out.printf("Delete flight '%s' failed: %s", param[i], e.getMessage());
 						}
 					}
 				} catch (PermissionDeniedException e) {
-					System.out.println(e.getMessage());
-				} catch (StatusUnavailableException e) {
 					System.out.println(e.getMessage());
 				}
 				break;
@@ -376,11 +370,11 @@ public class Main {
 						} catch (NumberFormatException e) {
 							System.out.printf("'%s' is not a city id!\n", param[i]);
 						} catch (StatusUnavailableException e) {
-							System.out.println(e.getMessage());
+							System.out.printf("Delete city '%s' failed: %s\n", param[i], e.getMessage());
 						}
 					}
 				} catch (PermissionDeniedException e) {
-					System.out.println("Permission denied: you are not a administrator");
+					System.out.println(e.getMessage());
 				}
 				break;
 			case "user":
@@ -397,7 +391,7 @@ public class Main {
 						}
 					}
 				} catch (PermissionDeniedException e) {
-					System.out.println("Permission denied: you are not a administrator");
+					System.out.println(e.getMessage());
 				}
 				break;
 			default:
