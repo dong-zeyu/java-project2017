@@ -200,6 +200,11 @@ public class MainServer {
 	
 	public void cancel(int index) throws PermissionDeniedException, StatusUnavailableException{
 		// TODO(Peng) cancel an order (index is the index of the order in ArrayList<Order>)
+		if (isLogin) {
+			if (isAdmin){
+				
+			}
+		}
 	}
 	
 	public boolean deleteCity(int cityID) throws PermissionDeniedException, StatusUnavailableException {
@@ -236,6 +241,11 @@ public class MainServer {
 
 	public String dispalyUser() {
 		// TODO(Peng)
+		if (isLogin) {
+			if (isAdmin){
+				//为什么还有另外一个displayuser （TODO （zhu）），这一个displayuser作用是？
+			}
+		}
 		return null;
 	}
 	
@@ -256,7 +266,15 @@ public class MainServer {
 	 * when it comes to display a object with specific id, you need provide more specific information(see above)
 	 */
 	public String displayCity(int CityID) {
-		// TODO(Peng) print flightIn and flightOut as well
+		// DONE(Peng) print flightIn and flightOut as well
+		if (isLogin){
+			System.out.println("the name of the City is : "+dataManager.getCityByID(CityID).getCityName());
+			System.out.println("Flights to this City are : "+dataManager.getCityByID(CityID).getFlightsIn());
+			System.out.println("Flights living this City are : "+dataManager.getCityByID(CityID).getFlightsOut());
+		}
+		else {
+			System.out.println("Sorry your are not logged in");
+		}
 		return null;
 	}
 	
