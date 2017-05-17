@@ -1,9 +1,6 @@
 package main;
 
-import java.util.ArrayList;
 import java.util.Date;
-
-import javax.lang.model.element.Element;
 
 import data.Admin;
 import data.City;

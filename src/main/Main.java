@@ -70,6 +70,7 @@ public class Main {
 				list(param);
 				break;
 			case "login":
+			case "log":
 				login(param);
 				break;
 			case "register":
@@ -187,12 +188,14 @@ public class Main {
 						break;
 					}
 					server.pay(index);
-					System.out.println("succeed!");
+					System.out.println("Succeed!");
 				} catch (NumberFormatException e) {
-					System.out.println("please input the right index");
+					System.out.println("Please input the right index");
 				} catch (StatusUnavailableException e) {
 					System.out.println("Pay failed: " + e.getMessage());
-				} 
+				} catch (IndexOutOfBoundsException e) {
+					System.out.println("Error: no such order");
+				}
 			} while (true);
 		} catch (PermissionDeniedException e) {
 			System.out.println(e.getMessage());
@@ -679,11 +682,47 @@ public class Main {
 	}
 
 	private static void printHelp(boolean isMini) {
-		// TODO(Dong) Help
+		// DONE(Dong) Help
 		if (isMini) {
-			System.out.println("Mini Help");
+			System.out.println("Welcome to flight system!\n"
+					+ "please use 'login [username] [password]' to login or use 'register' to register an account\n"
+					+ "type 'help' for more information.'");
 		} else {
-			System.out.println("Full Help");
+			System.out.println("Usage: command [param...]\n"
+					+ "Available command: \n\n"
+					+ "\tlogin|log [username] [password]\n"
+					+ "\t\tlogin with username and password\n\n"
+					+ "\tregister\n"
+					+ "\t\tregister an account\n\n"
+					+ "\tsearch|s [flightName]\n"
+					+ "\t\tsearch flight with specific name\n\n"
+					+ "\tsearch|s\n"
+					+ "\t\tsearch flight with some filter\n\n"
+					+ "\tlist|l (city|user|flight) [ID]\n"
+					+ "\t\tlist all city, users(only for adminstrator), flight in the server, or list the element with specific ID in detail\n\n"
+					+ "\tadd (city|admin|flight)\n"
+					+ "\t\tadd a city administrator or flight(only for adminstrator)\n\n"
+					+ "\tdelete|d (city|user|flight) [ID1] [ID2] ....\n"
+					+ "\t\tdelete city user or flight with specific ID(only for adminstrator)\n\n"
+					+ "\treserve|re [ID1] [ID2] ....\n"
+					+ "\t\treserve flights with specific ID\n\n"
+					+ "\tunsubscribe|unsub [ID1] [ID2] ....\n"
+					+ "\t\tunsubscribe flights with specific ID\n\n"
+					+ "\tpay\n"
+					+ "\t\tgoes into pay page\n\n"
+					+ "\tpublish|pub [ID1] [ID2] ....\n"
+					+ "\t\tpublish flights with specific ID\n\n"
+					+ "\tchange flight [ID]\n"
+					+ "\t\tchange flight information with specific ID(only for adminstrator)\n\n"
+					+ "\tchange city [ID] [newName]\n"
+					+ "\t\tchange city name with specific ID(only for adminstrator)\n\n"
+					+ "\tchange (username|password) [newName|newPass]\n"
+					+ "\t\tchange username or password\n\n"
+					+ "\thelp|h\n"
+					+ "\t\tprint this help information\n\n"
+					+ "\texit|e\n"
+					+ "\t\texit this program\n\n"
+					);
 		}
 	}
 
