@@ -1,6 +1,9 @@
 package main;
 
+import java.util.ArrayList;
 import java.util.Date;
+
+import javax.lang.model.element.Element;
 
 import data.Admin;
 import data.City;
@@ -98,15 +101,15 @@ public class MainServer {
 	}
 	
 	public boolean deleteFlight(int flightID) throws PermissionDeniedException, StatusUnavailableException	 {
-		/* DONE(Peng) deleteFlight
-		 * **be sure to delete flight from the city**
-		 * FIXME (Peng) be careful about the comment above!
-		 */
+		// DONE(Peng) deleteFlight
 		checkPermission(true);
 		Flight f =dataManager.getFlightByID(flightID);
+		
 		if (f != null) {
 			if (f.getFlightStatus() == FlightStatus.UNPUBLISHED) {
 				dataManager.flights.remove(f);
+				f.getStartCity().getFlightsOut().remove(flightID);
+				f.getArriveCity().getFlightsIn().remove(flightID);
 				return true;
 			} else {
 				throw new StatusUnavailableException(f.getFlightStatus());
@@ -140,7 +143,7 @@ public class MainServer {
 	}
 	
 	public boolean deleteUser(int userID) throws PermissionDeniedException {
-		/* TODO(Peng) deleteUser
+		/* DONE(Peng) deleteUser
 		 * first to test if user is a passenger (using instanceof)
 		 * **be sure to remove user from the flight**
 		 */
@@ -198,15 +201,26 @@ public class MainServer {
 	
 	public void pay(int index) throws PermissionDeniedException, StatusUnavailableException {
 		// TODO(Peng) pay an order (index is the index of the order in ArrayList<Order>)
+		checkPermission(false);
+		   if (!isAdmin){
+			   Passenger passenger = (Passenger) currentUser;
+			   passenger.orderList().get(index).pay();
+			
+		   } else {
+			   throw new PermissionDeniedException("sorry you are not the user");
+		}
 		
 	}
 	
 	public void cancel(int index) throws PermissionDeniedException, StatusUnavailableException{
-		// TODO(Peng) cancel an order (index is the index of the order in ArrayList<Order>)
-		if (isLogin) {
-			if (isAdmin){
-				
-			}
+		// DONE(Peng) cancel an order (index is the index of the order in ArrayList<Order>)
+		checkPermission(false);
+		if (!isAdmin) {
+			Passenger passenger = (Passenger) currentUser;
+			passenger.orderList().get(index).cancle();
+			
+		} else {
+			throw new PermissionDeniedException("sorry you are not the user");
 		}
 	}
 	
@@ -243,12 +257,20 @@ public class MainServer {
 	}
 
 	public String dispalyUser() throws PermissionDeniedException {
-		// TODO(Peng)
-		if (isLogin) {
-			if (isAdmin){
-				//为什么还有另外一个displayuser （TODO （zhu）），这一个displayuser作用是？
-			}
-		}
+		//DONE(Peng)
+		checkPermission(true);
+		if (isLogin){
+			if (isAdmin) {
+				StringBuilder resultbuilder = new StringBuilder();
+				resultbuilder.append("userID:\tuserName\n");
+				for (int id=0; id<=dataManager.users.size(); id++){
+				User display =dataManager.getUserByID(id);
+			    resultbuilder.append(id+"\t"+display.toString()+"\n");}
+			    } else {
+					throw new PermissionDeniedException("sorry you are not Admin.");
+				}
+			} else {
+				    throw new PermissionDeniedException("sorry, you are not logged in, please log in first.");}
 		return null;
 	}
 	

@@ -553,12 +553,14 @@ public class Main {
 	}
 	
 	private static void addAdmin() {
-		// TODO(Peng) addAdmin UI
-		System.out.println("Please enter the Username and Password");
+		// DONE(Peng) addAdmin UI
+		System.out.print("Please enter the Username : ");
 		String userName=scanner.nextLine();
+		System.out.print("Please enter the password : ");
 		String password=scanner.nextLine();
 		try {
 			server.addAdmin(userName, password);
+			System.out.println("Added successfully");
 		} catch (PermissionDeniedException e) {
 			System.out.println(e.getMessage());
 		}
@@ -586,14 +588,12 @@ public class Main {
 		System.out.println("You succeed in creating your account!");
 		
 		server.addPassenger(username, idNumber, password2);
+		System.out.println("Register successfully");
 		
 	}
 
 	private static void addFlight() {
 		// DONE(Peng) addFlight UI
-		/* FIXME(Peng) Please consider more when design your UI
-		 * be sure to enhance the tolerance to user input, such as: empty input, error format, etc.
-		 */
 		System.out.println("flightName");
 		String flightName=scanner.nextLine();
 		System.out.println("Please enter the Starttime,formatted with : year-month-date-hr-min-sec (Note: number 0 stand for January) :");
@@ -625,11 +625,11 @@ public class Main {
 		System.out.print("distance: ");
 		int distance = scanner.nextInt();
 		scanner.nextLine();
-		
 		try {
 			if (!server.createFlight(flightName, startTime, arriveTime, startCityID, arriveCityID, price, seatCapacity, distance)) {
-				System.out.println("error in city id, please retry");
+				System.out.println("error in format of flight information, please retry");
 			}
+			System.out.print("Flight added successfully");
 		} catch (PermissionDeniedException e) {
 			System.out.println(e.getMessage());
 		}
@@ -643,8 +643,8 @@ public class Main {
 		}
 		try {
 			server.addCity(cityname);
+			System.out.println("City added successfully");
 		} catch (PermissionDeniedException e) {
-			// FIXME(Peng) be sure to finish exception handler!(also in other method)
 			System.out.println(e.getMessage());
 		}
 	}
