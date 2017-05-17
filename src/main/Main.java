@@ -3,8 +3,6 @@ package main;
 import java.util.Date;
 import java.util.Scanner;
 
-import javax.jws.soap.SOAPBinding.Use;
-
 import data.City;
 import data.Flight;
 import data.User;
@@ -80,7 +78,11 @@ public class Main {
 				break;
 			case "search":
 			case "s":
-				search();
+				if (param == null || param.length == 0) {
+					search();
+				} else {
+					System.out.print(server.search(param[0]));
+				}
 				break;
 			case "add":
 				add(param);
@@ -177,7 +179,7 @@ public class Main {
 	private static void pay() {
 		try {
 			do {
-				System.out.println(server.displayOrder());
+				System.out.print(server.displayOrder());
 				System.out.print("please select the index of order to pay(-1 to exit): ");
 				try {
 					int index = Integer.valueOf(scanner.nextLine());
@@ -217,19 +219,19 @@ public class Main {
 			switch (param[0]) {
 			case "city":
 				if (param.length == 1) {
-					System.out.println(server.displayCity());							
+					System.out.print(server.displayCity());							
 				} else {
 					for (int i = 1; i < param.length; i++) {
-						System.out.println(server.displayCity(Integer.valueOf(param[i])));
+						System.out.print(server.displayCity(Integer.valueOf(param[i])));
 					}
 				}
 				break;
 			case "flight":
 				if (param.length == 1) {
-					System.out.println(server.displayFlight());						
+					System.out.print(server.displayFlight());						
 				} else {
 					for (int i = 1; i < param.length; i++) {
-						System.out.println(server.displayFlight(i));								
+						System.out.print(server.displayFlight(i));								
 					}
 				}						
 				break;
@@ -502,7 +504,7 @@ public class Main {
 				+ "\tprint\tprint result using filter\n"
 				+ "\texit|e\texit wizard\n\n"
 				+ "\tavailibal city: \n"
-				+ server.displayCity() + "\n\n");
+				+ server.displayCity() + "\n");
 		do {
 			System.out.print("current filter: \n"
 					+ String.format("\tcity: %s-%s\n", cityFromId == -1 ? "unset" : String.valueOf(cityFromId), cityToId == -1 ? "unset" : String.valueOf(cityToId))

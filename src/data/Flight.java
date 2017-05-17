@@ -47,8 +47,8 @@ public class Flight {
 	public String toString() {
 		return String.valueOf(flightID) + "\t" +
 				flightName + "\t" + 
-				startCity.toString() + "\t" +
-				arriveCity.toString() + "\t" +
+				((startCity.toString().length() < 8) ? (startCity.toString() + "\t") : startCity.toString()) + "\t" +
+				((arriveCity.toString().length() < 8) ? (arriveCity.toString() + "\t") : arriveCity.toString()) + "\t" +
 				startTime.toString() + "\t" +
 				arriveTime.toString() + "\t" +
 				String.valueOf(price) + "\t" +
