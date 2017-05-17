@@ -237,7 +237,7 @@ public class MainServer {
 		return null;
 	}
 
-	public String dispalyUser() {
+	public String dispalyUser() throws PermissionDeniedException {
 		// TODO(Peng)
 		return null;
 	}
@@ -263,7 +263,7 @@ public class MainServer {
 		return null;
 	}
 	
-	public String dispalyUser(int UserID) {
+	public String dispalyUser(int UserID) throws PermissionDeniedException {
 		// TODO(Zhu) print User order(if it is passenger) as well
 		return null;
 	}

@@ -213,10 +213,20 @@ public class Main {
 				break;
 			case "user":
 				if (param.length == 1) {
-					System.out.println(server.dispalyUser());							
+					try {
+						System.out.println(server.dispalyUser());
+					} catch (PermissionDeniedException e) {
+						System.out.println(e.getMessage());
+					}							
 				} else {
 					for (int i = 1; i < param.length; i++) {
-						System.out.println(server.dispalyUser(Integer.valueOf(param[i])));								
+						try {
+							System.out.println(server.dispalyUser(Integer.valueOf(param[i])));
+						} catch (NumberFormatException e) {
+							System.out.printf("'%s' is not a user id.\n", param[i]);
+						} catch (PermissionDeniedException e) {
+							System.out.println(e.getMessage());
+						}								
 					}
 				}
 				break;
