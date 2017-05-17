@@ -200,7 +200,7 @@ public class MainServer {
 	}
 	
 	public void pay(int index) throws PermissionDeniedException, StatusUnavailableException {
-		// TODO(Peng) pay an order (index is the index of the order in ArrayList<Order>)
+		// DONE(Peng) pay an order (index is the index of the order in ArrayList<Order>)
 		checkPermission(false);
 		   if (!isAdmin){
 			   Passenger passenger = (Passenger) currentUser;
