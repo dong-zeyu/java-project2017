@@ -118,14 +118,6 @@ public class MainServer {
 		return false; 
 	}
 	
-	public void queryFlight() {
-		// XXX I think this can be changed to a class
-	}
-	
-	public void superQuery() { 
-		// XXX I think this can be changed to a class extends queryFlight
-	}
-	
 	public void addPassenger(String username, String idNumber, String password){
 		dataManager.users.add(new Passenger(idNumber, username, password));
 	}
@@ -247,31 +239,24 @@ public class MainServer {
 	 * tips: see <Flight>.toString() and <Order>.toString()
 	 */
 	public String displayCity() {
-		// TODO(Zhu)
+		// TODO(Zhu) displayCity
 		return null;
 	}
 
 	public String displayFlight() {
-		// TODO(Zhu) 
+		// TODO(Zhu) displayFlight
 		return null;
 	}
 
 	public String dispalyUser() throws PermissionDeniedException {
 		//DONE(Peng)
 		checkPermission(true);
-		if (isLogin){
-			if (isAdmin) {
-				StringBuilder resultbuilder = new StringBuilder();
-				resultbuilder.append("userID:\tuserName\n");
-				for (int id=0; id<=dataManager.users.size(); id++){
-				User display =dataManager.getUserByID(id);
-			    resultbuilder.append(id+"\t"+display.toString()+"\n");}
-			    } else {
-					throw new PermissionDeniedException("sorry you are not Admin.");
-				}
-			} else {
-				    throw new PermissionDeniedException("sorry, you are not logged in, please log in first.");}
-		return null;
+		StringBuilder resultbuilder = new StringBuilder();
+		resultbuilder.append("userID\tuserName\tisAdmin\n");
+		for (User user : dataManager.users) {
+			resultbuilder.append(String.valueOf(user.getID()) + "\t" + user.toString() + "\t\t" + String.valueOf(user instanceof Admin) + "\n");		
+		}
+		return resultbuilder.toString();
 	}
 	
 	public String displayFlight(int flightID) {

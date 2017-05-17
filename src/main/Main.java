@@ -238,14 +238,14 @@ public class Main {
 			case "user":
 				if (param.length == 1) {
 					try {
-						System.out.println(server.dispalyUser());
+						System.out.print(server.dispalyUser());
 					} catch (PermissionDeniedException e) {
 						System.out.println(e.getMessage());
 					}							
 				} else {
 					for (int i = 1; i < param.length; i++) {
 						try {
-							System.out.println(server.dispalyUser(Integer.valueOf(param[i])));
+							System.out.print(server.dispalyUser(Integer.valueOf(param[i])));
 						} catch (NumberFormatException e) {
 							System.out.printf("'%s' is not a user id.\n", param[i]);
 						} catch (PermissionDeniedException e) {
@@ -618,44 +618,49 @@ public class Main {
 
 	private static void addFlight() {
 		// DONE(Peng) addFlight UI
-		System.out.println("flightName");
-		String flightName=scanner.nextLine();
-		System.out.println("Please enter the Starttime,formatted with : year-month-date-hr-min-sec (Note: number 0 stand for January) :");
-		String[] startime=scanner.nextLine().split("-");
-		int year =Integer.parseInt(startime[0]);
-		int month =Integer.parseInt(startime[1])-1;
-		int date =Integer.parseInt(startime[2]);
-		int hr =Integer.parseInt(startime[3]);
-		int min =Integer.parseInt(startime[4]);
-		int sec =Integer.parseInt(startime[5]);
-		Date startTime = Flight.calendar(year, month, date, hr, min, sec);
-		System.out.println("Please enter the arrivetime,formatted with : year-month-date-hr-min-sec (Note: number 0 stand for January) :");
-		String[] arrivetime=scanner.nextLine().split("-");
-		int year1 =Integer.parseInt(startime[0]);
-		int month1 =Integer.parseInt(startime[1]);
-		int date1 =Integer.parseInt(startime[2]);
-		int hr1 =Integer.parseInt(startime[3]);
-		int min1 =Integer.parseInt(startime[4]);
-		int sec1 =Integer.parseInt(startime[5]);
-		Date arriveTime = Flight.calendar(year1, month1, date1, hr1, min1, sec1);
-		System.out.println("startCityID");
-		int startCityID=scanner.nextInt();
-		System.out.println("arriveCityID");
-		int arriveCityID=scanner.nextInt();
-		System.out.println("price");
-		int price=scanner.nextInt();
-		System.out.println("seatCapacity");
-		int seatCapacity=scanner.nextInt();
-		System.out.print("distance: ");
-		int distance = scanner.nextInt();
-		scanner.nextLine();
 		try {
+			System.out.println("flightName");
+			String flightName=scanner.nextLine();
+			System.out.println("Please enter the Starttime,formatted with : year-month-date-hr-min-sec: ");
+			String[] startime=scanner.nextLine().split("-");
+			int year =Integer.parseInt(startime[0]);
+			int month =Integer.parseInt(startime[1]) - 1;
+			int date =Integer.parseInt(startime[2]);
+			int hr =Integer.parseInt(startime[3]);
+			int min =Integer.parseInt(startime[4]);
+			int sec =Integer.parseInt(startime[5]);
+			Date startTime = Flight.calendar(year, month, date, hr, min, sec);
+			System.out.println("Please enter the arrivetime,formatted with : year-month-date-hr-min-sec: ");
+			String[] arrivetime=scanner.nextLine().split("-");
+			int year1 =Integer.parseInt(arrivetime[0]);
+			int month1 =Integer.parseInt(arrivetime[1]) - 1;
+			int date1 =Integer.parseInt(arrivetime[2]);
+			int hr1 =Integer.parseInt(arrivetime[3]);
+			int min1 =Integer.parseInt(arrivetime[4]);
+			int sec1 =Integer.parseInt(arrivetime[5]);
+			Date arriveTime = Flight.calendar(year1, month1, date1, hr1, min1, sec1);
+			System.out.print("startCityID: ");
+			int startCityID=scanner.nextInt();
+			System.out.print("arriveCityID: ");
+			int arriveCityID=scanner.nextInt();
+			System.out.println("price");
+			int price=scanner.nextInt();
+			System.out.print("seatCapacity: ");
+			int seatCapacity=scanner.nextInt();
+			System.out.print("distance: ");
+			int distance = scanner.nextInt();
+			scanner.nextLine();
 			if (!server.createFlight(flightName, startTime, arriveTime, startCityID, arriveCityID, price, seatCapacity, distance)) {
-				System.out.println("error in format of flight information, please retry");
+				System.out.println("Error in format of flight information, please retry");
+				addFlight();
+			} else {
+				System.out.print("Flight added successfully");
 			}
-			System.out.print("Flight added successfully");
 		} catch (PermissionDeniedException e) {
 			System.out.println(e.getMessage());
+		} catch (IndexOutOfBoundsException | NumberFormatException e) {
+			System.out.println("Input error, please retry");
+			addFlight();
 		}
 	}
 	
