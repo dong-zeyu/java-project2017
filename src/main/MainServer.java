@@ -279,5 +279,16 @@ public class MainServer {
 		// TODO(Dong) The most difficult one
 		return null;
 	}
+	
+	public String search(String flightName) {
+		StringBuilder builder = new StringBuilder();
+		builder.append("ID\tName\tStartCity\tArriveCity\tStartTime\t\t\tArriveTime\t\t\tPrice\tSeatRemain\n");
+		for (Flight flight : dataManager.flights) {
+			if (flight.getFlightName().toLowerCase().contains(flightName.toLowerCase())) {
+				builder.append(flight.toString() + "\n");
+			}
+		}
+		return builder.toString();
+	}
 
 }
