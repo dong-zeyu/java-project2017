@@ -504,12 +504,14 @@ public class Main {
 		int cityToId = -1;
 		Date date1 = null;
 		Date date2 = null;
-		System.out.print("welcome to search wizard! you can input: \n"
-				+ "\tcity CityFromId-CityToId | - (clear) \n"
+		System.out.print("welcome to search page! you can input: \n"
+				+ "\tcity CityFromId-CityToId\n"
 				+ "\t\tset filter of city\n"
-				+ "\tdate yyyy-mm-dd~yyyy-mm-dd | ~yyyy-mm-dd | yyyy-mm-dd~\n"
+				+ "\tcity -\n"
+				+ "\t\tclear the filter of city\n"
+				+ "\tdate ( yyyy-mm-dd~yyyy-mm-dd | ~yyyy-mm-dd | yyyy-mm-dd~ | ~ )\n"
 				+ "\t\tset filter of 'set off date' interval\n"
-				+ "\tprint\tprint result using filter\n"
+				+ "\tprint|p\tprint result using filter\n"
 				+ "\texit|e\texit wizard\n\n"
 				+ "\tavailibal city: \n"
 				+ server.displayCity() + "\n");
@@ -517,7 +519,7 @@ public class Main {
 			System.out.print("current filter: \n"
 					+ String.format("\tcity: %s-%s\n", cityFromId == -1 ? "unset" : String.valueOf(cityFromId), cityToId == -1 ? "unset" : String.valueOf(cityToId))
 					+ String.format("\tdate: %s~%s\n\n", date1 == null ? "unset" : date1.toString(), date2 == null ? "unset" : date2.toString())
-					+ "use 'print' to print result\n");
+					+ "use 'print' or 'p' to print result\n");
 			System.out.print(">>");
 			String param;
 			String input = scanner.nextLine();
@@ -575,6 +577,7 @@ public class Main {
 			case "e":
 				break;
 			case "print":
+			case "p":
 				System.out.println(server.search(cityFromId, cityToId, date1, date2));
 				break;
 			default:
@@ -705,6 +708,8 @@ public class Main {
 					+ "\t\tsearch flight with some filter\n\n"
 					+ "\tlist|l (city|user|flight) [ID]\n"
 					+ "\t\tlist all city, users(only for adminstrator), flight in the server, or list the element with specific ID in detail\n\n"
+					+ "\tlist|l order\n"
+					+ "\t\tlist the order\n\n"
 					+ "\tadd (city|admin|flight)\n"
 					+ "\t\tadd a city administrator or flight(only for adminstrator)\n\n"
 					+ "\tdelete|d (city|user|flight) [ID1] [ID2] ....\n"
@@ -716,7 +721,7 @@ public class Main {
 					+ "\tpay\n"
 					+ "\t\tgoes into pay page\n\n"
 					+ "\tpublish|pub [ID1] [ID2] ....\n"
-					+ "\t\tpublish flights with specific ID\n\n"
+					+ "\t\tpublish flights with specific ID(only for adminstrator)\n\n"
 					+ "\tchange flight [ID]\n"
 					+ "\t\tchange flight information with specific ID(only for adminstrator)\n\n"
 					+ "\tchange city [ID] [newName]\n"
