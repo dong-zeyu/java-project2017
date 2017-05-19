@@ -7,7 +7,7 @@ import exceptions.StatusUnavailableException;
 public class Passenger extends User {
 	
 	private String identityID; // XXX this should not be changed?
-	private ArrayList<Order> orderList;
+	protected ArrayList<Order> orderList;
 
 	public Passenger(String identityID, String realName, String password) {
 		orderList = new ArrayList<>();
@@ -56,11 +56,7 @@ public class Passenger extends User {
 		orderList.add(order);
 	}
 	
-	protected ArrayList<Order> getOrderList() {
-		return orderList;
-	}
-	
-	public ArrayList<Order> orderList() {
+	public ArrayList<Order> getOrderList() {
 		return (ArrayList<Order>) orderList.clone();
 	}
 	

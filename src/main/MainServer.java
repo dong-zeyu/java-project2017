@@ -143,7 +143,7 @@ public class MainServer {
 		}
 		if (u instanceof Passenger) {
 			Passenger passenger = (Passenger) u;
-			for (Order order : passenger.orderList()) {
+			for (Order order : passenger.getOrderList()) {
 				order.remove();
 			}
 			dataManager.users.remove(u);
@@ -193,7 +193,7 @@ public class MainServer {
 		checkPermission(false);
 		   if (!isAdmin){
 			   Passenger passenger = (Passenger) currentUser;
-			   passenger.orderList().get(index).pay();
+			   passenger.getOrderList().get(index).pay();
 			
 		   } else {
 			   throw new PermissionDeniedException("sorry you are not the user");
@@ -206,7 +206,7 @@ public class MainServer {
 		checkPermission(false);
 		if (!isAdmin) {
 			Passenger passenger = (Passenger) currentUser;
-			passenger.orderList().get(index).cancle();
+			passenger.getOrderList().get(index).cancle();
 			
 		} else {
 			throw new PermissionDeniedException("sorry you are not the user");

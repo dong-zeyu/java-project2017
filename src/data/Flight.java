@@ -21,7 +21,7 @@ public class Flight {
 	private City arriveCity;
 	private int price;
 	private int seatCapacity;
-	private FlightStatus flightStatus;
+	protected FlightStatus flightStatus;
 	private HashMap<Passenger, Integer> passagers;
 	private int distance;
 	
@@ -188,11 +188,6 @@ public class Flight {
 
 	public FlightStatus getFlightStatus() {
 		return flightStatus;
-	}
-
-	protected void setFlightStatus(FlightStatus flightStatus) {
-			this.flightStatus = flightStatus;
-		
 	}
 	
 	/**

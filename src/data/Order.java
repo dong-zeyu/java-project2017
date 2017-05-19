@@ -115,9 +115,9 @@ public class Order {
 				flight.getPassagers().remove(passenger);
 			}
 		}
-		passenger.getOrderList().remove(this);
+		passenger.orderList.remove(this);
 		if (flight.getPassagers().size() < flight.getSeatCapacity()) {
-			flight.setFlightStatus(FlightStatus.AVAILABLE);
+			flight.flightStatus = FlightStatus.AVAILABLE;
 		}
 	}
 
