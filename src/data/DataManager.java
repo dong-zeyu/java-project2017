@@ -108,12 +108,12 @@ public class DataManager {
 		public void run() {
 			for (Flight flight : flights) {
 				if (flight.getStartTime().getTime() - new Date().getTime() <= 7200000l) {
-					flight.setFlightStatus(FlightStatus.TERMINATE);
+					flight.flightStatus = FlightStatus.TERMINATE;
 				} else  {
 					if (flight.getNumber() == flight.getSeatCapacity()) {
-						flight.setFlightStatus(FlightStatus.FULL);
+						flight.flightStatus = FlightStatus.FULL;
 					} else {
-						flight.setFlightStatus(FlightStatus.AVAILABLE);
+						flight.flightStatus = FlightStatus.AVAILABLE;
 					}
 				}
 			}
@@ -440,7 +440,7 @@ public class DataManager {
 								Integer.parseInt(e.getElementsByTagName("price").item(0).getTextContent()),
 								Integer.parseInt(e.getElementsByTagName("seatcapacity").item(0).getTextContent()),
 								Integer.parseInt(e.getElementsByTagName("distance").item(0).getTextContent()));
-							flight.setFlightStatus(FlightStatus.valueOf(e.getElementsByTagName("status").item(0).getTextContent()));
+							flight.flightStatus = FlightStatus.valueOf(e.getElementsByTagName("status").item(0).getTextContent());
 							flights.add(flight);
 						}
 					}
@@ -462,14 +462,14 @@ public class DataManager {
 										u.getElementsByTagName("username").item(0).getTextContent(),
 										null
 										);
-								admin.setPassHash(u.getElementsByTagName("passhash").item(0).getTextContent());
+								admin.passHash = u.getElementsByTagName("passhash").item(0).getTextContent();
 								users.add(admin);
 							} else if (u.getTagName().equals("passenger")) {
 								Passenger p = new Passenger(
 										u.getElementsByTagName("idnumber").item(0).getTextContent(),
 										u.getElementsByTagName("username").item(0).getTextContent(),
 										null);
-								p.setPassHash(u.getElementsByTagName("passhash").item(0).getTextContent());
+								p.passHash = u.getElementsByTagName("passhash").item(0).getTextContent();
 								NodeList orders = u.getElementsByTagName("order").item(0).getChildNodes();
 								for (int k = 0; k < orders.getLength(); k++) {
 									if (orders.item(k).getNodeType() == Node.ELEMENT_NODE && orders.item(k).getNodeName() != null) {

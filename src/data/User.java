@@ -18,10 +18,6 @@ public abstract class User {
 		return userID;
 	}
 	
-	protected void setPassHash(String passHash) {
-		this.passHash = passHash;
-	}
-	
 	public String getPassHash() {
 		return passHash;
 	}
