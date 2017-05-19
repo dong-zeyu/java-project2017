@@ -373,7 +373,7 @@ public class DataManager {
 			flightDaemonHash = flightDaemons.hashCode();
 			//flight
 			doc.getIn("flightDaemon").renewElement();
-			for (Flight flight : flights) {
+			for (FlightDaemon flight : flightDaemons) {
 				HashMap<String, String> map = new HashMap<>();
 				map.put("flightName", flight.getFlightName());
 				map.put("startTime", String.valueOf(flight.getStartTime().getTime()));
@@ -383,8 +383,8 @@ public class DataManager {
 				map.put("price", String.valueOf(flight.getPrice()));
 				map.put("seatCapacity", String.valueOf(flight.getSeatCapacity()));
 				map.put("distance", String.valueOf(flight.getDistance()));
-				map.put("status", flight.getFlightStatus().name());
-				doc.appendItem(map, flight.getFlightID());
+				map.put("period", String.valueOf(flight.getPeriod()));
+				doc.appendItem(map, flight.getFlightDaemonID());
 			}
 			doc.returnParent();
 		}
@@ -588,6 +588,7 @@ public class DataManager {
 			User.ID = MAX_ID + 1;
 			doc.returnParent();
 		} catch (IndexOutOfBoundsException | NullPointerException e) {
+			e.printStackTrace();
 			System.gc();
 			file.delete();
 			init();
