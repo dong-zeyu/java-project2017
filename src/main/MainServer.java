@@ -330,11 +330,11 @@ public class MainServer {
 			}
 		}
 		if (!direct) {
-			builder.append("No direct flight!");
+			builder.append("No direct flight!\n");
 			ArrayList<City> S = (ArrayList<City>) dataManager.cities.clone();
 			ArrayList<City> V = new ArrayList<>();
 			HashMap<City, Integer> dist = new HashMap<>();
-			HashMap<City, ArrayList<Flight>> path = new HashMap<>();  
+			HashMap<City, ArrayList<Flight>> path = new HashMap<>();
 			for (City city : S) {
 				dist.put(city, Integer.MAX_VALUE);
 				path.put(city, null);
@@ -363,7 +363,7 @@ public class MainServer {
 				}
 				Integer min = Integer.MAX_VALUE;
 				for (City city : S) {
-					if (dist.get(city) < min) {
+					if (dist.get(city) <= min) {
 						min = dist.get(city);
 						head = city;
 					}
@@ -377,7 +377,7 @@ public class MainServer {
 					builder.append("\t").append(flight.toString()).append("\n");
 				}
 			} else {
-				builder.append("No Available transit as well");
+				builder.append("No Available transit as well\n");
 			}
 		}
 		return builder.toString();
