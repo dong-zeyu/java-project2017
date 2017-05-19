@@ -5,12 +5,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javax.tools.DocumentationTool.Location;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
@@ -85,7 +85,7 @@ public class DataManager {
 	public static final long TIME_TO_TERMINATE = 2*3600*1000l; // 2 hours
 	private final String filename = "data.xml";
 	private File file;
-	private Document document;
+	private Doc doc;
 	private int usersHash;
 	private int flightsHash;
 	private int citiesHash;
@@ -220,105 +220,165 @@ public class DataManager {
 		return null;
 	}
 	
+	private class Doc {
+		
+		private Document document;
+		private Element current;
+		
+		public void setCurrent(Element current) {
+			this.current = current;
+		}
+		
+		public Doc getIn(String tag) {
+			return getIn(tag, 0);
+		}
+		
+		public Doc getIn(String tag, int index) {
+			NodeList nodes = current.getChildNodes();
+			for (int i = 0; i < nodes.getLength(); i++) {
+				if (nodes.item(i).getNodeType() == Node.ELEMENT_NODE && nodes.item(i).getNodeName().equals(tag)) {
+					if (index != 0) {
+						index--;
+					} else {
+						current = (Element) nodes.item(i);
+					}
+				}
+			}
+			return this;
+		}
+		
+		public ArrayList<Element> getChildren() {
+			ArrayList<Element> elements = new ArrayList<>();
+			NodeList list = current.getChildNodes();
+			for(int i = 0; i < list.getLength(); i++) {
+				if (list.item(i).getNodeType() == Node.ELEMENT_NODE) {
+					elements.add((Element) list.item(i));
+				}
+			}
+			return elements;
+		}
+		
+		public Doc returnParent() {
+			current = (Element) current.getParentNode();
+			return this;
+		}
+		
+		public Doc createElement(String tag) {
+			current = (Element) current.appendChild(document.createElement(tag));
+			return this;
+		}
+		
+		public Doc renewElement() {
+			Element element = (Element) document.createElement(current.getTagName());
+			current.getParentNode().replaceChild(element, current);
+			current = element;
+			return this;
+		}
+		
+		public Element appendItem(Map<String, String> map, int id) {
+			Element item = (Element) current.appendChild(document.createElement("item"));
+			item.setAttribute("mid", String.valueOf(id));
+			current.getFirstChild();
+			current = item;
+			appendChirldren(map);
+			current = (Element) current.getParentNode();
+			return item;
+		}
+		
+		public Element appendItem(Map<String, String> map) {
+			Element item = (Element) current.appendChild(document.createElement("item"));
+			current = item;
+			appendChirldren(map);
+			current = (Element) current.getParentNode();
+			return item;
+		}
+		
+		public Doc appendChirldren(Map<String, String> map) {
+			for (String string : map.keySet()) {
+				current.appendChild(document.createElement(string)).appendChild(document.createTextNode(map.get(string)));
+			}
+			return this;
+		}
+		
+		public void saveDocument() throws FileNotFoundException {
+	        try {
+	        	Transformer transformer = TransformerFactory.newInstance().newTransformer();
+	        	transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+	        	DOMSource source=new DOMSource();
+	        	source.setNode(document);
+	        	StreamResult result=new StreamResult();
+	        	result.setOutputStream(new FileOutputStream(file));
+				transformer.transform(source, result);
+			} catch (TransformerException e) {
+			}
+		}
+		
+	}
+	
 	public void saveData() throws FileNotFoundException {
 		if (usersHash != users.hashCode()) {
 			usersHash = users.hashCode();
 			//Users
-			Element euser = document.createElement("user");
-			document.getDocumentElement().replaceChild(euser, document.getElementsByTagName("user").item(0));
-			Element adminEgg;
-			Element passengerEgg;
-			adminEgg = document.createElement("admin");
-			adminEgg.appendChild(document.createElement("username"));
-			adminEgg.appendChild(document.createElement("passhash"));
-			passengerEgg = document.createElement("passenger");
-			passengerEgg.appendChild(document.createElement("username"));
-			passengerEgg.appendChild(document.createElement("passhash"));
-			passengerEgg.appendChild(document.createElement("idnumber"));
-			passengerEgg.appendChild(document.createElement("order"));
+			doc.getIn("user").renewElement();
 			for (User user : users) {
+				HashMap<String, String> map = new HashMap<>();
 				if (user instanceof Admin) {
-					Admin admin = (Admin) user;
-					Element node = (Element) adminEgg.cloneNode(true);
-					node.setAttribute("uid", String.valueOf(admin.getID()));
-					NodeList nodes = node.getChildNodes();
-					nodes.item(0).appendChild(document.createTextNode(admin.getUserName()));
-					nodes.item(1).appendChild(document.createTextNode(admin.getPassHash()));
-					euser.appendChild(nodes.item(0).getParentNode());
-				} else if (user instanceof Passenger) {
+					map.put("userName", user.getUserName());
+					map.put("passHash", user.getPassHash());
+					doc.appendItem(map, user.userID).setAttribute("isAdmin", "true");
+				} else {
 					Passenger passenger = (Passenger) user;
-					Element node = (Element) passengerEgg.cloneNode(true);
-					node.setAttribute("uid", String.valueOf(passenger.getID()));
-					NodeList nodes = node.getChildNodes();
-					nodes.item(0).appendChild(document.createTextNode(passenger.getUserName()));
-					nodes.item(1).appendChild(document.createTextNode(passenger.getPassHash()));
-					nodes.item(2).appendChild(document.createTextNode(passenger.getIdentityID()));
-					Element orderEgg = document.createElement("item");
-					orderEgg.appendChild(document.createElement("flightid"));
-					orderEgg.appendChild(document.createElement("seat"));
-					orderEgg.appendChild(document.createElement("date"));
-					orderEgg.appendChild(document.createElement("status"));
-					for (Order order : passenger.getOrderList()) {
-						NodeList item = orderEgg.cloneNode(true).getChildNodes();
-						item.item(0)
-								.appendChild(document.createTextNode(String.valueOf(order.getFlight().getFlightID())));
-						item.item(1).appendChild(document.createTextNode(String.valueOf(order.getSeat())));
-						item.item(2)
-								.appendChild(document.createTextNode(String.valueOf(order.getCreatDate().getTime())));
-						item.item(3).appendChild(document.createTextNode(String.valueOf(order.getStatus().name())));
-						nodes.item(3).appendChild(item.item(0).getParentNode());
+					map.put("userName", passenger.getUserName());
+					map.put("passHash", passenger.getPassHash());
+					map.put("identityID", passenger.getIdentityID());
+					map.put("userName", passenger.getUserName());
+					doc.setCurrent(doc.appendItem(map, passenger.userID));
+					doc.current.setAttribute("isAdmin", "false");
+					doc.createElement("order");
+					for (Order order : passenger.orderList) {
+						map = new HashMap<>();
+						map.put("flightID", String.valueOf(order.getFlight().getFlightID()));
+						map.put("seat", String.valueOf(order.getSeat()));
+						map.put("date", String.valueOf(order.getCreatDate().getTime()));
+						map.put("status", String.valueOf(order.getStatus()));
+						doc.appendItem(map);
 					}
-					euser.appendChild(nodes.item(0).getParentNode());
+					doc.returnParent().returnParent();
 				}
 			}
-			adminEgg = null;
-			passengerEgg = null;
+			doc.returnParent();
 		}
 		if (flightsHash != flights.hashCode()) {
 			flightsHash = flights.hashCode();
 			//flight
-			Element eflight = document.createElement("flight");
-			document.getDocumentElement().replaceChild(eflight, document.getElementsByTagName("flight").item(0));
-			Element flightEgg;
-			flightEgg = document.createElement("item");
-			flightEgg.appendChild(document.createElement("flightname"));
-			flightEgg.appendChild(document.createElement("starttime"));
-			flightEgg.appendChild(document.createElement("arrivetime"));
-			flightEgg.appendChild(document.createElement("startcity"));
-			flightEgg.appendChild(document.createElement("arrivecity"));
-			flightEgg.appendChild(document.createElement("price"));
-			flightEgg.appendChild(document.createElement("seatcapacity"));
-			flightEgg.appendChild(document.createElement("distance"));
-			flightEgg.appendChild(document.createElement("status"));
-			for (Flight f : flights) {
-				Element node = (Element) flightEgg.cloneNode(true);
-				node.setAttribute("fid", String.valueOf(f.getFlightID()));
-				NodeList nodes = node.getChildNodes();
-				nodes.item(0).appendChild(document.createTextNode(f.getFlightName()));
-				nodes.item(1).appendChild(document.createTextNode(String.valueOf(f.getStartTime().getTime())));
-				nodes.item(2).appendChild(document.createTextNode(String.valueOf(f.getArriveTime().getTime())));
-				nodes.item(3).appendChild(document.createTextNode(String.valueOf((f.getStartCity().getCityID()))));
-				nodes.item(4).appendChild(document.createTextNode(String.valueOf((f.getArriveCity().getCityID()))));
-				nodes.item(5).appendChild(document.createTextNode(String.valueOf(f.getPrice())));
-				nodes.item(6).appendChild(document.createTextNode(String.valueOf(f.getSeatCapacity())));
-				nodes.item(7).appendChild(document.createTextNode(String.valueOf(f.getDistance())));
-				nodes.item(8).appendChild(document.createTextNode(f.getFlightStatus().name()));
-				eflight.appendChild(nodes.item(0).getParentNode());
+			doc.getIn("flight").renewElement();
+			for (Flight flight : flights) {
+				HashMap<String, String> map = new HashMap<>();
+				map.put("flightName", flight.getFlightName());
+				map.put("startTime", String.valueOf(flight.getStartTime().getTime()));
+				map.put("arriveTime", String.valueOf(flight.getArriveTime().getTime()));
+				map.put("startCity", String.valueOf(flight.getStartCity().getCityID()));
+				map.put("arriveCity", String.valueOf((flight.getArriveCity().getCityID())));
+				map.put("price", String.valueOf(flight.getPrice()));
+				map.put("seatCapacity", String.valueOf(flight.getSeatCapacity()));
+				map.put("distance", String.valueOf(flight.getDistance()));
+				map.put("status", flight.getFlightStatus().name());
+				doc.appendItem(map, flight.getFlightID());
 			}
-			flightEgg = null;
+			doc.returnParent();
 		}
 		if (citiesHash != cities.hashCode()) {
 			citiesHash = cities.hashCode();
 			//city
-			Element ecity = document.createElement("city");
-			document.getDocumentElement().replaceChild(ecity, document.getElementsByTagName("city").item(0));
-			for (City c : cities) {
-				Element city = (Element) ecity.appendChild(document.createElement("item"))
-						.appendChild(document.createTextNode(c.getCityName())).getParentNode();
-				city.setAttribute("cid", String.valueOf(c.getCityID()));
+			doc.getIn("city").renewElement();
+			for (City city : cities) {
+				HashMap<String, String> map = new HashMap<>();
+				map.put("name", city.getCityName());
+				doc.appendItem(map, city.getCityID());
 			}
+			doc.returnParent();
 		}
-		saveDocument();
+		doc.saveDocument();
 	}
 
 	private void init() throws IOException {
@@ -326,6 +386,7 @@ public class DataManager {
 		users = new ArrayList<>();
 		cities = new ArrayList<>();
 		flightDaemons = new ArrayList<>();
+		doc = new Doc();
 		User.ID = 0;
 		Flight.ID = 0;
 		City.ID = 0;
@@ -426,18 +487,15 @@ public class DataManager {
 				flights.add(flight17);
 				flights.add(flight18);
 				// DONE(Zhu) add remain
-				document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
-				Element root = document.createElement("root");
-				document.appendChild(root);
-				Element euser = document.createElement("user");
-				Element eflight = document.createElement("flight");
-				Element ecity = document.createElement("city");
-				root.appendChild(euser);
-				root.appendChild(ecity);
-				root.appendChild(eflight);
+				doc.document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+				doc.current = (Element) doc.document.appendChild(doc.document.createElement("root"));
+				doc.createElement("user").returnParent()
+					.createElement("flight").returnParent()
+					.createElement("city").returnParent();
 				saveData();
 			} else {
-				document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(file);
+				doc.document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(file);
+				doc.current = doc.document.getDocumentElement();
 				readData();
 			}
 		} catch (FileNotFoundException | SAXException e) {
@@ -449,112 +507,76 @@ public class DataManager {
 	}
 
 	private void readData() throws SAXException, FileNotFoundException, IOException {
+		int MAX_ID;
 		try {
-			Element root = document.getDocumentElement();
-			NodeList list = root.getChildNodes();
-			for (int i = 0; i < list.getLength(); i++) {
-				if (list.item(i).getNodeType() == Node.ELEMENT_NODE && ((Element)list.item(i)).getTagName().equals("city")) {
-					NodeList cityList = ((Element) list.item(i)).getChildNodes();
-					int MAX_ID = 0;
-					for (int j = 0; j < cityList.getLength(); j++) {
-						if (cityList.item(j).getNodeType() == Node.ELEMENT_NODE) {
-							Element e = (Element) cityList.item(j);
-							City.ID = Integer.parseInt(e.getAttribute("cid"));
-							MAX_ID = City.ID > MAX_ID ? City.ID : MAX_ID;
-							cities.add(new City(e.getTextContent()));
-						}
+			doc.getIn("city");
+			MAX_ID = 0;
+			for (Element element : doc.getChildren()) {
+				City.ID = Integer.parseInt(element.getAttribute("mid"));
+				MAX_ID = City.ID > MAX_ID ? City.ID : MAX_ID;
+				cities.add(new City(element.getElementsByTagName("name").item(0).getTextContent()));
+			}
+			City.ID = MAX_ID + 1;
+			doc.returnParent().getIn("flight");
+			MAX_ID = 0;
+			for (Element element : doc.getChildren()) {
+				Flight.ID = Integer.parseInt(element.getAttribute("mid"));
+				MAX_ID = Flight.ID > MAX_ID ? Flight.ID : MAX_ID;
+				Flight flight;
+				flight = new Flight(
+						element.getElementsByTagName("flightName").item(0).getTextContent(),
+						new Date(Long.parseLong(element.getElementsByTagName("startTime").item(0).getTextContent())),
+						new Date(Long.parseLong(element.getElementsByTagName("arriveTime").item(0).getTextContent())),
+						getCityByID(Integer.parseInt(element.getElementsByTagName("startCity").item(0).getTextContent())),
+						getCityByID(Integer.parseInt(element.getElementsByTagName("arriveCity").item(0).getTextContent())),
+						Integer.parseInt(element.getElementsByTagName("price").item(0).getTextContent()),
+						Integer.parseInt(element.getElementsByTagName("seatCapacity").item(0).getTextContent()),
+						Integer.parseInt(element.getElementsByTagName("distance").item(0).getTextContent()));
+				flight.flightStatus = FlightStatus.valueOf(element.getElementsByTagName("status").item(0).getTextContent());
+				flights.add(flight);	
+			}
+			Flight.ID = MAX_ID + 1;
+			doc.returnParent().getIn("user");
+			MAX_ID = 0;
+			for (Element element : doc.getChildren()) {
+				User.ID = Integer.parseInt(element.getAttribute("mid"));
+				MAX_ID = User.ID > MAX_ID ? User.ID : MAX_ID;
+				if (element.getAttribute("isAdmin").equals("true")) {
+					Admin admin = new Admin(
+							element.getElementsByTagName("userName").item(0).getTextContent(),
+							null
+							);
+					admin.passHash = element.getElementsByTagName("passHash").item(0).getTextContent();
+					users.add(admin);
+				} else if (element.getAttribute("isAdmin").equals("false")) {
+					Passenger p = new Passenger(
+							element.getElementsByTagName("identityID").item(0).getTextContent(),
+							element.getElementsByTagName("userName").item(0).getTextContent(),
+							null);
+					p.passHash = element.getElementsByTagName("passHash").item(0).getTextContent();
+					doc.current = element;
+					doc.getIn("order");
+					for (Element o : doc.getChildren()) {
+						Order order;
+						try {
+							order = new Order(p,
+									getFlightByID(Integer.parseInt(o.getElementsByTagName("flightID").item(0).getTextContent())),
+									Integer.parseInt(o.getElementsByTagName("seat").item(0).getTextContent()));
+							order.setStatus(OrderStatus.valueOf(o.getElementsByTagName("status").item(0).getTextContent()));
+							order.setCreatDate(new Date(Long.parseLong(o.getElementsByTagName("date").item(0).getTextContent())));
+							p.addOrder(order);
+						} catch (StatusUnavailableException e) {/* ignored */}				
 					}
-					City.ID = MAX_ID + 1;
+					doc.returnParent().returnParent();
+					users.add(p);
 				}
 			}
-			for (int i = 0; i < list.getLength(); i++) {
-				if (list.item(i).getNodeType() == Node.ELEMENT_NODE && ((Element)list.item(i)).getTagName().equals("flight")) {
-					NodeList flightList = ((Element) list.item(i)).getChildNodes();
-					int MAX_ID = 0;
-					for (int j = 0; j < flightList.getLength(); j++) {
-						if (flightList.item(j).getNodeType() == Node.ELEMENT_NODE) {
-							Element e = (Element) flightList.item(j);
-							Flight.ID = Integer.parseInt(e.getAttribute("fid"));
-							MAX_ID = Flight.ID > MAX_ID ? Flight.ID : MAX_ID;
-							Flight flight;
-							flight = new Flight(
-								e.getElementsByTagName("flightname").item(0).getTextContent(),
-								new Date(Long.parseLong(e.getElementsByTagName("starttime").item(0).getTextContent())),
-								new Date(Long.parseLong(e.getElementsByTagName("arrivetime").item(0).getTextContent())),
-								getCityByID(Integer.parseInt(e.getElementsByTagName("startcity").item(0).getTextContent())),
-								getCityByID(Integer.parseInt(e.getElementsByTagName("arrivecity").item(0).getTextContent())),
-								Integer.parseInt(e.getElementsByTagName("price").item(0).getTextContent()),
-								Integer.parseInt(e.getElementsByTagName("seatcapacity").item(0).getTextContent()),
-								Integer.parseInt(e.getElementsByTagName("distance").item(0).getTextContent()));
-							flight.flightStatus = FlightStatus.valueOf(e.getElementsByTagName("status").item(0).getTextContent());
-							flights.add(flight);
-						}
-					}
-					Flight.ID = MAX_ID + 1;
-				}
-			}
-			for (int i = 0; i < list.getLength(); i++) {
-				if (list.item(i).getNodeType() == Node.ELEMENT_NODE && ((Element)list.item(i)).getTagName().equals("user")) {
-					Element user = (Element) list.item(i);
-					NodeList userlist = user.getChildNodes();
-					int MAX_ID = 0;
-					for (int j = 0; j < userlist.getLength(); j++) {
-						if (userlist.item(j).getNodeType() == Node.ELEMENT_NODE && userlist.item(j).getNodeName() != null) {
-							Element u = (Element) userlist.item(j);
-							User.ID = Integer.parseInt(u.getAttribute("uid"));
-							MAX_ID = User.ID > MAX_ID ? User.ID : MAX_ID;
-							if (u.getTagName().equals("admin")) {
-								Admin admin = new Admin(
-										u.getElementsByTagName("username").item(0).getTextContent(),
-										null
-										);
-								admin.passHash = u.getElementsByTagName("passhash").item(0).getTextContent();
-								users.add(admin);
-							} else if (u.getTagName().equals("passenger")) {
-								Passenger p = new Passenger(
-										u.getElementsByTagName("idnumber").item(0).getTextContent(),
-										u.getElementsByTagName("username").item(0).getTextContent(),
-										null);
-								p.passHash = u.getElementsByTagName("passhash").item(0).getTextContent();
-								NodeList orders = u.getElementsByTagName("order").item(0).getChildNodes();
-								for (int k = 0; k < orders.getLength(); k++) {
-									if (orders.item(k).getNodeType() == Node.ELEMENT_NODE && orders.item(k).getNodeName() != null) {
-										Element o = (Element) orders.item(k);
-										Order order;
-										try {
-											order = new Order(p,
-													getFlightByID(Integer.parseInt(o.getElementsByTagName("flightid").item(0).getTextContent())),
-													Integer.parseInt(o.getElementsByTagName("seat").item(0).getTextContent()));
-											order.setStatus(OrderStatus.valueOf(o.getElementsByTagName("status").item(0).getTextContent()));
-											order.setCreatDate(new Date(Long.parseLong(o.getElementsByTagName("date").item(0).getTextContent())));
-											p.addOrder(order);
-										} catch (StatusUnavailableException e) {/* ignored */}
-									}
-								}
-								users.add(p);
-							}
-						}
-					}
-					User.ID = MAX_ID + 1;
-				}
-			}
+			User.ID = MAX_ID + 1;
+			doc.returnParent();
 		} catch (IndexOutOfBoundsException | NullPointerException e) {
 			System.gc();
 			file.delete();
 			init();
-		}
-	}
-	
-	private void saveDocument() throws FileNotFoundException {
-        try {
-        	Transformer transformer = TransformerFactory.newInstance().newTransformer();
-        	transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-        	DOMSource source=new DOMSource();
-        	source.setNode(document);
-        	StreamResult result=new StreamResult();
-        	result.setOutputStream(new FileOutputStream(file));
-			transformer.transform(source, result);
-		} catch (TransformerException e) {
 		}
 	}
 		
