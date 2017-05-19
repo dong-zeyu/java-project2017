@@ -8,6 +8,7 @@ import data.Admin;
 import data.City;
 import data.DataManager;
 import data.Flight;
+import data.FlightDaemon;
 import data.FlightStatus;
 import data.Order;
 import data.Passenger;
@@ -76,12 +77,13 @@ public class MainServer {
 	 *  you can see some example(completed) below to know how to throw it
 	 *  **make full use of private method searchFlightByID & searchUserByID**
 	 */
-	public boolean createFlight(String flightName, Date startTime, Date arriveTime, int startCityID, int arriveCityID,
+	public boolean createFlightDaemon(String flightName, Date startTime, Date arriveTime, int period, int startCityID, int arriveCityID,
 			int price, int seatCapacity, int distence) throws PermissionDeniedException { // false when error cityID
 		// DONE(Peng) creatFlight
 		checkPermission(true);
 		try {
-			dataManager.flights.add(new Flight(flightName,startTime, arriveTime,dataManager.getCityByID(startCityID),dataManager.getCityByID(arriveCityID),
+			dataManager.flightDaemons.add(new FlightDaemon(flightName,startTime, arriveTime, period*24*3600*1000,
+					dataManager.getCityByID(startCityID),dataManager.getCityByID(arriveCityID),
 					price,seatCapacity, distence));
 			return true;
 		} catch (NullPointerException e) {
@@ -92,6 +94,12 @@ public class MainServer {
 	public Flight getFlight(int flightID) throws PermissionDeniedException { //give you flight to change freely
 		checkPermission(true);
 		return dataManager.getFlightByID(flightID);
+	}
+	
+	
+	public FlightDaemon getDaemon(int flightID) throws PermissionDeniedException {
+		checkPermission(true);
+		return dataManager.getFlightDaemonByID(flightID);
 	}
 	
 	public City getCity(int cityID) throws PermissionDeniedException { //give you city to change freely
@@ -247,6 +255,11 @@ public class MainServer {
 		return null;
 	}
 
+	public String displayDaemon() {
+		// TODO(Zhu) displayDaemon
+		return null;
+	}
+
 	public String dispalyUser() throws PermissionDeniedException {
 		//DONE(Peng)
 		checkPermission(true);
@@ -277,9 +290,9 @@ public class MainServer {
 	public String displayCity(int CityID) {
 		// DONE(Peng) print flightIn and flightOut as well
 		if (isLogin){
-			System.out.println("the name of the City is : "+dataManager.getCityByID(CityID).getCityName());
-			System.out.println("Flights to this City are : "+dataManager.getCityByID(CityID).getFlightsIn());
-			System.out.println("Flights living this City are : "+dataManager.getCityByID(CityID).getFlightsOut());
+			System.out.println("the name of the City is : "+ dataManager.getCityByID(CityID).getCityName());
+			System.out.println("Flights to this City are : "+ dataManager.getCityByID(CityID).getFlightsIn());
+			System.out.println("Flights living this City are : "+ dataManager.getCityByID(CityID).getFlightsOut());
 		}
 		else {
 			System.out.println("Sorry your are not logged in");
@@ -297,6 +310,7 @@ public class MainServer {
 		return null;
 		
 	}
+
 	//------------boundary-----------------
 
 	public String search(int cityFromId, int cityToId, Date date1, Date date2) {

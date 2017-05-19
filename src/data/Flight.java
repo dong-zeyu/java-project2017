@@ -41,8 +41,6 @@ public class Flight {
 		isDaemon = false;
 		flightID = Flight.ID;
 		ID++;
-		startCity.flightsOut.add(this);
-		arriveCity.flightsIn.add(this);
 	}
 	
 	@Override
@@ -260,6 +258,9 @@ public class Flight {
 	}
 
 	public void publish() throws StatusUnavailableException {
+		if (isDaemon) {
+			throw new StatusUnavailableException("the status of this flight is under control of server!");
+		}
 		if (flightStatus == FlightStatus.UNPUBLISHED) {
 			flightStatus = FlightStatus.AVAILABLE;
 		} else {

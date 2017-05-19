@@ -5,6 +5,7 @@ import java.util.Scanner;
 
 import data.City;
 import data.Flight;
+import data.FlightDaemon;
 import data.User;
 import exceptions.PermissionDeniedException;
 import exceptions.StatusUnavailableException;
@@ -17,7 +18,8 @@ import exceptions.StatusUnavailableException;
  * 		<li>containing all of the functions required</li>
  * 		<li>using xml file to save data</li>
  * 		<li>saving data to file and changing flight status automatically</li>
- * 		<li>able to search for transfer station and search for date</li>
+ * 		<li>able to search by city and search by date</li>
+ * 		<li>add flight automatically</li>
  * 		<li>having high extensibility</li>
  * 		<li>using custom exception to deal with status and permission problem</li>
  * </ul>
@@ -129,12 +131,21 @@ public class Main {
 			switch (param[0]) {
 			case "flight":
 				try {
-					changeFlight(Integer.valueOf(param[1]));
+					changeFlight(Integer.valueOf(param[1]), false);
 				} catch (NumberFormatException e) {
 					System.out.printf("'%s' is not a flight ID\n", param[1]);
 				} catch (PermissionDeniedException e) {
 					System.out.println(e.getMessage());
-				}						
+				}
+				break;
+			case "daemon":
+				try {
+					changeFlight(Integer.valueOf(param[1]), true);
+				} catch (NumberFormatException e) {
+					System.out.printf("'%s' is not a flight daemon ID\n", param[1]);
+				} catch (PermissionDeniedException e) {
+					System.out.println(e.getMessage());
+				}
 				break;
 			case "city":
 				try {
@@ -239,6 +250,9 @@ public class Main {
 						}
 					}						
 					break;
+				case "daemon":
+					System.out.print(server.displayDaemon());						
+					break;
 				case "user":
 					if (param.length == 1) {
 						try {
@@ -306,9 +320,7 @@ public class Main {
 		}
 	}
 
-	private static void changeFlight(int flightID) throws PermissionDeniedException {
-		Flight flight = server.getFlight(flightID);
-		flight.setDaemon(false);
+	private static void changeFlight(int flightID, boolean isDeamon) throws PermissionDeniedException {
 		System.out.print("Usage: "
 				+ "\tname=newname\n"
 				+ "\tstarttime=yyyy-mm-dd-hr-mim-sec\n"
@@ -324,59 +336,119 @@ public class Main {
 			System.out.print("Please input what to change: ");
 			input = scanner.nextLine().replace(" ", "").split("=");
 			try {
-				switch (input[0]) {
-				case "name":
-					flight.setFlightName(input[1]);
-					System.out.println("Succeed!");
-					break;
-				case "starttime":
-					String[] sdate = input[1].split("-");
-					flight.setStartTime(Flight.calendar(
-							Integer.valueOf(sdate[0]), 
-							Integer.valueOf(sdate[1]), 
-							Integer.valueOf(sdate[2]), 
-							Integer.valueOf(sdate[3]), 
-							Integer.valueOf(sdate[4]),
-							Integer.valueOf(sdate[5])));
-					System.out.println("Succeed!");
-					break;
-				case "arrivetime":
-					String[] adate = input[1].split("-");
-					flight.setArriveTime(Flight.calendar(
-							Integer.valueOf(adate[0]), 
-							Integer.valueOf(adate[1]), 
-							Integer.valueOf(adate[2]), 
-							Integer.valueOf(adate[3]), 
-							Integer.valueOf(adate[4]),
-							Integer.valueOf(adate[5])));
-					System.out.println("Succeed!");
-					break;
-				case "startcity":
-					flight.setStartCity(server.getCity(Integer.valueOf(input[1])));
-					System.out.println("Succeed!");
-					break;
-				case "arrivecity":
-					flight.setArriveCity(server.getCity(Integer.valueOf(input[1])));
-					System.out.println("Succeed!");
-					break;
-				case "price":
-					flight.setPrice(Integer.valueOf(input[1]));
-					System.out.println("Succeed!");
-					break;
-				case "capacity":
-					flight.setSeatCapacity(Integer.valueOf(input[1]));
-					System.out.println("Succeed!");
-					break;
-				case "distance":
-					flight.setDistance(Integer.valueOf(input[1]));
-					System.out.println("Succeed!");
-					break;
-				case "exit":
-				case "e":
-					break;
-				default:
-					System.out.println("Command error");
-					break;
+				if (isDeamon) {
+					FlightDaemon flight = server.getDaemon(flightID);	
+					switch (input[0]) {
+					case "name":
+						flight.setFlightName(input[1]);
+						System.out.println("Succeed!");
+						break;
+					case "starttime":
+						String[] sdate = input[1].split("-");
+						flight.setStartTime(Flight.calendar(
+								Integer.valueOf(sdate[0]), 
+								Integer.valueOf(sdate[1]), 
+								Integer.valueOf(sdate[2]), 
+								Integer.valueOf(sdate[3]), 
+								Integer.valueOf(sdate[4]),
+								Integer.valueOf(sdate[5])));
+						System.out.println("Succeed!");
+						break;
+					case "arrivetime":
+						String[] adate = input[1].split("-");
+						flight.setArriveTime(Flight.calendar(
+								Integer.valueOf(adate[0]), 
+								Integer.valueOf(adate[1]), 
+								Integer.valueOf(adate[2]), 
+								Integer.valueOf(adate[3]), 
+								Integer.valueOf(adate[4]),
+								Integer.valueOf(adate[5])));
+						System.out.println("Succeed!");
+						break;
+					case "startcity":
+						flight.setStartCity(server.getCity(Integer.valueOf(input[1])));
+						System.out.println("Succeed!");
+						break;
+					case "arrivecity":
+						flight.setArriveCity(server.getCity(Integer.valueOf(input[1])));
+						System.out.println("Succeed!");
+						break;
+					case "price":
+						flight.setPrice(Integer.valueOf(input[1]));
+						System.out.println("Succeed!");
+						break;
+					case "capacity":
+						flight.setSeatCapacity(Integer.valueOf(input[1]));
+						System.out.println("Succeed!");
+						break;
+					case "distance":
+						flight.setDistance(Integer.valueOf(input[1]));
+						System.out.println("Succeed!");
+						break;
+					case "exit":
+					case "e":
+						break;
+					default:
+						System.out.println("Command error");
+						break;
+					}
+				} else {
+					Flight flight = server.getFlight(flightID);			
+					flight.setDaemon(false);
+					switch (input[0]) {
+					case "name":
+						flight.setFlightName(input[1]);
+						System.out.println("Succeed!");
+						break;
+					case "starttime":
+						String[] sdate = input[1].split("-");
+						flight.setStartTime(Flight.calendar(
+								Integer.valueOf(sdate[0]), 
+								Integer.valueOf(sdate[1]), 
+								Integer.valueOf(sdate[2]), 
+								Integer.valueOf(sdate[3]), 
+								Integer.valueOf(sdate[4]),
+								Integer.valueOf(sdate[5])));
+						System.out.println("Succeed!");
+						break;
+					case "arrivetime":
+						String[] adate = input[1].split("-");
+						flight.setArriveTime(Flight.calendar(
+								Integer.valueOf(adate[0]), 
+								Integer.valueOf(adate[1]), 
+								Integer.valueOf(adate[2]), 
+								Integer.valueOf(adate[3]), 
+								Integer.valueOf(adate[4]),
+								Integer.valueOf(adate[5])));
+						System.out.println("Succeed!");
+						break;
+					case "startcity":
+						flight.setStartCity(server.getCity(Integer.valueOf(input[1])));
+						System.out.println("Succeed!");
+						break;
+					case "arrivecity":
+						flight.setArriveCity(server.getCity(Integer.valueOf(input[1])));
+						System.out.println("Succeed!");
+						break;
+					case "price":
+						flight.setPrice(Integer.valueOf(input[1]));
+						System.out.println("Succeed!");
+						break;
+					case "capacity":
+						flight.setSeatCapacity(Integer.valueOf(input[1]));
+						System.out.println("Succeed!");
+						break;
+					case "distance":
+						flight.setDistance(Integer.valueOf(input[1]));
+						System.out.println("Succeed!");
+						break;
+					case "exit":
+					case "e":
+						break;
+					default:
+						System.out.println("Command error");
+						break;
+					}
 				}
 			} catch (StatusUnavailableException e) {
 				System.out.printf("Cannot change %s: %s\n", input[0], e.getMessage());
@@ -651,6 +723,8 @@ public class Main {
 			int min1 =Integer.parseInt(arrivetime[4]);
 			int sec1 =Integer.parseInt(arrivetime[5]);
 			Date arriveTime = Flight.calendar(year1, month1, date1, hr1, min1, sec1);
+			System.out.print("Period of the flight(day): ");
+			int period = scanner.nextInt();
 			System.out.print("startCityID: ");
 			int startCityID=scanner.nextInt();
 			System.out.print("arriveCityID: ");
@@ -659,14 +733,14 @@ public class Main {
 			int price=scanner.nextInt();
 			System.out.print("seatCapacity: ");
 			int seatCapacity=scanner.nextInt();
-			System.out.print("distance: ");
+			System.out.print("distance(m): ");
 			int distance = scanner.nextInt();
 			scanner.nextLine();
-			if (!server.createFlight(flightName, startTime, arriveTime, startCityID, arriveCityID, price, seatCapacity, distance)) {
+			if (!server.createFlightDaemon(flightName, startTime, arriveTime, period, startCityID, arriveCityID, price, seatCapacity, distance)) {
 				System.out.println("Error in format of flight information, please retry");
 				addFlight();
 			} else {
-				System.out.print("Flight added successfully");
+				System.out.print("Flight added successfully\n");
 			}
 		} catch (PermissionDeniedException e) {
 			System.out.println(e.getMessage());

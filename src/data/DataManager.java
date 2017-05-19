@@ -194,6 +194,15 @@ public class DataManager {
 		}
 		return null;
 	}
+
+	public FlightDaemon getFlightDaemonByID(int flightID) {
+		for (FlightDaemon daemon : flightDaemons) {
+			if (daemon.getFlightDaemonID()==flightID) {
+				return daemon;
+			}
+		}
+		return null;
+	}
 	
 	private class Doc {
 		

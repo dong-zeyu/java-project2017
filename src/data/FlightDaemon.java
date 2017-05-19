@@ -34,6 +34,8 @@ public class FlightDaemon {
 		children = new ArrayList<>();
 		flightDaemonID = FlightDaemon.ID;
 		ID++;
+		startCity.flightsOut.add(this);
+		arriveCity.flightsIn.add(this);
 	}
 
 	@Override
@@ -42,8 +44,6 @@ public class FlightDaemon {
 				flightName + "\t" + 
 				((startCity.toString().length() < 8) ? (startCity.toString() + "\t") : startCity.toString()) + "\t" +
 				((arriveCity.toString().length() < 8) ? (arriveCity.toString() + "\t") : arriveCity.toString()) + "\t" +
-				startTime.toString() + "\t" +
-				arriveTime.toString() + "\t" +
 				String.valueOf(price) + "\t" +
 				String.valueOf(seatCapacity);
 	}
