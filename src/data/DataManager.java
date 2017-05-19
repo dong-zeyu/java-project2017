@@ -83,12 +83,14 @@ public class DataManager {
 	public static final long DAY_OF_CREATE = 18*24*3600*1000l; // 18 days
 	public static final long INTERVAL_TO_CREATE = 24*3600*1000l; // 1 day
 	public static final long TIME_TO_TERMINATE = 2*3600*1000l; // 2 hours
+	public static final long TIME_TO_PUBLISH = 8*24*3600*1000l; // 8 days
 	private final String filename = "data.xml";
 	private File file;
 	private Doc doc;
 	private int usersHash;
 	private int flightsHash;
 	private int citiesHash;
+	private int flightDaemonHash;
 	private Timer timer;
 	
 	class SaveFileTask extends TimerTask {
@@ -113,16 +115,15 @@ public class DataManager {
 
 		@Override
 		public void run() {
+			Date now = new Date();
 			for (Flight flight : flights) {
-				if (flight.getStartTime().getTime() - new Date().getTime() <= TIME_TO_TERMINATE) {
-					flight.flightStatus = FlightStatus.TERMINATE;
-				} else  {
-					if (flight.getNumber() == flight.getSeatCapacity()) {
-						flight.flightStatus = FlightStatus.FULL;
-					} else {
+				if (flight.isDaemon()) {
+					if (flight.getStartTime().getTime() - now.getTime() <= TIME_TO_TERMINATE) {
+						flight.flightStatus = FlightStatus.TERMINATE;
+					} else if (flight.getStartTime().getTime() - now.getTime() <= TIME_TO_PUBLISH) {
 						flight.flightStatus = FlightStatus.AVAILABLE;
-					}
-				}
+					} 
+				}				
 			}
 		}
 		
@@ -137,19 +138,17 @@ public class DataManager {
 				long end = now + DAY_OF_CREATE;
 				if (end < flightDaemon.getStartTime().getTime()) {
 					continue;
-				} else {
-					
 				}
 				for (long i = flightDaemon.getStartTime().getTime(); i < end; i+=flightDaemon.getPeriod()) {
-					boolean isCreate = false;
+					boolean isCreated = false;
 					for (Flight flight : flightDaemon.children) {
-						if (!(flight.getStartTime().getTime() == i && flight.getFlightName() == flightDaemon.getFlightName())) {
-							isCreate = true;
+						if (flight.getStartTime().getTime() == i) {
+							isCreated = true;
 							break;
 						}
 					}
-					if (isCreate) {
-						flights.add(new Flight(
+					if (!isCreated) {
+						Flight flight = new Flight(
 								flightDaemon.getFlightName(), 
 								new Date(i), 
 								new Date(i + flightDaemon.getArriveTime().getTime() - flightDaemon.getArriveTime().getTime()), 
@@ -157,7 +156,10 @@ public class DataManager {
 								flightDaemon.getArriveCity(), 
 								flightDaemon.getPrice(), 
 								flightDaemon.getSeatCapacity(), 
-								flightDaemon.getDistance()));
+								flightDaemon.getDistance());
+						flight.setDaemon(true);
+						flights.add(flight);
+						flightDaemon.children.add(flight);
 					}
 				}
 			}
@@ -367,6 +369,25 @@ public class DataManager {
 			}
 			doc.returnParent();
 		}
+		if (flightDaemonHash != flightDaemons.hashCode()) {
+			flightDaemonHash = flightDaemons.hashCode();
+			//flight
+			doc.getIn("flightDaemon").renewElement();
+			for (Flight flight : flights) {
+				HashMap<String, String> map = new HashMap<>();
+				map.put("flightName", flight.getFlightName());
+				map.put("startTime", String.valueOf(flight.getStartTime().getTime()));
+				map.put("arriveTime", String.valueOf(flight.getArriveTime().getTime()));
+				map.put("startCity", String.valueOf(flight.getStartCity().getCityID()));
+				map.put("arriveCity", String.valueOf((flight.getArriveCity().getCityID())));
+				map.put("price", String.valueOf(flight.getPrice()));
+				map.put("seatCapacity", String.valueOf(flight.getSeatCapacity()));
+				map.put("distance", String.valueOf(flight.getDistance()));
+				map.put("status", flight.getFlightStatus().name());
+				doc.appendItem(map, flight.getFlightID());
+			}
+			doc.returnParent();
+		}
 		if (citiesHash != cities.hashCode()) {
 			citiesHash = cities.hashCode();
 			//city
@@ -390,6 +411,7 @@ public class DataManager {
 		User.ID = 0;
 		Flight.ID = 0;
 		City.ID = 0;
+		FlightDaemon.ID = 0;
 		try {
 			file = new File(filename);
 			if (!file.exists()) {	
@@ -399,99 +421,72 @@ public class DataManager {
 				City shenz = new City("Shenzhen");
 				City beij = new City("Beijing");
 				City zhenz = new City("Zhengzhou");
-				City guangz = new City("Guangzhou");
 				City shangh = new City("Shanghai");
-				City xia = new City("Xi'an");
 				City Wuh = new City("Wuhan");
 				City Nanc = new City("Nanchang");
 				City Hangz = new City("Hangzhou");
 				cities.add(zhenz);
 				cities.add(beij);
 				cities.add(shenz);
-				cities.add(guangz);
 				cities.add(shangh);
-				cities.add(xia);
 				cities.add(Wuh);
 				cities.add(Nanc);
 				cities.add(Hangz);
-				Flight flight1 = new Flight("A001",
-						Flight.calendar(2017, 4, 1, 9, 30, 0),
-						Flight.calendar(2017, 4, 1, 10, 40, 0), shenz, beij, 1200, 120, 1800000);
-				Flight flight2 = new Flight("A002",
+				FlightDaemon flight1 = new FlightDaemon("A001",
+						Flight.calendar(2017, 5, 1, 12, 30, 0),
+						Flight.calendar(2017, 5, 1, 14, 40, 0), 24*3600*1000, shenz, beij, 1200, 120, 1800000);
+				FlightDaemon flight2 = new FlightDaemon("A002",
 						Flight.calendar(2017, 5, 2, 9, 12, 0),
-						Flight.calendar(2017, 5, 2, 10, 42, 0), beij, shenz, 1200, 120, 1800000);
-				Flight flight3 = new Flight("A003",
+						Flight.calendar(2017, 5, 2, 10, 42, 0), 7*24*3600*1000, beij, shenz, 1200, 120, 1800000);
+				FlightDaemon flight3 = new FlightDaemon("A003",
 						Flight.calendar(2017, 3, 3, 16, 12, 00),
-						Flight.calendar(2017, 3, 3, 16, 52, 00), zhenz, shenz, 1200, 120, 1200000);
-				Flight flight4 = new Flight("A004",
+						Flight.calendar(2017, 3, 3, 16, 52, 00), 24*3600*1000, zhenz, shenz, 1200, 120, 1200000);
+				FlightDaemon flight4 = new FlightDaemon("A004",
 						Flight.calendar(2017, 6, 8, 10, 55, 00), 
-						Flight.calendar(2017, 6, 8, 14, 32, 00), shenz, zhenz, 1200, 120, 1200000);
-				Flight flight5 = new Flight("A005",
-						Flight.calendar(2017, 8, 8, 10, 31, 00), 
-						Flight.calendar(2017, 8, 8, 12, 32, 00), guangz, zhenz, 10000, 10, 120000);
-				Flight flight6 = new Flight("A006",
+						Flight.calendar(2017, 6, 8, 14, 32, 00), 7*24*3600*1000, shenz, zhenz, 1200, 120, 1200000);
+				FlightDaemon flight6 = new FlightDaemon("A006",
 						Flight.calendar(2017, 9, 1, 22, 46, 00), 
-						Flight.calendar(2017, 9, 2, 00, 10, 00), zhenz, Nanc, 250, 300, 950000);
-				Flight flight7 = new Flight("A007",
+						Flight.calendar(2017, 9, 2, 00, 10, 00), 24*3600*1000, zhenz, Nanc, 250, 300, 950000);
+				FlightDaemon flight7 = new FlightDaemon("A007",
 						Flight.calendar(2017, 12, 30, 23, 46, 00), 
-						Flight.calendar(2018, 1, 1, 02, 10, 00), Wuh, Hangz, 900, 90, 470000);
-				Flight flight8 = new Flight("A008",
-						Flight.calendar(2017, 6, 30, 10, 46, 00), 
-						Flight.calendar(2017, 6, 30, 13, 10, 00), xia, Hangz, 900, 90, 840000);
-				Flight flight9 = new Flight("A009",
+						Flight.calendar(2018, 1, 1, 02, 10, 00), 24*3600*1000, Wuh, Hangz, 900, 90, 470000);
+				FlightDaemon flight9 = new FlightDaemon("A009",
 						Flight.calendar(2017, 2, 3, 11, 46, 00), 
-						Flight.calendar(2017, 2, 3, 13, 10, 00), shangh, Hangz, 870, 100, 240000);
-				Flight flight10 = new Flight("A010",
+						Flight.calendar(2017, 2, 3, 13, 10, 00), 24*3600*1000, shangh, Hangz, 870, 100, 240000);
+				FlightDaemon flight10 = new FlightDaemon("A010",
 						Flight.calendar(2017, 3, 10, 17, 46, 00), 
-						Flight.calendar(2017, 3, 10, 19, 10, 00), shenz, Hangz, 870, 100, 660000);
-				Flight flight11 = new Flight("A011",
+						Flight.calendar(2017, 3, 10, 19, 10, 00), 24*3600*1000, shenz, Hangz, 870, 100, 660000);
+				FlightDaemon flight11 = new FlightDaemon("A011",
 						Flight.calendar(2017, 4, 10, 17, 46, 00), 
-						Flight.calendar(2017, 4, 10, 19, 10, 00), Hangz, shenz, 900, 100, 660000);
-				Flight flight12 = new Flight("A012",
+						Flight.calendar(2017, 4, 10, 19, 10, 00), 7*24*3600*1000, Hangz, shenz, 900, 100, 660000);
+				FlightDaemon flight12 = new FlightDaemon("A012",
 						Flight.calendar(2017, 5, 23, 17, 46, 00), 
-						Flight.calendar(2017, 5, 23, 19, 30, 00), Hangz, shangh, 1130, 100, 240000);
-				Flight flight13 = new Flight("A013",
-						Flight.calendar(2017, 9, 25, 15, 46, 00), 
-						Flight.calendar(2017, 9, 25, 17, 40, 00), Hangz, xia, 860, 120, 1000000);
-				Flight flight14 = new Flight("A014",
+						Flight.calendar(2017, 5, 23, 19, 30, 00), 24*3600*1000, Hangz, shangh, 1130, 100, 240000);
+				FlightDaemon flight14 = new FlightDaemon("A014",
 						Flight.calendar(2017, 11, 25, 15, 46, 00), 
-						Flight.calendar(2017, 11, 25, 16, 40, 00), shenz, Wuh, 780, 120, 780000);
-				Flight flight15 = new Flight("A015",
+						Flight.calendar(2017, 11, 25, 16, 40, 00), 24*3600*1000, shenz, Wuh, 780, 120, 780000);
+				FlightDaemon flight15 = new FlightDaemon("A015",
 						Flight.calendar(2017, 12, 19, 15, 46, 00), 
-						Flight.calendar(2017, 12, 19, 18, 40, 00), Hangz, Wuh, 860, 120, 340000);
-				Flight flight16 = new Flight("A016",
-						Flight.calendar(2017, 7, 16, 15, 46, 00), 
-						Flight.calendar(2017, 7, 16, 18, 40, 00), zhenz, xia, 900, 120, 1400000);
-				Flight flight17 = new Flight("A017",
-						Flight.calendar(2017, 9, 5, 7, 46, 00), 
-						Flight.calendar(2017, 9, 5, 19, 40, 00), xia, zhenz, 1200, 120, 1400000);
-				Flight flight18 = new Flight("A018",
-						Flight.calendar(2017, 9, 5, 7, 46, 00), 
-						Flight.calendar(2017, 9, 5, 19, 40, 00), shenz, xia, 1200, 120, 1400000);
-				flights.add(flight1);
-				flights.add(flight2);
-				flights.add(flight3);
-				flights.add(flight4);
-				flights.add(flight5);
-				flights.add(flight6);
-				flights.add(flight7);
-				flights.add(flight8);
-				flights.add(flight9);
-				flights.add(flight10);
-				flights.add(flight11);
-				flights.add(flight12);
-				flights.add(flight13);
-				flights.add(flight14);
-				flights.add(flight15);
-				flights.add(flight16);
-				flights.add(flight17);
-				flights.add(flight18);
+						Flight.calendar(2017, 12, 19, 18, 40, 00), 24*3600*1000, Hangz, Wuh, 860, 120, 340000);
+				flightDaemons.add(flight1);
+				flightDaemons.add(flight2);
+				flightDaemons.add(flight3);
+				flightDaemons.add(flight4);
+				flightDaemons.add(flight6);
+				flightDaemons.add(flight7);
+				flightDaemons.add(flight9);
+				flightDaemons.add(flight10);
+				flightDaemons.add(flight11);
+				flightDaemons.add(flight12);
+				flightDaemons.add(flight14);
+				flightDaemons.add(flight15);
 				// DONE(Zhu) add remain
 				doc.document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
 				doc.current = (Element) doc.document.appendChild(doc.document.createElement("root"));
 				doc.createElement("user").returnParent()
 					.createElement("flight").returnParent()
-					.createElement("city").returnParent();
+					.createElement("city").returnParent()
+					.createElement("flightDaemon").returnParent();
 				saveData();
 			} else {
 				doc.document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(file);
@@ -536,6 +531,25 @@ public class DataManager {
 				flights.add(flight);	
 			}
 			Flight.ID = MAX_ID + 1;
+			doc.returnParent().getIn("flightDaemon");
+			MAX_ID = 0;
+			for (Element element : doc.getChildren()) {
+				FlightDaemon.ID = Integer.parseInt(element.getAttribute("mid"));
+				MAX_ID = FlightDaemon.ID > MAX_ID ? FlightDaemon.ID : MAX_ID;
+				FlightDaemon flight;
+				flight = new FlightDaemon(
+						element.getElementsByTagName("flightName").item(0).getTextContent(),
+						new Date(Long.parseLong(element.getElementsByTagName("startTime").item(0).getTextContent())),
+						new Date(Long.parseLong(element.getElementsByTagName("arriveTime").item(0).getTextContent())),
+						Integer.parseInt(element.getElementsByTagName("period").item(0).getTextContent()),
+						getCityByID(Integer.parseInt(element.getElementsByTagName("startCity").item(0).getTextContent())),
+						getCityByID(Integer.parseInt(element.getElementsByTagName("arriveCity").item(0).getTextContent())),
+						Integer.parseInt(element.getElementsByTagName("price").item(0).getTextContent()),
+						Integer.parseInt(element.getElementsByTagName("seatCapacity").item(0).getTextContent()),
+						Integer.parseInt(element.getElementsByTagName("distance").item(0).getTextContent()));
+				flightDaemons.add(flight);	
+			}
+			FlightDaemon.ID = MAX_ID + 1;
 			doc.returnParent().getIn("user");
 			MAX_ID = 0;
 			for (Element element : doc.getChildren()) {

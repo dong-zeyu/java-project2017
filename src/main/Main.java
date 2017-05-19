@@ -308,6 +308,7 @@ public class Main {
 
 	private static void changeFlight(int flightID) throws PermissionDeniedException {
 		Flight flight = server.getFlight(flightID);
+		flight.setDaemon(false);
 		System.out.print("Usage: "
 				+ "\tname=newname\n"
 				+ "\tstarttime=yyyy-mm-dd-hr-mim-sec\n"

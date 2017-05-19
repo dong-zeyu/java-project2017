@@ -24,6 +24,7 @@ public class Flight {
 	protected FlightStatus flightStatus;
 	private HashMap<Passenger, Integer> passagers;
 	private int distance;
+	private boolean isDaemon;
 	
 	public Flight(String flightName, Date startTime, Date arriveTime, City startCity, City arriveCity, int price,
 			int seatCapacity, int distance) {
@@ -37,6 +38,7 @@ public class Flight {
 		this.seatCapacity = seatCapacity;
 		this.distance = distance;
 		this.flightStatus = FlightStatus.UNPUBLISHED;
+		isDaemon = false;
 		flightID = Flight.ID;
 		ID++;
 		startCity.flightsOut.add(this);
@@ -52,7 +54,8 @@ public class Flight {
 				startTime.toString() + "\t" +
 				arriveTime.toString() + "\t" +
 				String.valueOf(price) + "\t" +
-				String.valueOf(seatCapacity - passagers.size());
+				String.valueOf(seatCapacity - passagers.size()) + "\t" +
+				flightStatus.name();
 	}
 	
 	@Override
@@ -275,6 +278,14 @@ public class Flight {
 			result = random.nextInt(seatCapacity) + 1;			
 		} while (seat.contains(result));
 		return result;
+	}
+
+	public boolean isDaemon() {
+		return isDaemon;
+	}
+
+	public void setDaemon(boolean isDaemon) {
+		this.isDaemon = isDaemon;
 	}
 	
 }

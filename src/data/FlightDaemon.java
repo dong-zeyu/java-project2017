@@ -36,6 +36,32 @@ public class FlightDaemon {
 		ID++;
 	}
 
+	@Override
+	public String toString() {
+		return String.valueOf(flightDaemonID) + "\t" +
+				flightName + "\t" + 
+				((startCity.toString().length() < 8) ? (startCity.toString() + "\t") : startCity.toString()) + "\t" +
+				((arriveCity.toString().length() < 8) ? (arriveCity.toString() + "\t") : arriveCity.toString()) + "\t" +
+				startTime.toString() + "\t" +
+				arriveTime.toString() + "\t" +
+				String.valueOf(price) + "\t" +
+				String.valueOf(seatCapacity);
+	}
+	
+	@Override
+	public int hashCode() {
+        int hashCode = 1;
+        hashCode = 31*hashCode + flightName.hashCode();
+        hashCode = 31*hashCode + startCity.hashCode();
+        hashCode = 31*hashCode + startTime.hashCode();
+        hashCode = 31*hashCode + arriveCity.hashCode();
+        hashCode = 31*hashCode + arriveTime.hashCode();
+        hashCode = 31*hashCode + ((Integer)price).hashCode();
+        hashCode = 31*hashCode + ((Integer)seatCapacity).hashCode();
+        return hashCode;
+	}
+
+	
 	public int getFlightDaemonID() {
 		return flightDaemonID;
 	}
@@ -52,7 +78,9 @@ public class FlightDaemon {
 		this.flightName = flightName;
 		for (Flight flight : children) {
 			try {
-				flight.setFlightName(flightName);
+				if (flight.isDaemon()) {
+					flight.setFlightName(flightName);
+				}
 			} catch (StatusUnavailableException e) { /* ignored */ }
 		}
 	}
@@ -65,7 +93,9 @@ public class FlightDaemon {
 		this.startTime = startTime;
 		for (Flight flight : children) {
 			try {
-				flight.setStartTime(startTime);
+				if (flight.isDaemon()) {
+					flight.setStartTime(startTime);
+				}
 			} catch (StatusUnavailableException e) { /* ignored */ }		
 		}
 	}
@@ -78,7 +108,9 @@ public class FlightDaemon {
 		this.arriveTime = arriveTime;
 		for (Flight flight : children) {
 			try {
-				flight.setArriveTime(arriveTime);
+				if (flight.isDaemon()) {
+					flight.setArriveTime(arriveTime);
+				}
 			} catch (StatusUnavailableException e) { /* ignored */ }
 		}
 	}
@@ -99,7 +131,9 @@ public class FlightDaemon {
 		this.startCity = startCity;
 		for (Flight flight : children) {
 			try {
-				flight.setStartCity(startCity);
+				if (flight.isDaemon()) {
+					flight.setStartCity(startCity);
+				}
 			} catch (StatusUnavailableException e) { /* ignored */ }
 		}
 	}
@@ -112,7 +146,9 @@ public class FlightDaemon {
 		this.arriveCity = arriveCity;
 		for (Flight flight : children) {
 			try {
-				flight.setArriveCity(arriveCity);
+				if (flight.isDaemon()) {
+					flight.setArriveCity(arriveCity);
+				}
 			} catch (StatusUnavailableException e) { /* ignored */ }
 		}
 	}
@@ -125,7 +161,9 @@ public class FlightDaemon {
 		this.price = price;
 		for (Flight flight : children) {
 			try {
-				flight.setPrice(price);
+				if (flight.isDaemon()) {
+					flight.setPrice(price);
+				}
 			} catch (StatusUnavailableException e) { /* ignored */ }
 		}
 	}
@@ -138,7 +176,9 @@ public class FlightDaemon {
 		this.seatCapacity = seatCapacity;
 		for (Flight flight : children) {
 			try {
-				flight.setSeatCapacity(seatCapacity);
+				if (flight.isDaemon()) {
+					flight.setSeatCapacity(seatCapacity);
+				}
 			} catch (StatusUnavailableException e) { /* ignored */ }
 		}
 	}
@@ -150,7 +190,9 @@ public class FlightDaemon {
 	public void setDistance(int distance) {
 		this.distance = distance;
 		for (Flight flight : children) {
-			flight.setDistance(distance);
+			if (flight.isDaemon()) {
+				flight.setDistance(distance);
+			}
 		}
 	}
 	
