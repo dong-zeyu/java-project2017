@@ -387,7 +387,7 @@ public class MainServer {
 		StringBuilder builder = new StringBuilder();
 		builder.append("ID\tName\tStartCity\tArriveCity\tStartTime\t\t\tArriveTime\t\t\tPrice\tSeatRemain\n");
 		for (Flight flight : dataManager.flights) {
-			if (flight.getFlightName().toLowerCase().contains(flightName.toLowerCase())) {
+			if (flight.getFlightStatus() != FlightStatus.TERMINATE && flight.getFlightName().toLowerCase().contains(flightName.toLowerCase())) {
 				builder.append(flight.toString() + "\n");
 			}
 		}
