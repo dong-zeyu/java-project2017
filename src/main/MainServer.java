@@ -1,6 +1,8 @@
 package main;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 import data.Admin;
 import data.City;
@@ -299,7 +301,86 @@ public class MainServer {
 
 	public String search(int cityFromId, int cityToId, Date date1, Date date2) {
 		// TODO(Dong) The most difficult one
-		return null;
+		StringBuilder builder = new StringBuilder();
+		City from = dataManager.getCityByID(cityFromId);
+		City to = dataManager.getCityByID(cityToId);
+		long bdate;
+		long edate;
+		if (date1 == null) {
+			bdate = 0;
+		} else {
+			bdate = date1.getTime();
+		}
+		if (date2 == null) {
+			edate = Long.MAX_VALUE;
+		} else {
+			edate = date2.getTime();
+		}
+		ArrayList<Flight> flights = new ArrayList<>();
+		for (Flight flight : dataManager.flights) {
+			if (flight.getStartTime().getTime() >= bdate && flight.getStartTime().getTime() <= edate) {
+				flights.add(flight);
+			}
+		}
+		boolean direct = false;
+		for (Flight flight : flights) {
+			if (flight.getStartCity().equals(from) && flight.getArriveCity().equals(to)) {
+				direct = true;
+				builder.append(flight.toString() + "\n");
+			}
+		}
+		if (!direct) {
+			builder.append("No direct flight!");
+			ArrayList<City> S = (ArrayList<City>) dataManager.cities.clone();
+			ArrayList<City> V = new ArrayList<>();
+			HashMap<City, Integer> dist = new HashMap<>();
+			HashMap<City, ArrayList<Flight>> path = new HashMap<>();  
+			for (City city : S) {
+				dist.put(city, Integer.MAX_VALUE);
+				path.put(city, null);
+			}
+			V.add(from);
+			S.remove(from);
+			dist.replace(from, 0);
+			path.replace(from, new ArrayList<>());
+			City head = from;
+			while (S.size() != 0) {
+				ArrayList<Flight> fFlights = head.getFlightsOut();
+				fFlights.retainAll(flights);
+				for (City city : S) {
+					for (Flight out : fFlights) {
+						if (out.getArriveCity().equals(city)) {
+							Integer dis = dist.get(head) + out.getDistance();
+							if (dis < dist.get(city)) {
+								dist.replace(city, dis);
+								ArrayList<Flight> flightPath = new ArrayList<>();
+								flightPath.addAll(path.get(head));
+								flightPath.add(out);
+								path.replace(city, flightPath);
+							}
+						}
+					}
+				}
+				Integer min = Integer.MAX_VALUE;
+				for (City city : S) {
+					if (dist.get(city) < min) {
+						min = dist.get(city);
+						head = city;
+					}
+				}
+				S.remove(head);
+				V.add(head);
+			}
+			if (path.get(to) != null) {
+				builder.append("Available transit: \n");
+				for (Flight flight : path.get(to)) {
+					builder.append("\t").append(flight.toString()).append("\n");
+				}
+			} else {
+				builder.append("No Available transit as well");
+			}
+		}
+		return builder.toString();
 	}
 	
 	public String search(String flightName) {
