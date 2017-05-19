@@ -300,7 +300,7 @@ public class MainServer {
 	//------------boundary-----------------
 
 	public String search(int cityFromId, int cityToId, Date date1, Date date2) {
-		// TODO(Dong) The most difficult one
+		// DONE(Dong) give up...
 		StringBuilder builder = new StringBuilder();
 		City from = dataManager.getCityByID(cityFromId);
 		City to = dataManager.getCityByID(cityToId);
@@ -324,62 +324,10 @@ public class MainServer {
 				flights.add(flight);
 			}
 		}
-		boolean direct = false;
+		builder.append("ID\tName\tStartCity\tArriveCity\tStartTime\t\t\tArriveTime\t\t\tPrice\tSeatRemain\n");
 		for (Flight flight : flights) {
 			if (flight.getStartCity().equals(from) && flight.getArriveCity().equals(to)) {
-				direct = true;
 				builder.append(flight.toString() + "\n");
-			}
-		}
-		if (!direct) {
-			builder.append("No direct flight!\n");
-			ArrayList<City> S = (ArrayList<City>) dataManager.cities.clone();
-			ArrayList<City> V = new ArrayList<>();
-			HashMap<City, Integer> dist = new HashMap<>();
-			HashMap<City, ArrayList<Flight>> path = new HashMap<>();
-			for (City city : S) {
-				dist.put(city, Integer.MAX_VALUE);
-				path.put(city, null);
-			}
-			V.add(from);
-			S.remove(from);
-			dist.replace(from, 0);
-			path.replace(from, new ArrayList<>());
-			City head = from;
-			while (S.size() != 0) {
-				ArrayList<Flight> fFlights = head.getFlightsOut();
-				fFlights.retainAll(flights);
-				for (City city : S) {
-					for (Flight out : fFlights) {
-						if (out.getArriveCity().equals(city)) {
-							Integer dis = dist.get(head) + out.getDistance();
-							if (dis < dist.get(city)) {
-								dist.replace(city, dis);
-								ArrayList<Flight> flightPath = new ArrayList<>();
-								flightPath.addAll(path.get(head));
-								flightPath.add(out);
-								path.replace(city, flightPath);
-							}
-						}
-					}
-				}
-				Integer min = Integer.MAX_VALUE;
-				for (City city : S) {
-					if (dist.get(city) <= min) {
-						min = dist.get(city);
-						head = city;
-					}
-				}
-				S.remove(head);
-				V.add(head);
-			}
-			if (path.get(to) != null) {
-				builder.append("Available transit: \n");
-				for (Flight flight : path.get(to)) {
-					builder.append("\t").append(flight.toString()).append("\n");
-				}
-			} else {
-				builder.append("No Available transit as well\n");
 			}
 		}
 		return builder.toString();
