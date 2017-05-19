@@ -318,7 +318,9 @@ public class MainServer {
 		}
 		ArrayList<Flight> flights = new ArrayList<>();
 		for (Flight flight : dataManager.flights) {
-			if (flight.getStartTime().getTime() >= bdate && flight.getStartTime().getTime() <= edate) {
+			if (flight.getStartTime().getTime() >= bdate 
+					&& flight.getStartTime().getTime() <= edate 
+					&& flight.getFlightStatus() != FlightStatus.TERMINATE) {
 				flights.add(flight);
 			}
 		}

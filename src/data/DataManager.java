@@ -78,7 +78,6 @@ public class DataManager {
 	public ArrayList<Flight> flights;
 	public ArrayList<City> cities;
 	public ArrayList<FlightDaemon> flightDaemons;
-	public static final long SYNC_INTERVAL = 20*1000 + 53; // 20 second
 	public static final long CHECKING_INTERVAL = 1000l; // 1 second
 	public static final long DAY_OF_CREATE = 18*24*3600*1000l; // 18 days
 	public static final long INTERVAL_TO_CREATE = 24*3600*1000l; // 1 day
@@ -87,29 +86,7 @@ public class DataManager {
 	private final String filename = "data.xml";
 	private File file;
 	private Doc doc;
-	private int usersHash;
-	private int flightsHash;
-	private int citiesHash;
-	private int flightDaemonHash;
 	private Timer timer;
-	
-	class SaveFileTask extends TimerTask {
-		
-		@Override
-		public synchronized void run() {
-			try {
-				saveData();
-			} catch (FileNotFoundException e) {
-				try {
-					init();
-				} catch (IOException e1) {
-					System.err.println("Write data error!");
-					System.exit(-1);
-				}
-			}
-		}
-		
-	}
 	
 	class ChangeFlight extends TimerTask {
 
@@ -151,7 +128,7 @@ public class DataManager {
 						Flight flight = new Flight(
 								flightDaemon.getFlightName(), 
 								new Date(i), 
-								new Date(i + flightDaemon.getArriveTime().getTime() - flightDaemon.getArriveTime().getTime()), 
+								new Date(i + flightDaemon.getArriveTime().getTime() - flightDaemon.getStartTime().getTime()), 
 								flightDaemon.getStartCity(), 
 								flightDaemon.getArriveCity(), 
 								flightDaemon.getPrice(), 
@@ -183,11 +160,7 @@ public class DataManager {
 			System.err.println("Read/write data error!");
 			System.exit(-1);
 		}
-		usersHash = users.hashCode();
-		flightsHash = flights.hashCode();
-		citiesHash =  cities.hashCode();
 		timer = new Timer(false);
-		timer.schedule(new SaveFileTask(), SYNC_INTERVAL, SYNC_INTERVAL);
 		timer.schedule(new ChangeFlight(), CHECKING_INTERVAL, CHECKING_INTERVAL);
 		timer.schedule(new CreateFlight(), 0, INTERVAL_TO_CREATE);
 	}
@@ -226,10 +199,6 @@ public class DataManager {
 		
 		private Document document;
 		private Element current;
-		
-		public void setCurrent(Element current) {
-			this.current = current;
-		}
 		
 		public Doc getIn(String tag) {
 			return getIn(tag, 0);
@@ -318,87 +287,74 @@ public class DataManager {
 	}
 	
 	public void saveData() throws FileNotFoundException {
-		if (usersHash != users.hashCode()) {
-			usersHash = users.hashCode();
-			//Users
-			doc.getIn("user").renewElement();
-			for (User user : users) {
-				HashMap<String, String> map = new HashMap<>();
-				if (user instanceof Admin) {
-					map.put("userName", user.getUserName());
-					map.put("passHash", user.getPassHash());
-					doc.appendItem(map, user.userID).setAttribute("isAdmin", "true");
-				} else {
-					Passenger passenger = (Passenger) user;
-					map.put("userName", passenger.getUserName());
-					map.put("passHash", passenger.getPassHash());
-					map.put("identityID", passenger.getIdentityID());
-					map.put("userName", passenger.getUserName());
-					doc.setCurrent(doc.appendItem(map, passenger.userID));
-					doc.current.setAttribute("isAdmin", "false");
-					doc.createElement("order");
-					for (Order order : passenger.orderList) {
-						map = new HashMap<>();
-						map.put("flightID", String.valueOf(order.getFlight().getFlightID()));
-						map.put("seat", String.valueOf(order.getSeat()));
-						map.put("date", String.valueOf(order.getCreatDate().getTime()));
-						map.put("status", String.valueOf(order.getStatus()));
-						doc.appendItem(map);
-					}
-					doc.returnParent().returnParent();
+		doc.getIn("user").renewElement();
+		for (User user : users) {
+			HashMap<String, String> map = new HashMap<>();
+			if (user instanceof Admin) {
+				map.put("userName", user.getUserName());
+				map.put("passHash", user.getPassHash());
+				doc.appendItem(map, user.userID).setAttribute("isAdmin", "true");
+			} else {
+				Passenger passenger = (Passenger) user;
+				map.put("userName", passenger.getUserName());
+				map.put("passHash", passenger.getPassHash());
+				map.put("identityID", passenger.getIdentityID());
+				map.put("userName", passenger.getUserName());
+				doc.current = doc.appendItem(map, passenger.userID);
+				doc.current.setAttribute("isAdmin", "false");
+				doc.createElement("order");
+				for (Order order : passenger.orderList) {
+					map = new HashMap<>();
+					map.put("flightID", String.valueOf(order.getFlight().getFlightID()));
+					map.put("seat", String.valueOf(order.getSeat()));
+					map.put("date", String.valueOf(order.getCreatDate().getTime()));
+					map.put("status", String.valueOf(order.getStatus()));
+					doc.appendItem(map);
 				}
+				doc.returnParent().returnParent();
 			}
-			doc.returnParent();
 		}
-		if (flightsHash != flights.hashCode()) {
-			flightsHash = flights.hashCode();
-			//flight
-			doc.getIn("flight").renewElement();
-			for (Flight flight : flights) {
-				HashMap<String, String> map = new HashMap<>();
-				map.put("flightName", flight.getFlightName());
-				map.put("startTime", String.valueOf(flight.getStartTime().getTime()));
-				map.put("arriveTime", String.valueOf(flight.getArriveTime().getTime()));
-				map.put("startCity", String.valueOf(flight.getStartCity().getCityID()));
-				map.put("arriveCity", String.valueOf((flight.getArriveCity().getCityID())));
-				map.put("price", String.valueOf(flight.getPrice()));
-				map.put("seatCapacity", String.valueOf(flight.getSeatCapacity()));
-				map.put("distance", String.valueOf(flight.getDistance()));
-				map.put("status", flight.getFlightStatus().name());
-				doc.appendItem(map, flight.getFlightID());
+		doc.returnParent();
+		//flight
+		doc.getIn("flightDaemon").renewElement();
+		for (FlightDaemon flight : flightDaemons) {
+			HashMap<String, String> map = new HashMap<>();
+			map.put("flightName", flight.getFlightName());
+			map.put("startTime", String.valueOf(flight.getStartTime().getTime()));
+			map.put("arriveTime", String.valueOf(flight.getArriveTime().getTime()));
+			map.put("startCity", String.valueOf(flight.getStartCity().getCityID()));
+			map.put("arriveCity", String.valueOf((flight.getArriveCity().getCityID())));
+			map.put("price", String.valueOf(flight.getPrice()));
+			map.put("seatCapacity", String.valueOf(flight.getSeatCapacity()));
+			map.put("distance", String.valueOf(flight.getDistance()));
+			map.put("period", String.valueOf(flight.getPeriod()));
+			doc.current = doc.appendItem(map, flight.getFlightDaemonID());
+			doc.createElement("flight");
+			for (Flight flight2 : flight.children) {
+				map = new HashMap<>();
+				map.put("flightName", flight2.getFlightName());
+				map.put("startTime", String.valueOf(flight2.getStartTime().getTime()));
+				map.put("arriveTime", String.valueOf(flight2.getArriveTime().getTime()));
+				map.put("startCity", String.valueOf(flight2.getStartCity().getCityID()));
+				map.put("arriveCity", String.valueOf((flight2.getArriveCity().getCityID())));
+				map.put("price", String.valueOf(flight2.getPrice()));
+				map.put("seatCapacity", String.valueOf(flight2.getSeatCapacity()));
+				map.put("distance", String.valueOf(flight2.getDistance()));
+				map.put("status", flight2.getFlightStatus().name());
+				map.put("isDaemon", String.valueOf(flight2.isDaemon()));
+				doc.appendItem(map, flight2.getFlightID());
 			}
-			doc.returnParent();
+			doc.returnParent().returnParent();
 		}
-		if (flightDaemonHash != flightDaemons.hashCode()) {
-			flightDaemonHash = flightDaemons.hashCode();
-			//flight
-			doc.getIn("flightDaemon").renewElement();
-			for (FlightDaemon flight : flightDaemons) {
-				HashMap<String, String> map = new HashMap<>();
-				map.put("flightName", flight.getFlightName());
-				map.put("startTime", String.valueOf(flight.getStartTime().getTime()));
-				map.put("arriveTime", String.valueOf(flight.getArriveTime().getTime()));
-				map.put("startCity", String.valueOf(flight.getStartCity().getCityID()));
-				map.put("arriveCity", String.valueOf((flight.getArriveCity().getCityID())));
-				map.put("price", String.valueOf(flight.getPrice()));
-				map.put("seatCapacity", String.valueOf(flight.getSeatCapacity()));
-				map.put("distance", String.valueOf(flight.getDistance()));
-				map.put("period", String.valueOf(flight.getPeriod()));
-				doc.appendItem(map, flight.getFlightDaemonID());
-			}
-			doc.returnParent();
+		doc.returnParent();
+		//city
+		doc.getIn("city").renewElement();
+		for (City city : cities) {
+			HashMap<String, String> map = new HashMap<>();
+			map.put("name", city.getCityName());
+			doc.appendItem(map, city.getCityID());
 		}
-		if (citiesHash != cities.hashCode()) {
-			citiesHash = cities.hashCode();
-			//city
-			doc.getIn("city").renewElement();
-			for (City city : cities) {
-				HashMap<String, String> map = new HashMap<>();
-				map.put("name", city.getCityName());
-				doc.appendItem(map, city.getCityID());
-			}
-			doc.returnParent();
-		}
+		doc.returnParent();
 		doc.saveDocument();
 	}
 
@@ -436,38 +392,38 @@ public class DataManager {
 						Flight.calendar(2017, 5, 1, 12, 30, 0),
 						Flight.calendar(2017, 5, 1, 14, 40, 0), 24*3600*1000, shenz, beij, 1200, 120, 1800000);
 				FlightDaemon flight2 = new FlightDaemon("A002",
-						Flight.calendar(2017, 5, 2, 9, 12, 0),
-						Flight.calendar(2017, 5, 2, 10, 42, 0), 7*24*3600*1000, beij, shenz, 1200, 120, 1800000);
+						Flight.calendar(2017, 5, 1, 9, 12, 0),
+						Flight.calendar(2017, 5, 1, 10, 42, 0), 7*24*3600*1000, beij, shenz, 1200, 120, 1800000);
 				FlightDaemon flight3 = new FlightDaemon("A003",
-						Flight.calendar(2017, 3, 3, 16, 12, 00),
-						Flight.calendar(2017, 3, 3, 16, 52, 00), 24*3600*1000, zhenz, shenz, 1200, 120, 1200000);
+						Flight.calendar(2017, 5, 1, 16, 12, 00),
+						Flight.calendar(2017, 5, 1, 16, 52, 00), 24*3600*1000, zhenz, shenz, 1200, 120, 1200000);
 				FlightDaemon flight4 = new FlightDaemon("A004",
-						Flight.calendar(2017, 6, 8, 10, 55, 00), 
-						Flight.calendar(2017, 6, 8, 14, 32, 00), 7*24*3600*1000, shenz, zhenz, 1200, 120, 1200000);
+						Flight.calendar(2017, 5, 1, 10, 55, 00), 
+						Flight.calendar(2017, 5, 1, 14, 32, 00), 7*24*3600*1000, shenz, zhenz, 1200, 120, 1200000);
 				FlightDaemon flight6 = new FlightDaemon("A006",
-						Flight.calendar(2017, 9, 1, 22, 46, 00), 
-						Flight.calendar(2017, 9, 2, 00, 10, 00), 24*3600*1000, zhenz, Nanc, 250, 300, 950000);
+						Flight.calendar(2017, 5, 1, 22, 46, 00), 
+						Flight.calendar(2017, 5, 1, 00, 10, 00), 24*3600*1000, zhenz, Nanc, 250, 300, 950000);
 				FlightDaemon flight7 = new FlightDaemon("A007",
-						Flight.calendar(2017, 12, 30, 23, 46, 00), 
-						Flight.calendar(2018, 1, 1, 02, 10, 00), 24*3600*1000, Wuh, Hangz, 900, 90, 470000);
+						Flight.calendar(2017, 5, 1, 23, 46, 00), 
+						Flight.calendar(2017, 5, 1, 02, 10, 00), 24*3600*1000, Wuh, Hangz, 900, 90, 470000);
 				FlightDaemon flight9 = new FlightDaemon("A009",
-						Flight.calendar(2017, 2, 3, 11, 46, 00), 
-						Flight.calendar(2017, 2, 3, 13, 10, 00), 24*3600*1000, shangh, Hangz, 870, 100, 240000);
+						Flight.calendar(2017, 5, 1, 11, 46, 00), 
+						Flight.calendar(2017, 5, 1, 13, 10, 00), 24*3600*1000, shangh, Hangz, 870, 100, 240000);
 				FlightDaemon flight10 = new FlightDaemon("A010",
-						Flight.calendar(2017, 3, 10, 17, 46, 00), 
-						Flight.calendar(2017, 3, 10, 19, 10, 00), 24*3600*1000, shenz, Hangz, 870, 100, 660000);
+						Flight.calendar(2017, 5, 1, 17, 46, 00), 
+						Flight.calendar(2017, 5, 1, 19, 10, 00), 24*3600*1000, shenz, Hangz, 870, 100, 660000);
 				FlightDaemon flight11 = new FlightDaemon("A011",
-						Flight.calendar(2017, 4, 10, 17, 46, 00), 
-						Flight.calendar(2017, 4, 10, 19, 10, 00), 7*24*3600*1000, Hangz, shenz, 900, 100, 660000);
+						Flight.calendar(2017, 5, 1, 17, 46, 00), 
+						Flight.calendar(2017, 5, 1, 19, 10, 00), 7*24*3600*1000, Hangz, shenz, 900, 100, 660000);
 				FlightDaemon flight12 = new FlightDaemon("A012",
-						Flight.calendar(2017, 5, 23, 17, 46, 00), 
-						Flight.calendar(2017, 5, 23, 19, 30, 00), 24*3600*1000, Hangz, shangh, 1130, 100, 240000);
+						Flight.calendar(2017, 5, 1, 17, 46, 00), 
+						Flight.calendar(2017, 5, 1, 19, 30, 00), 24*3600*1000, Hangz, shangh, 1130, 100, 240000);
 				FlightDaemon flight14 = new FlightDaemon("A014",
-						Flight.calendar(2017, 11, 25, 15, 46, 00), 
-						Flight.calendar(2017, 11, 25, 16, 40, 00), 24*3600*1000, shenz, Wuh, 780, 120, 780000);
+						Flight.calendar(2017, 5, 1, 15, 46, 00), 
+						Flight.calendar(2017, 5, 1, 16, 40, 00), 24*3600*1000, shenz, Wuh, 780, 120, 780000);
 				FlightDaemon flight15 = new FlightDaemon("A015",
-						Flight.calendar(2017, 12, 19, 15, 46, 00), 
-						Flight.calendar(2017, 12, 19, 18, 40, 00), 24*3600*1000, Hangz, Wuh, 860, 120, 340000);
+						Flight.calendar(2017, 5, 1, 15, 46, 00), 
+						Flight.calendar(2017, 5, 1, 18, 40, 00), 24*3600*1000, Hangz, Wuh, 860, 120, 340000);
 				flightDaemons.add(flight1);
 				flightDaemons.add(flight2);
 				flightDaemons.add(flight3);
@@ -484,7 +440,6 @@ public class DataManager {
 				doc.document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
 				doc.current = (Element) doc.document.appendChild(doc.document.createElement("root"));
 				doc.createElement("user").returnParent()
-					.createElement("flight").returnParent()
 					.createElement("city").returnParent()
 					.createElement("flightDaemon").returnParent();
 				saveData();
@@ -512,26 +467,8 @@ public class DataManager {
 				cities.add(new City(element.getElementsByTagName("name").item(0).getTextContent()));
 			}
 			City.ID = MAX_ID + 1;
-			doc.returnParent().getIn("flight");
-			MAX_ID = 0;
-			for (Element element : doc.getChildren()) {
-				Flight.ID = Integer.parseInt(element.getAttribute("mid"));
-				MAX_ID = Flight.ID > MAX_ID ? Flight.ID : MAX_ID;
-				Flight flight;
-				flight = new Flight(
-						element.getElementsByTagName("flightName").item(0).getTextContent(),
-						new Date(Long.parseLong(element.getElementsByTagName("startTime").item(0).getTextContent())),
-						new Date(Long.parseLong(element.getElementsByTagName("arriveTime").item(0).getTextContent())),
-						getCityByID(Integer.parseInt(element.getElementsByTagName("startCity").item(0).getTextContent())),
-						getCityByID(Integer.parseInt(element.getElementsByTagName("arriveCity").item(0).getTextContent())),
-						Integer.parseInt(element.getElementsByTagName("price").item(0).getTextContent()),
-						Integer.parseInt(element.getElementsByTagName("seatCapacity").item(0).getTextContent()),
-						Integer.parseInt(element.getElementsByTagName("distance").item(0).getTextContent()));
-				flight.flightStatus = FlightStatus.valueOf(element.getElementsByTagName("status").item(0).getTextContent());
-				flights.add(flight);	
-			}
-			Flight.ID = MAX_ID + 1;
 			doc.returnParent().getIn("flightDaemon");
+			int MAX_FLIGHT_ID = 0;
 			MAX_ID = 0;
 			for (Element element : doc.getChildren()) {
 				FlightDaemon.ID = Integer.parseInt(element.getAttribute("mid"));
@@ -547,9 +484,30 @@ public class DataManager {
 						Integer.parseInt(element.getElementsByTagName("price").item(0).getTextContent()),
 						Integer.parseInt(element.getElementsByTagName("seatCapacity").item(0).getTextContent()),
 						Integer.parseInt(element.getElementsByTagName("distance").item(0).getTextContent()));
-				flightDaemons.add(flight);	
+				doc.current = element;
+				doc.getIn("flight");
+				for (Element flight1 : doc.getChildren()) {
+					Flight.ID = Integer.parseInt(flight1.getAttribute("mid"));
+					MAX_ID = Flight.ID > MAX_ID ? Flight.ID : MAX_ID;
+					Flight flight2 = new Flight(
+							flight1.getElementsByTagName("flightName").item(0).getTextContent(),
+							new Date(Long.parseLong(flight1.getElementsByTagName("startTime").item(0).getTextContent())),
+							new Date(Long.parseLong(flight1.getElementsByTagName("arriveTime").item(0).getTextContent())),
+							getCityByID(Integer.parseInt(flight1.getElementsByTagName("startCity").item(0).getTextContent())),
+							getCityByID(Integer.parseInt(flight1.getElementsByTagName("arriveCity").item(0).getTextContent())),
+							Integer.parseInt(flight1.getElementsByTagName("price").item(0).getTextContent()),
+							Integer.parseInt(flight1.getElementsByTagName("seatCapacity").item(0).getTextContent()),
+							Integer.parseInt(flight1.getElementsByTagName("distance").item(0).getTextContent()));
+					flight2.setDaemon(Boolean.getBoolean(flight1.getElementsByTagName("distance").item(0).getTextContent()));
+					flight2.flightStatus = FlightStatus.valueOf(flight1.getElementsByTagName("status").item(0).getTextContent());
+					flights.add(flight2);
+					flight.children.add(flight2);
+				}
+				doc.returnParent().returnParent();
+				flightDaemons.add(flight);
 			}
 			FlightDaemon.ID = MAX_ID + 1;
+			Flight.ID = MAX_FLIGHT_ID + 1;
 			doc.returnParent().getIn("user");
 			MAX_ID = 0;
 			for (Element element : doc.getChildren()) {
