@@ -276,7 +276,7 @@ public class Main {
 					if (flight != null) {
 						flight.publish();
 					} else {
-						System.out.printf("can't find flight with id 'p'\n", p);
+						System.out.printf("can't find flight with id '%s'\n", p);
 					}
 				} catch (NumberFormatException e) {
 					System.out.printf("'%s' is not a flight ID\n", p);
