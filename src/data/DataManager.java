@@ -5,10 +5,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.tools.DocumentationTool.Location;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
@@ -75,7 +77,12 @@ public class DataManager {
 	public ArrayList<User> users;
 	public ArrayList<Flight> flights;
 	public ArrayList<City> cities;
-	public static final long SYNC_INTERVAL = 20*1000l; // unit: (ms)
+	public ArrayList<FlightDaemon> flightDaemons;
+	public static final long SYNC_INTERVAL = 20*1000 + 53; // 20 second
+	public static final long CHECKING_INTERVAL = 1000l; // 1 second
+	public static final long DAY_OF_CREATE = 18*24*3600*1000l; // 18 days
+	public static final long INTERVAL_TO_CREATE = 24*3600*1000l; // 1 day
+	public static final long TIME_TO_TERMINATE = 2*3600*1000l; // 2 hours
 	private final String filename = "data.xml";
 	private File file;
 	private Document document;
@@ -107,13 +114,50 @@ public class DataManager {
 		@Override
 		public void run() {
 			for (Flight flight : flights) {
-				if (flight.getStartTime().getTime() - new Date().getTime() <= 7200000l) {
+				if (flight.getStartTime().getTime() - new Date().getTime() <= TIME_TO_TERMINATE) {
 					flight.flightStatus = FlightStatus.TERMINATE;
 				} else  {
 					if (flight.getNumber() == flight.getSeatCapacity()) {
 						flight.flightStatus = FlightStatus.FULL;
 					} else {
 						flight.flightStatus = FlightStatus.AVAILABLE;
+					}
+				}
+			}
+		}
+		
+	}
+	
+	class CreateFlight extends TimerTask {
+
+		@Override
+		public void run() {
+			for (FlightDaemon flightDaemon : flightDaemons) {
+				long now = new Date().getTime();
+				long end = now + DAY_OF_CREATE;
+				if (end < flightDaemon.getStartTime().getTime()) {
+					continue;
+				} else {
+					
+				}
+				for (long i = flightDaemon.getStartTime().getTime(); i < end; i+=flightDaemon.getPeriod()) {
+					boolean isCreate = false;
+					for (Flight flight : flightDaemon.children) {
+						if (!(flight.getStartTime().getTime() == i && flight.getFlightName() == flightDaemon.getFlightName())) {
+							isCreate = true;
+							break;
+						}
+					}
+					if (isCreate) {
+						flights.add(new Flight(
+								flightDaemon.getFlightName(), 
+								new Date(i), 
+								new Date(i + flightDaemon.getArriveTime().getTime() - flightDaemon.getArriveTime().getTime()), 
+								flightDaemon.getStartCity(), 
+								flightDaemon.getArriveCity(), 
+								flightDaemon.getPrice(), 
+								flightDaemon.getSeatCapacity(), 
+								flightDaemon.getDistance()));
 					}
 				}
 			}
@@ -142,7 +186,8 @@ public class DataManager {
 		citiesHash =  cities.hashCode();
 		timer = new Timer(false);
 		timer.schedule(new SaveFileTask(), SYNC_INTERVAL, SYNC_INTERVAL);
-		timer.schedule(new ChangeFlight(), 1000, 1000);
+		timer.schedule(new ChangeFlight(), CHECKING_INTERVAL, CHECKING_INTERVAL);
+		timer.schedule(new CreateFlight(), 0, INTERVAL_TO_CREATE);
 	}
 	
 	public Flight getFlightByID(int flightID) {
@@ -280,6 +325,7 @@ public class DataManager {
 		flights = new ArrayList<>();
 		users = new ArrayList<>();
 		cities = new ArrayList<>();
+		flightDaemons = new ArrayList<>();
 		User.ID = 0;
 		Flight.ID = 0;
 		City.ID = 0;
