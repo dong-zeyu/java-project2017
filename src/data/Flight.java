@@ -39,8 +39,8 @@ public class Flight {
 		this.flightStatus = FlightStatus.UNPUBLISHED;
 		flightID = Flight.ID;
 		ID++;
-		startCity.getFlightsOut().add(this);
-		arriveCity.getFlightsIn().add(this);
+		startCity.flightsOut.add(this);
+		arriveCity.flightsIn.add(this);
 	}
 	
 	@Override
