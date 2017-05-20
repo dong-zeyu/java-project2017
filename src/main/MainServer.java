@@ -264,19 +264,25 @@ public class MainServer {
 	 * .	.		 .
 	 * tips: see <Flight>.toString() and <Order>.toString()
 	 */
-	public String displayCity() {
-		// TODO(Zhu) displayCity
-		return null;
+	public void displayCity() {
+		// DONE(Zhu) displayCity
+		for(City city : dataManager.cities)
+		System.out.printf("%s\t"
+				+ "%s","City",city);
 	}
 
-	public String displayFlight() {
-		// TODO(Zhu) displayFlight
-		return null;
+	public void displayFlight() {
+		// DONE(Zhu) displayFlight
+		for(Flight fl : dataManager.flights)
+		System.out.printf("%s\t"
+				+ "%s","Flight",fl);;
 	}
 
-	public String displayDaemon() {
-		// TODO(Zhu) displayDaemon
-		return null;
+	public void displayDaemon() {
+		// DONE(Zhu) displayDaemon
+		for(FlightDaemon fd : dataManager.flightDaemons)
+        System.out.printf("%s\n"
+        		+ "%s\n","FlightDaemon",fd);
 	}
 
 	public String dispalyUser() throws PermissionDeniedException {
@@ -319,15 +325,33 @@ public class MainServer {
 		return null;
 	}
 	
-	public String dispalyUser(int UserID) throws PermissionDeniedException {
-		// TODO(Zhu) print User order(if it is passenger) as well
-		return null;
+	public void dispalyUser(int UserID) throws PermissionDeniedException {
+		// DONE(Zhu) print User order(if it is passenger) as well
+		for(User u : dataManager.users ){
+			if(u instanceof Passenger){
+				Passenger pa = (Passenger) u;
+				if(u.getID() == UserID){
+				System.out.printf("%s\t"
+						+ "s","User",u);
+				displayOrder(pa);
+				}
+			}
+		}
 	}
 	
-	public String displayOrder() throws PermissionDeniedException {
-		// TODO(Zhu) print all the order in order (if isLogin)
-		return null;
-		
+	private void displayOrder(Passenger pa) throws PermissionDeniedException {
+		// DONE(Zhu) print all the order in order (if isLogin)
+		checkPermission(false);
+        if(!isAdmin){
+        	    for(int i = 0 ; i < pa.getOrderList().size() ; i++){
+        		Order order = pa.getOrderList().get(i);
+        		System.out.println(order);
+        		System.out.println();
+        	    }
+        	}
+        else{
+        	throw new PermissionDeniedException("You are not Ueser");
+        }	
 	}
 
 	//------------boundary-----------------
