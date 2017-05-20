@@ -279,6 +279,8 @@ public class Main {
 			} catch (PermissionDeniedException e) {
 				System.out.println(e.getMessage());
 			}								
+		} else {
+			System.out.println("Format error: please input what to list");
 		}
 	}
 
@@ -321,6 +323,11 @@ public class Main {
 	}
 
 	private static void changeFlight(int flightID, boolean isDeamon) throws PermissionDeniedException {
+		FlightDaemon daemon = server.getDaemon(flightID);
+		if (daemon == null) {
+			System.out.printf("Cannot find flight daemon with ID '%d'", flightID);
+			return;
+		}
 		System.out.print("Usage: "
 				+ "\tname=newname\n"
 				+ "\tstarttime=yyyy-mm-dd-hr-mim-sec\n"
