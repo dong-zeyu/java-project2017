@@ -281,12 +281,17 @@ public class Flight {
 		return result;
 	}
 
-	public boolean isDaemon() {
+	protected boolean isDaemon() {
 		return isDaemon;
 	}
 
-	public void setDaemon(boolean isDaemon) {
+	protected void setDaemon(boolean isDaemon) {
 		this.isDaemon = isDaemon;
+	}
+
+	public void delete() {
+		isDaemon = false;
+		flightStatus = FlightStatus.TERMINATE;
 	}
 	
 }

@@ -18,6 +18,7 @@ public class FlightDaemon {
 	private int price;
 	private int seatCapacity;
 	private int distance;
+	protected boolean status;
 	protected ArrayList<Flight> children;
 
 	public FlightDaemon(String flightName, Date startTime, Date arriveTime, int period, City startCity, City arriveCity, int price,
@@ -31,6 +32,7 @@ public class FlightDaemon {
 		this.price = price;
 		this.seatCapacity = seatCapacity;
 		this.distance = distance;
+		status = true;
 		children = new ArrayList<>();
 		flightDaemonID = FlightDaemon.ID;
 		ID++;
@@ -45,7 +47,8 @@ public class FlightDaemon {
 				((startCity.toString().length() < 8) ? (startCity.toString() + "\t") : startCity.toString()) + "\t" +
 				((arriveCity.toString().length() < 8) ? (arriveCity.toString() + "\t") : arriveCity.toString()) + "\t" +
 				String.valueOf(price) + "\t" +
-				String.valueOf(seatCapacity);
+				String.valueOf(seatCapacity) + "\t" +
+				(status ? "" : "deleted");
 	}
 	
 	@Override
@@ -58,6 +61,7 @@ public class FlightDaemon {
         hashCode = 31*hashCode + arriveTime.hashCode();
         hashCode = 31*hashCode + ((Integer)price).hashCode();
         hashCode = 31*hashCode + ((Integer)seatCapacity).hashCode();
+        hashCode = 31*hashCode + ((Boolean)status).hashCode();
         return hashCode;
 	}
 
@@ -194,6 +198,19 @@ public class FlightDaemon {
 				flight.setDistance(distance);
 			}
 		}
+	}
+	
+	public ArrayList<Flight> getChildren() {
+		return (ArrayList<Flight>) children.clone();
+	}
+
+	public void removeFlight() {
+		for (Flight flight : children) {
+			if (flight.flightStatus == FlightStatus.UNPUBLISHED) {
+				children.remove(flight);
+			}
+		}
+		status = false;
 	}
 	
 }

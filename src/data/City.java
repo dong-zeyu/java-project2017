@@ -40,12 +40,12 @@ public class City {
 		this.cityName = cityName;
 	}
 	
-	public ArrayList<Flight> getFlightsIn() {
-		return (ArrayList<Flight>) flightsIn.clone();
+	public ArrayList<FlightDaemon> getFlightsIn() {
+		return (ArrayList<FlightDaemon>) flightsIn.clone();
 	}
 
-	public ArrayList<Flight> getFlightsOut() {
-		return (ArrayList<Flight>) flightsOut.clone();
+	public ArrayList<FlightDaemon> getFlightsOut() {
+		return (ArrayList<FlightDaemon>) flightsOut.clone();
 	}
 	
 }

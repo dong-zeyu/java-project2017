@@ -80,7 +80,7 @@ public class DataManager {
 	public ArrayList<FlightDaemon> flightDaemons;
 	public static final long CHECKING_INTERVAL = 1000l; // 1 second
 	public static final long DAY_OF_CREATE = 18*24*3600*1000l; // 18 days
-	public static final long INTERVAL_TO_CREATE = 24*3600*1000l; // 1 day
+	public static final long INTERVAL_TO_CREATE = 3600*1000l; // 1 hour
 	public static final long TIME_TO_TERMINATE = 2*3600*1000l; // 2 hours
 	public static final long TIME_TO_PUBLISH = 8*24*3600*1000l; // 8 days
 	private final String filename = "data.xml";
@@ -97,8 +97,10 @@ public class DataManager {
 				if (flight.isDaemon()) {
 					if (flight.getStartTime().getTime() - now.getTime() <= TIME_TO_TERMINATE) {
 						flight.flightStatus = FlightStatus.TERMINATE;
+						flight.setDaemon(false);
 					} else if (flight.getStartTime().getTime() - now.getTime() <= TIME_TO_PUBLISH) {
 						flight.flightStatus = FlightStatus.AVAILABLE;
+						flight.setDaemon(false);
 					} 
 				}				
 			}
@@ -337,6 +339,7 @@ public class DataManager {
 			map.put("seatCapacity", String.valueOf(flight.getSeatCapacity()));
 			map.put("distance", String.valueOf(flight.getDistance()));
 			map.put("period", String.valueOf(flight.getPeriod()));
+			map.put("status", String.valueOf(flight.status));
 			doc.current = doc.appendItem(map, flight.getFlightDaemonID());
 			doc.createElement("flight");
 			for (Flight flight2 : flight.children) {
@@ -493,6 +496,7 @@ public class DataManager {
 						Integer.parseInt(element.getElementsByTagName("price").item(0).getTextContent()),
 						Integer.parseInt(element.getElementsByTagName("seatCapacity").item(0).getTextContent()),
 						Integer.parseInt(element.getElementsByTagName("distance").item(0).getTextContent()));
+				flight.status = Boolean.getBoolean(element.getElementsByTagName("distance").item(0).getTextContent());
 				doc.current = element;
 				doc.getIn("flight");
 				for (Element flight1 : doc.getChildren()) {

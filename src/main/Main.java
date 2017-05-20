@@ -131,18 +131,9 @@ public class Main {
 			switch (param[0]) {
 			case "flight":
 				try {
-					changeFlight(Integer.valueOf(param[1]), false);
+					changeFlight(Integer.valueOf(param[1]));
 				} catch (NumberFormatException e) {
 					System.out.printf("'%s' is not a flight ID\n", param[1]);
-				} catch (PermissionDeniedException e) {
-					System.out.println(e.getMessage());
-				}
-				break;
-			case "daemon":
-				try {
-					changeFlight(Integer.valueOf(param[1]), true);
-				} catch (NumberFormatException e) {
-					System.out.printf("'%s' is not a flight daemon ID\n", param[1]);
 				} catch (PermissionDeniedException e) {
 					System.out.println(e.getMessage());
 				}
@@ -322,10 +313,10 @@ public class Main {
 		}
 	}
 
-	private static void changeFlight(int flightID, boolean isDeamon) throws PermissionDeniedException {
-		FlightDaemon daemon = server.getDaemon(flightID);
-		if (daemon == null) {
-			System.out.printf("Cannot find flight daemon with ID '%d'", flightID);
+	private static void changeFlight(int flightID) throws PermissionDeniedException {
+		FlightDaemon flight = server.getDaemon(flightID);
+		if (flight == null) {
+			System.out.printf("Cannot find flight daemon with ID '%d'\n", flightID);
 			return;
 		}
 		System.out.print("Usage: "
@@ -342,123 +333,61 @@ public class Main {
 		do {
 			System.out.print("Please input what to change: ");
 			input = scanner.nextLine().replace(" ", "").split("=");
-			try {
-				if (isDeamon) {
-					FlightDaemon flight = server.getDaemon(flightID);	
-					switch (input[0]) {
-					case "name":
-						flight.setFlightName(input[1]);
-						System.out.println("Succeed!");
-						break;
-					case "starttime":
-						String[] sdate = input[1].split("-");
-						flight.setStartTime(Flight.calendar(
-								Integer.valueOf(sdate[0]), 
-								Integer.valueOf(sdate[1]), 
-								Integer.valueOf(sdate[2]), 
-								Integer.valueOf(sdate[3]), 
-								Integer.valueOf(sdate[4]),
-								Integer.valueOf(sdate[5])));
-						System.out.println("Succeed!");
-						break;
-					case "arrivetime":
-						String[] adate = input[1].split("-");
-						flight.setArriveTime(Flight.calendar(
-								Integer.valueOf(adate[0]), 
-								Integer.valueOf(adate[1]), 
-								Integer.valueOf(adate[2]), 
-								Integer.valueOf(adate[3]), 
-								Integer.valueOf(adate[4]),
-								Integer.valueOf(adate[5])));
-						System.out.println("Succeed!");
-						break;
-					case "startcity":
-						flight.setStartCity(server.getCity(Integer.valueOf(input[1])));
-						System.out.println("Succeed!");
-						break;
-					case "arrivecity":
-						flight.setArriveCity(server.getCity(Integer.valueOf(input[1])));
-						System.out.println("Succeed!");
-						break;
-					case "price":
-						flight.setPrice(Integer.valueOf(input[1]));
-						System.out.println("Succeed!");
-						break;
-					case "capacity":
-						flight.setSeatCapacity(Integer.valueOf(input[1]));
-						System.out.println("Succeed!");
-						break;
-					case "distance":
-						flight.setDistance(Integer.valueOf(input[1]));
-						System.out.println("Succeed!");
-						break;
-					case "exit":
-					case "e":
-						break;
-					default:
-						System.out.println("Command error");
-						break;
-					}
-				} else {
-					Flight flight = server.getFlight(flightID);			
-					flight.setDaemon(false);
-					switch (input[0]) {
-					case "name":
-						flight.setFlightName(input[1]);
-						System.out.println("Succeed!");
-						break;
-					case "starttime":
-						String[] sdate = input[1].split("-");
-						flight.setStartTime(Flight.calendar(
-								Integer.valueOf(sdate[0]), 
-								Integer.valueOf(sdate[1]), 
-								Integer.valueOf(sdate[2]), 
-								Integer.valueOf(sdate[3]), 
-								Integer.valueOf(sdate[4]),
-								Integer.valueOf(sdate[5])));
-						System.out.println("Succeed!");
-						break;
-					case "arrivetime":
-						String[] adate = input[1].split("-");
-						flight.setArriveTime(Flight.calendar(
-								Integer.valueOf(adate[0]), 
-								Integer.valueOf(adate[1]), 
-								Integer.valueOf(adate[2]), 
-								Integer.valueOf(adate[3]), 
-								Integer.valueOf(adate[4]),
-								Integer.valueOf(adate[5])));
-						System.out.println("Succeed!");
-						break;
-					case "startcity":
-						flight.setStartCity(server.getCity(Integer.valueOf(input[1])));
-						System.out.println("Succeed!");
-						break;
-					case "arrivecity":
-						flight.setArriveCity(server.getCity(Integer.valueOf(input[1])));
-						System.out.println("Succeed!");
-						break;
-					case "price":
-						flight.setPrice(Integer.valueOf(input[1]));
-						System.out.println("Succeed!");
-						break;
-					case "capacity":
-						flight.setSeatCapacity(Integer.valueOf(input[1]));
-						System.out.println("Succeed!");
-						break;
-					case "distance":
-						flight.setDistance(Integer.valueOf(input[1]));
-						System.out.println("Succeed!");
-						break;
-					case "exit":
-					case "e":
-						break;
-					default:
-						System.out.println("Command error");
-						break;
-					}
+			try {	
+				switch (input[0]) {
+				case "name":
+					flight.setFlightName(input[1]);
+					System.out.println("Succeed!");
+					break;
+				case "starttime":
+					String[] sdate = input[1].split("-");
+					flight.setStartTime(Flight.calendar(
+							Integer.valueOf(sdate[0]), 
+							Integer.valueOf(sdate[1]), 
+							Integer.valueOf(sdate[2]), 
+							Integer.valueOf(sdate[3]), 
+							Integer.valueOf(sdate[4]),
+							Integer.valueOf(sdate[5])));
+					System.out.println("Succeed!");
+					break;
+				case "arrivetime":
+					String[] adate = input[1].split("-");
+					flight.setArriveTime(Flight.calendar(
+							Integer.valueOf(adate[0]), 
+							Integer.valueOf(adate[1]), 
+							Integer.valueOf(adate[2]), 
+							Integer.valueOf(adate[3]), 
+							Integer.valueOf(adate[4]),
+							Integer.valueOf(adate[5])));
+					System.out.println("Succeed!");
+					break;
+				case "startcity":
+					flight.setStartCity(server.getCity(Integer.valueOf(input[1])));
+					System.out.println("Succeed!");
+					break;
+				case "arrivecity":
+					flight.setArriveCity(server.getCity(Integer.valueOf(input[1])));
+					System.out.println("Succeed!");
+					break;
+				case "price":
+					flight.setPrice(Integer.valueOf(input[1]));
+					System.out.println("Succeed!");
+					break;
+				case "capacity":
+					flight.setSeatCapacity(Integer.valueOf(input[1]));
+					System.out.println("Succeed!");
+					break;
+				case "distance":
+					flight.setDistance(Integer.valueOf(input[1]));
+					System.out.println("Succeed!");
+					break;
+				case "exit":
+				case "e":
+					break;
+				default:
+					System.out.println("Command error");
+					break;
 				}
-			} catch (StatusUnavailableException e) {
-				System.out.printf("Cannot change %s: %s\n", input[0], e.getMessage());
 			} catch (IndexOutOfBoundsException | NumberFormatException e) {
 				System.out.println("Format error");
 			}
@@ -526,6 +455,23 @@ public class Main {
 							System.out.printf("'%s' is not a flight id!\n", param[i]);
 						} catch (StatusUnavailableException e) {
 							System.out.printf("Delete flight '%s' failed: %s", param[i], e.getMessage());
+						}
+					}
+				} catch (PermissionDeniedException e) {
+					System.out.println(e.getMessage());
+				}
+				break;
+			case "daemon":
+				try {
+					for (int i = 1; i < param.length; i++) {
+						try {
+							if (server.deleteFlightDaemon(Integer.parseInt(param[i]))) {
+								System.out.printf("Successfully delete flight daemon '%s'!\n", param[i]);
+							} else {
+								System.out.printf("Delete flight daemon '%s' failed: no such flight daemon\n", param[i]);
+							}
+						} catch (NumberFormatException e) {
+							System.out.printf("'%s' is not a flight daemon id!\n", param[i]);
 						}
 					}
 				} catch (PermissionDeniedException e) {
@@ -730,7 +676,7 @@ public class Main {
 			int min1 =Integer.parseInt(arrivetime[4]);
 			int sec1 =Integer.parseInt(arrivetime[5]);
 			Date arriveTime = Flight.calendar(year1, month1, date1, hr1, min1, sec1);
-			System.out.print("Period of the flight(day): ");
+			System.out.print("Period of the flight(day)(0 for no period): ");
 			int period = scanner.nextInt();
 			System.out.print("startCityID: ");
 			int startCityID=scanner.nextInt();
@@ -788,24 +734,23 @@ public class Main {
 					+ "\t\tsearch flight with specific name\n\n"
 					+ "\tsearch|s\n"
 					+ "\t\tsearch flight with some filter\n\n"
-					+ "\tlist|l (city|user|flight) [ID]\n"
-					+ "\t\tlist all city, users(only for adminstrator), flight in the server, or list the element with specific ID in detail\n\n"
+					+ "\tlist|l (city|user|flight|daemon) [ID]\n"
+					+ "\t\tlist all city, users(only for adminstrator), flight and flight daemon in the server, or list the element with specific ID in detail\n\n"
 					+ "\tlist|l order\n"
 					+ "\t\tlist the order\n\n"
 					+ "\tadd (city|admin|flight)\n"
-					+ "\t\tadd a city administrator or flight(only for adminstrator)\n\n"
+					+ "\t\tadd a city administrator or flight daemon(only for adminstrator)\n\n"
 					+ "\tdelete|d (city|user|flight) [ID1] [ID2] ....\n"
-					+ "\t\tdelete city user or flight with specific ID(only for adminstrator)\n\n"
+					+ "\t\tdelete city, user, flight or flight daemon with specific ID(only for adminstrator)\n"
+					+ "\t\t\tcaution： delete flight daemon will only delete the flight with status UNPUBLISHED\n\n"
 					+ "\treserve|re [ID1] [ID2] ....\n"
 					+ "\t\treserve flights with specific ID\n\n"
 					+ "\tunsubscribe|unsub [ID1] [ID2] ....\n"
 					+ "\t\tunsubscribe flights with specific ID\n\n"
 					+ "\tpay\n"
 					+ "\t\tgoes into pay page\n\n"
-					+ "\tpublish|pub [ID1] [ID2] ....\n"
-					+ "\t\tpublish flights with specific ID(only for adminstrator)\n\n"
 					+ "\tchange flight [ID]\n"
-					+ "\t\tchange flight information with specific ID(only for adminstrator)\n\n"
+					+ "\t\tchange flight daemon information with specific ID(only for adminstrator)\n\n"
 					+ "\tchange city [ID] [newName]\n"
 					+ "\t\tchange city name with specific ID(only for adminstrator)\n\n"
 					+ "\tchange (username|password) [newName|newPass]\n"

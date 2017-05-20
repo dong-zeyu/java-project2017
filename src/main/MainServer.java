@@ -2,8 +2,6 @@ package main;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-
 import data.Admin;
 import data.City;
 import data.DataManager;
@@ -115,14 +113,24 @@ public class MainServer {
 		if (f != null) {
 			if (f.getFlightStatus() == FlightStatus.UNPUBLISHED) {
 				dataManager.flights.remove(f);
-				f.getStartCity().getFlightsOut().remove(flightID);
-				f.getArriveCity().getFlightsIn().remove(flightID);
+				f.delete();
 				return true;
 			} else {
 				throw new StatusUnavailableException(f.getFlightStatus());
 			}
 		}
 		return false; 
+	}
+	
+	public boolean deleteFlightDaemon(int daemonID) throws PermissionDeniedException {
+		checkPermission(true);
+		FlightDaemon daemon = dataManager.getFlightDaemonByID(daemonID);
+		
+		if (daemon != null) {
+			daemon.removeFlight();
+			dataManager.flights.removeAll(daemon.getChildren());
+		}
+		return false;
 	}
 	
 	public void addPassenger(String username, String idNumber, String password){
