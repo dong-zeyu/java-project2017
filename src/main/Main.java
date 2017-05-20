@@ -658,9 +658,9 @@ public class Main {
 	private static void addFlight() {
 		// DONE(Peng) addFlight UI
 		try {
-			System.out.println("flightName");
+			System.out.print("flightName： ");
 			String flightName=scanner.nextLine();
-			System.out.println("Please enter the Starttime,formatted with : year-month-date-hr-min-sec: ");
+			System.out.print("Please enter the Starttime,formatted with : year-month-date-hr-min-sec: ");
 			String[] startime=scanner.nextLine().split("-");
 			int year =Integer.parseInt(startime[0]);
 			int month =Integer.parseInt(startime[1]) - 1;
@@ -669,7 +669,7 @@ public class Main {
 			int min =Integer.parseInt(startime[4]);
 			int sec =Integer.parseInt(startime[5]);
 			Date startTime = Flight.calendar(year, month, date, hr, min, sec);
-			System.out.println("Please enter the arrivetime,formatted with : year-month-date-hr-min-sec: ");
+			System.out.print("Please enter the arrivetime,formatted with : year-month-date-hr-min-sec: ");
 			String[] arrivetime=scanner.nextLine().split("-");
 			int year1 =Integer.parseInt(arrivetime[0]);
 			int month1 =Integer.parseInt(arrivetime[1]) - 1;
