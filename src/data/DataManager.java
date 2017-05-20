@@ -549,7 +549,8 @@ public class DataManager {
 						try {
 							order = new Order(p,
 									getFlightByID(Integer.parseInt(o.getElementsByTagName("flightID").item(0).getTextContent())),
-									Integer.parseInt(o.getElementsByTagName("seat").item(0).getTextContent()));
+									Integer.parseInt(o.getElementsByTagName("seat").item(0).getTextContent().equals("null") ? "-1" : 
+										o.getElementsByTagName("seat").item(0).getTextContent()));
 							order.setStatus(OrderStatus.valueOf(o.getElementsByTagName("status").item(0).getTextContent()));
 							order.setCreatDate(new Date(Long.parseLong(o.getElementsByTagName("date").item(0).getTextContent())));
 							p.addOrder(order);

@@ -34,15 +34,19 @@ import exceptions.StatusUnavailableException;
  *
  */
 public class Main {
+	static {
+		printHelp(true);
+		server = new MainServer();
+		scanner = new Scanner(System.in);
+	}
 
-	static MainServer server = new MainServer();
-	static Scanner scanner = new Scanner(System.in);
+	static MainServer server;
+	static Scanner scanner;
 
 	public static void main(String[] args) {
 		// DONE(Dong) UI design
 		String string = "";
 		String[] param;
-		printHelp(true);
 		while (!(string.equals("exit") || string.equals("e"))) {
 			System.out.print(">");
 			string = scanner.nextLine();
@@ -100,7 +104,7 @@ public class Main {
 				break;
 			case "unsubscribe":
 			case "unsub":
-				unsubscribe(param);
+				unsubscribe();
 				break;
 			case "pay":
 				pay();
@@ -181,8 +185,8 @@ public class Main {
 
 	private static void pay() {
 		try {
+			server.displayOrder();
 			do {
-				server.displayOrder();
 				System.out.print("please select the index of order to pay(-1 to exit): ");
 				try {
 					int index = Integer.valueOf(scanner.nextLine());
@@ -209,23 +213,38 @@ public class Main {
 		}
 	}
 
-	private static void unsubscribe(String[] param) {
-		if (param != null && param.length >= 1) {
-			for (String id : param) {
+	private static void unsubscribe() {
+		try {
+			server.displayOrder();
+			do {
+				System.out.print("please select the index of order to cancel(-1 to exit): ");
 				try {
-					server.unsubscribeFlight(Integer.valueOf(id));
-					System.out.printf("succeed in reserving '%s'\n", id);
+					int index = Integer.valueOf(scanner.nextLine());
+					if (index == -1) {
+						break;
+					}
+					System.out.println("Are you sure to cancel this order?");
+					if (scanner.nextLine().toLowerCase().equals("y")) {
+						server.cancel(index);
+						System.out.println("Succeed!");						
+					} else {
+						System.out.println("Operator canceld");
+					}
 				} catch (NumberFormatException e) {
-					System.out.printf("'%s' is not a flight id\n", id);
-				} catch (PermissionDeniedException | StatusUnavailableException e) {
-					System.out.printf("Unsbcribe flight with id %s failed: %s\n", id, e.getMessage());
+					System.out.println("Please input the right index");
+				} catch (StatusUnavailableException e) {
+					System.out.println("Cancel failed: " + e.getMessage());
+				} catch (IndexOutOfBoundsException e) {
+					System.out.println("Error: no such order");
 				}
-			}
+			} while (true);
+		} catch (PermissionDeniedException e) {
+			System.out.println(e.getMessage());
 		}
 	}
 
 	private static void list(String[] param) {
-		if (param != null && param.length == 1) {
+		if (param != null && param.length >= 1) {
 			try {
 				switch (param[0]) {
 				case "city":
@@ -268,6 +287,7 @@ public class Main {
 					break;
 				case "order":
 					server.displayOrder();
+					break;
 				default:
 					System.out.println("Format error: you can only list city, user, flight or order");
 					break;
@@ -752,8 +772,8 @@ public class Main {
 					+ "\t\t\tcaution： delete flight daemon will only delete the flight with status UNPUBLISHED\n\n"
 					+ "\treserve|re [ID1] [ID2] ....\n"
 					+ "\t\treserve flights with specific ID\n\n"
-					+ "\tunsubscribe|unsub [ID1] [ID2] ....\n"
-					+ "\t\tunsubscribe flights with specific ID\n\n"
+					+ "\tunsubscribe|unsub\n"
+					+ "\t\tgoes into unsubscribe page\n\n"
 					+ "\tpay\n"
 					+ "\t\tgoes into pay page\n\n"
 					+ "\tchange flight [ID]\n"

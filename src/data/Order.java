@@ -34,14 +34,19 @@ public class Order {
 	
 	@Override
 	public String toString() {
-		return String.format("Passenger: %s\n"
+		return String.format(
+				"----------------------------\n"
+				+ "Passenger: %s\n"
 				+ "Flight: %s\n"
 				+ "Seat: %d\n"
-				+ "Date: %s\n"
-				+ "Status: %s\n", 
+				+ "Set Off Date: %s\n"
+				+ "Create Date: %s\n"
+				+ "Status: %s\n"
+				+ "----------------------------", 
 				passenger.userName,
 				flight.getFlightName(),
 				getSeat(),
+				flight.getStartTime().toString(),
 				createDate.toString(),
 				status.name());
 	}
@@ -50,7 +55,7 @@ public class Order {
 		return passenger;
 	}
 
-	public int getSeat() {
+	public Integer getSeat() {
 		return flight.passagers().get(passenger);
 	}
 
@@ -90,8 +95,12 @@ public class Order {
 	}
 	
 	public void cancle() throws StatusUnavailableException {
-		status = OrderStatus.CANCLE;
-		flight.removePassenger(passenger);
+		if (status != OrderStatus.CANCLE) {
+			status = OrderStatus.CANCLE;
+			flight.removePassenger(passenger);			
+		} else {
+			throw new StatusUnavailableException(status);
+		}
 	}
 	
 	public void printOrder() throws StatusUnavailableException {

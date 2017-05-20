@@ -18,16 +18,6 @@ public class Passenger extends User {
 		passHash = hashPass(password);
 	}
 	
-	@Override
-	public int hashCode() {
-        int hashCode = 1;
-        hashCode = 31*hashCode + userName.hashCode();
-        hashCode = 31*hashCode + passHash.hashCode();
-        hashCode = 31*hashCode + identityID.hashCode();
-        hashCode = 31*hashCode + orderList.hashCode();
-        return hashCode;
-	}
-	
 	public String getIdentityID() {
 		return identityID;
 	}
@@ -40,16 +30,6 @@ public class Passenger extends User {
 		}
 		 Order order = new Order(this, flight);
 		 this.addOrder(order);
-	}
-	
-	public boolean unsubscribeFlight(Flight flight) throws StatusUnavailableException {
-		for (Order order : orderList) {
-			if (order.getFlight() == flight) {
-				order.cancle();
-				return true;
-			}
-		}
-		return false;
 	}
 	
 	public void addOrder(Order order) {

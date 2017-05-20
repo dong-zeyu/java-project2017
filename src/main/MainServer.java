@@ -201,22 +201,6 @@ public class MainServer {
 		return false;
 	}
 	
-	public boolean unsubscribeFlight(int flightID) throws PermissionDeniedException, StatusUnavailableException { //return false when no flight is found
-		//DONE(Peng) unsubscribeFlight
-		checkPermission(false);
-		if (!isAdmin) {
-			Passenger passenger = (Passenger) getCurrentUser();
-			Flight flight = dataManager.getFlightByID(flightID);
-			if (flight != null) {
-				passenger.unsubscribeFlight(flight);
-				return true;
-			}
-		} else {
-			throw new StatusUnavailableException("Only passengers can unsubscribe flight");
-		}
-		return false;
-	}
-	
 	public void pay(int index) throws PermissionDeniedException, StatusUnavailableException {
 		// DONE(Peng) pay an order (index is the index of the order in ArrayList<Order>)
 		checkPermission(false);
@@ -236,7 +220,6 @@ public class MainServer {
 		if (!isAdmin) {
 			Passenger passenger = (Passenger) currentUser;
 			passenger.getOrderList().get(index).cancle();
-			
 		} else {
 			throw new PermissionDeniedException("sorry you are not the user");
 		}
@@ -274,8 +257,8 @@ public class MainServer {
 	public void displayFlight() {
 		// DONE(Zhu) displayFlight
 		for(Flight fl : dataManager.flights)
-		System.out.printf("%s\t"
-				+ "%s","Flight",fl);;
+			System.out.printf("%s\t"
+					+ "%s","Flight",fl);
 	}
 
 	public void displayDaemon() {
@@ -315,26 +298,31 @@ public class MainServer {
 	public void displayCity(int CityID) {
 		// DONE(Peng) print flightIn and flightOut as well
 		if (isLogin){
-			System.out.println("the name of the City is : "+ dataManager.getCityByID(CityID).getCityName());
-			System.out.println("Flights to this City are : "+ dataManager.getCityByID(CityID).getFlightsIn());
-			System.out.println("Flights living this City are : "+ dataManager.getCityByID(CityID).getFlightsOut());
+			System.out.println("the name of the City is : " + dataManager.getCityByID(CityID).getCityName());
+			System.out.println("Flights to this City are : ");
+			System.out.println("\tID\tName\tStartCity\tPrice\tSeatCapacity");
+			for (FlightDaemon daemon : dataManager.getCityByID(CityID).getFlightsIn()) {
+				System.out.println("\t" + daemon);
+			}
+			System.out.println("Flights living this City are : ");
+			System.out.println("\tID\tName\tStartCity\tPrice\tSeatCapacity");
+			for (FlightDaemon daemon : dataManager.getCityByID(CityID).getFlightsOut()) {
+				System.out.println("\t" + daemon);
+			}
 		}
 		else {
 			System.out.println("Sorry your are not logged in");
 		}
 	}
 	
-	public void dispalyUser(int UserID) throws PermissionDeniedException {
+	public void dispalyUser(int userID) throws PermissionDeniedException {
 		// DONE(Zhu) print User order(if it is passenger) as well
-		for(User u : dataManager.users ){
-			if(u instanceof Passenger){
-				Passenger pa = (Passenger) u;
-				if(u.getID() == UserID){
-				System.out.printf("%s\t"
-						+ "s","User",u);
-				displayOrder(pa);
-				}
-			}
+		checkPermission(true);
+		User u = dataManager.getUserByID(userID);
+		System.out.printf("UserName: %s\n", u);
+		if(u instanceof Passenger){
+			System.out.println("Order: ");
+			displayOrder((Passenger)u);
 		}
 	}
 	
@@ -342,8 +330,8 @@ public class MainServer {
 		// DONE(Zhu) print all the order in order (if isLogin)
 		for(int i = 0 ; i < pa.getOrderList().size() ; i++){
 			Order order = pa.getOrderList().get(i);
+			System.out.println("index: " + String.valueOf(i));
 			System.out.println(order);
-			System.out.println();
 		}
 	}
 	
@@ -401,7 +389,7 @@ public class MainServer {
 				builder.append(flight.toString() + "\n");
 			}
 		}
-		System.out.println(builder);
+		System.out.print(builder);
 	}
 
 }
