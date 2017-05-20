@@ -454,7 +454,7 @@ public class Main {
 						} catch (NumberFormatException e) {
 							System.out.printf("'%s' is not a flight id!\n", param[i]);
 						} catch (StatusUnavailableException e) {
-							System.out.printf("Delete flight '%s' failed: %s", param[i], e.getMessage());
+							System.out.printf("Delete flight '%s' failed: %s\n", param[i], e.getMessage());
 						}
 					}
 				} catch (PermissionDeniedException e) {
@@ -472,6 +472,8 @@ public class Main {
 							}
 						} catch (NumberFormatException e) {
 							System.out.printf("'%s' is not a flight daemon id!\n", param[i]);
+						} catch (StatusUnavailableException e) {
+							System.out.printf("Delete flight daemon '%s' failed: %s\n", param[i], e.getMessage());
 						}
 					}
 				} catch (PermissionDeniedException e) {

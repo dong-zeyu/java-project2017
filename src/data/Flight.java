@@ -38,9 +38,10 @@ public class Flight {
 		this.seatCapacity = seatCapacity;
 		this.distance = distance;
 		this.flightStatus = FlightStatus.UNPUBLISHED;
-		isDaemon = false;
+		isDaemon = true;
 		flightID = Flight.ID;
 		ID++;
+		System.out.println(ID);
 	}
 	
 	@Override

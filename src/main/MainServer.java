@@ -2,6 +2,8 @@ package main;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.function.Predicate;
+
 import data.Admin;
 import data.City;
 import data.DataManager;
@@ -112,7 +114,6 @@ public class MainServer {
 		
 		if (f != null) {
 			if (f.getFlightStatus() == FlightStatus.UNPUBLISHED) {
-				dataManager.flights.remove(f);
 				f.delete();
 				return true;
 			} else {
@@ -122,13 +123,23 @@ public class MainServer {
 		return false; 
 	}
 	
-	public boolean deleteFlightDaemon(int daemonID) throws PermissionDeniedException {
+	public boolean deleteFlightDaemon(int daemonID) throws PermissionDeniedException, StatusUnavailableException {
 		checkPermission(true);
 		FlightDaemon daemon = dataManager.getFlightDaemonByID(daemonID);
+		if (daemon.getStatus() == false) {
+			throw new StatusUnavailableException("already Deleted");
+		}
 		
 		if (daemon != null) {
+			ArrayList<Flight> flights = daemon.getChildren();
+			dataManager.flights.removeIf(new Predicate<Flight>() {
+
+				@Override
+				public boolean test(Flight t) {
+					return flights.contains(t) && t.getFlightStatus() == FlightStatus.UNPUBLISHED;
+				}
+			});
 			daemon.removeFlight();
-			dataManager.flights.removeAll(daemon.getChildren());
 		}
 		return false;
 	}

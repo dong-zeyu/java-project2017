@@ -79,10 +79,10 @@ public class DataManager {
 	public ArrayList<City> cities;
 	public ArrayList<FlightDaemon> flightDaemons;
 	public static final long CHECKING_INTERVAL = 1000l; // 1 second
-	public static final long DAY_OF_CREATE = 18*24*3600*1000l; // 18 days
+	public static final long DAY_OF_CREATE = 30*24*3600*1000l; // 18 days
 	public static final long INTERVAL_TO_CREATE = 3600*1000l; // 1 hour
 	public static final long TIME_TO_TERMINATE = 2*3600*1000l; // 2 hours
-	public static final long TIME_TO_PUBLISH = 8*24*3600*1000l; // 8 days
+	public static final long TIME_TO_PUBLISH = 15*24*3600*1000l; // 8 days
 	private final String filename = "data.xml";
 	private File file;
 	private Doc doc;
@@ -113,6 +113,9 @@ public class DataManager {
 		@Override
 		public void run() {
 			for (FlightDaemon flightDaemon : flightDaemons) {
+				if (!flightDaemon.status) {
+					break;
+				}
 				long now = new Date().getTime();
 				long end = now + DAY_OF_CREATE;
 				if (end < flightDaemon.getStartTime().getTime()) {
@@ -496,12 +499,12 @@ public class DataManager {
 						Integer.parseInt(element.getElementsByTagName("price").item(0).getTextContent()),
 						Integer.parseInt(element.getElementsByTagName("seatCapacity").item(0).getTextContent()),
 						Integer.parseInt(element.getElementsByTagName("distance").item(0).getTextContent()));
-				flight.status = Boolean.getBoolean(element.getElementsByTagName("distance").item(0).getTextContent());
+				flight.status = element.getElementsByTagName("status").item(0).getTextContent().equals("true") ? true : false;
 				doc.current = element;
 				doc.getIn("flight");
 				for (Element flight1 : doc.getChildren()) {
 					Flight.ID = Integer.parseInt(flight1.getAttribute("mid"));
-					MAX_ID = Flight.ID > MAX_ID ? Flight.ID : MAX_ID;
+					MAX_FLIGHT_ID = Flight.ID > MAX_FLIGHT_ID ? Flight.ID : MAX_FLIGHT_ID;
 					Flight flight2 = new Flight(
 							flight1.getElementsByTagName("flightName").item(0).getTextContent(),
 							new Date(Long.parseLong(flight1.getElementsByTagName("startTime").item(0).getTextContent())),
@@ -511,7 +514,7 @@ public class DataManager {
 							Integer.parseInt(flight1.getElementsByTagName("price").item(0).getTextContent()),
 							Integer.parseInt(flight1.getElementsByTagName("seatCapacity").item(0).getTextContent()),
 							Integer.parseInt(flight1.getElementsByTagName("distance").item(0).getTextContent()));
-					flight2.setDaemon(Boolean.getBoolean(flight1.getElementsByTagName("distance").item(0).getTextContent()));
+					flight2.setDaemon(flight1.getElementsByTagName("isDaemon").item(0).getTextContent().equals("true") ? true : false);
 					flight2.flightStatus = FlightStatus.valueOf(flight1.getElementsByTagName("status").item(0).getTextContent());
 					flights.add(flight2);
 					flight.children.add(flight2);

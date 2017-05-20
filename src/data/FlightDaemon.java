@@ -2,6 +2,7 @@ package data;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.function.Predicate;
 
 import exceptions.StatusUnavailableException;
 
@@ -200,17 +201,25 @@ public class FlightDaemon {
 		}
 	}
 	
+	public boolean getStatus() {
+		return status;
+	}
+	
 	public ArrayList<Flight> getChildren() {
 		return (ArrayList<Flight>) children.clone();
 	}
 
 	public void removeFlight() {
-		for (Flight flight : children) {
-			if (flight.flightStatus == FlightStatus.UNPUBLISHED) {
-				children.remove(flight);
+		children.removeIf(new Predicate<Flight>() {
+
+			@Override
+			public boolean test(Flight t) {
+				// TODO Auto-generated method stub
+				return t.flightStatus == FlightStatus.UNPUBLISHED;
 			}
-		}
+		});
 		status = false;
 	}
+
 	
 }
