@@ -285,7 +285,7 @@ public class MainServer {
         		+ "%s\n","FlightDaemon",fd);
 	}
 
-	public String dispalyUser() throws PermissionDeniedException {
+	public void dispalyUser() throws PermissionDeniedException {
 		//DONE(Peng)
 		checkPermission(true);
 		StringBuilder resultbuilder = new StringBuilder();
@@ -293,10 +293,10 @@ public class MainServer {
 		for (User user : dataManager.users) {
 			resultbuilder.append(String.valueOf(user.getID()) + "\t" + user.toString() + "\t\t" + String.valueOf(user instanceof Admin) + "\n");		
 		}
-		return resultbuilder.toString();
+		System.out.println(resultbuilder);
 	}
 	
-	public String displayFlight(int flightID) {
+	public void displayFlight(int flightID) {
 		// DONE(Dong)
 		StringBuilder resultbuilder = new StringBuilder();
 		Flight flight = dataManager.getFlightByID(flightID);
@@ -307,12 +307,12 @@ public class MainServer {
 				resultbuilder.append("\t\t" + passenger.toString() + "\n");
 			}
 		}
-		return resultbuilder.toString();
+		System.out.println(resultbuilder);
 	}
 	/*
 	 * when it comes to display a object with specific id, you need provide more specific information(see above)
 	 */
-	public String displayCity(int CityID) {
+	public void displayCity(int CityID) {
 		// DONE(Peng) print flightIn and flightOut as well
 		if (isLogin){
 			System.out.println("the name of the City is : "+ dataManager.getCityByID(CityID).getCityName());
@@ -322,7 +322,6 @@ public class MainServer {
 		else {
 			System.out.println("Sorry your are not logged in");
 		}
-		return null;
 	}
 	
 	public void dispalyUser(int UserID) throws PermissionDeniedException {
@@ -360,7 +359,7 @@ public class MainServer {
 
 	//------------boundary-----------------
 
-	public String search(int cityFromId, int cityToId, Date date1, Date date2) {
+	public void search(int cityFromId, int cityToId, Date date1, Date date2) {
 		// DONE(Dong) give up...
 		StringBuilder builder = new StringBuilder();
 		City from = dataManager.getCityByID(cityFromId);
@@ -391,10 +390,10 @@ public class MainServer {
 				builder.append(flight.toString() + "\n");
 			}
 		}
-		return builder.toString();
+		System.out.println(builder);
 	}
 	
-	public String search(String flightName) {
+	public void search(String flightName) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("ID\tName\tStartCity\tArriveCity\tStartTime\t\t\tArriveTime\t\t\tPrice\tSeatRemain\n");
 		for (Flight flight : dataManager.flights) {
@@ -402,7 +401,7 @@ public class MainServer {
 				builder.append(flight.toString() + "\n");
 			}
 		}
-		return builder.toString();
+		System.out.println(builder);
 	}
 
 }

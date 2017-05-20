@@ -84,7 +84,7 @@ public class Main {
 				if (param == null || param.length == 0) {
 					search();
 				} else {
-					System.out.print(server.search(param[0]));
+					server.search(param[0]);
 				}
 				break;
 			case "add":
@@ -189,8 +189,13 @@ public class Main {
 					if (index == -1) {
 						break;
 					}
-					server.pay(index);
-					System.out.println("Succeed!");
+					System.out.println("Are you sure to pay this order?");
+					if (scanner.nextLine().toLowerCase().equals("y")) {
+						server.pay(index);
+						System.out.println("Succeed!");						
+					} else {
+						System.out.println("Cancled");
+					}
 				} catch (NumberFormatException e) {
 					System.out.println("Please input the right index");
 				} catch (StatusUnavailableException e) {
@@ -228,7 +233,7 @@ public class Main {
 						server.displayCity();
 					} else {
 						for (int i = 1; i < param.length; i++) {
-							System.out.print(server.displayCity(Integer.valueOf(param[i])));
+							server.displayCity(Integer.valueOf(param[i]));
 						}
 					}
 					break;
@@ -237,7 +242,7 @@ public class Main {
 						server.displayFlight();						
 					} else {
 						for (int i = 1; i < param.length; i++) {
-							System.out.print(server.displayFlight(i));								
+							server.displayFlight(i);								
 						}
 					}						
 					break;
@@ -247,7 +252,7 @@ public class Main {
 				case "user":
 					if (param.length == 1) {
 						try {
-							System.out.print(server.dispalyUser());
+							server.dispalyUser();
 						} catch (PermissionDeniedException e) {
 							System.out.println(e.getMessage());
 						}							
@@ -606,7 +611,7 @@ public class Main {
 				break;
 			case "print":
 			case "p":
-				System.out.println(server.search(cityFromId, cityToId, date1, date2));
+				server.search(cityFromId, cityToId, date1, date2);
 				break;
 			default:
 				System.out.println("unknown command");
