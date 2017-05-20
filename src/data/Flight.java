@@ -41,7 +41,6 @@ public class Flight {
 		isDaemon = true;
 		flightID = Flight.ID;
 		ID++;
-		System.out.println(ID);
 	}
 	
 	@Override

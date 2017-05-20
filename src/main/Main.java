@@ -182,7 +182,7 @@ public class Main {
 	private static void pay() {
 		try {
 			do {
-				System.out.print(server.displayOrder());
+				server.displayOrder();
 				System.out.print("please select the index of order to pay(-1 to exit): ");
 				try {
 					int index = Integer.valueOf(scanner.nextLine());
@@ -225,7 +225,7 @@ public class Main {
 				switch (param[0]) {
 				case "city":
 					if (param.length == 1) {
-						System.out.print(server.displayCity());							
+						server.displayCity();
 					} else {
 						for (int i = 1; i < param.length; i++) {
 							System.out.print(server.displayCity(Integer.valueOf(param[i])));
@@ -234,7 +234,7 @@ public class Main {
 					break;
 				case "flight":
 					if (param.length == 1) {
-						System.out.print(server.displayFlight());						
+						server.displayFlight();						
 					} else {
 						for (int i = 1; i < param.length; i++) {
 							System.out.print(server.displayFlight(i));								
@@ -242,7 +242,7 @@ public class Main {
 					}						
 					break;
 				case "daemon":
-					System.out.print(server.displayDaemon());						
+					server.displayDaemon();						
 					break;
 				case "user":
 					if (param.length == 1) {
@@ -254,7 +254,7 @@ public class Main {
 					} else {
 						for (int i = 1; i < param.length; i++) {
 							try {
-								System.out.print(server.dispalyUser(Integer.valueOf(param[i])));
+								server.dispalyUser(Integer.valueOf(param[i]));
 							} catch (NumberFormatException e) {
 								System.out.printf("'%s' is not a user id.\n", param[i]);
 							}
@@ -262,7 +262,7 @@ public class Main {
 					}
 					break;
 				case "order":
-					System.out.print(server.displayOrder());
+					server.displayOrder();
 				default:
 					System.out.println("Format error: you can only list city, user, flight or order");
 					break;
@@ -541,8 +541,8 @@ public class Main {
 				+ "\t\tset filter of 'set off date' interval\n"
 				+ "\tprint|p\tprint result using filter\n"
 				+ "\texit|e\texit wizard\n\n"
-				+ "\tavailibal city: \n"
-				+ server.displayCity() + "\n");
+				+ "\tavailibal city: \n");
+		server.displayCity();
 		do {
 			System.out.print("current filter: \n"
 					+ String.format("\tcity: %s-%s\n", cityFromId == -1 ? "unset" : String.valueOf(cityFromId), cityToId == -1 ? "unset" : String.valueOf(cityToId))

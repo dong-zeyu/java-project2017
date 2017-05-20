@@ -339,19 +339,23 @@ public class MainServer {
 		}
 	}
 	
-	private void displayOrder(Passenger pa) throws PermissionDeniedException {
+	private void displayOrder(Passenger pa) {
 		// DONE(Zhu) print all the order in order (if isLogin)
+		for(int i = 0 ; i < pa.getOrderList().size() ; i++){
+			Order order = pa.getOrderList().get(i);
+			System.out.println(order);
+			System.out.println();
+		}
+	}
+	
+	public void displayOrder() throws PermissionDeniedException {
 		checkPermission(false);
-        if(!isAdmin){
-        	    for(int i = 0 ; i < pa.getOrderList().size() ; i++){
-        		Order order = pa.getOrderList().get(i);
-        		System.out.println(order);
-        		System.out.println();
-        	    }
-        	}
-        else{
-        	throw new PermissionDeniedException("You are not Ueser");
-        }	
+		if(!isAdmin){
+			displayOrder((Passenger) currentUser);
+		}
+		else{
+			throw new PermissionDeniedException("You are not Ueser");
+		}
 	}
 
 	//------------boundary-----------------
