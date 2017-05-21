@@ -256,16 +256,16 @@ public class MainServer {
 
 	public void displayFlight() {
 		// DONE(Zhu) displayFlight
+		System.out.println("ID\tName\tStartCity\tArriveCity\tStartTime\t\t\tArriveTime\t\t\tPrice\tSeatRemain\n");
 		for(Flight fl : dataManager.flights)
-			System.out.printf("%s\t"
-					+ "%s","Flight",fl);
+			System.out.println(fl);
 	}
 
 	public void displayDaemon() {
 		// DONE(Zhu) displayDaemon
+		System.out.println("ID\tName\tStartCity\tArriveCity\tPrice\tSeatCapacity");
 		for(FlightDaemon fd : dataManager.flightDaemons)
-        System.out.printf("%s\n"
-        		+ "%s\n","FlightDaemon",fd);
+			System.out.println(fd);
 	}
 
 	public void dispalyUser() throws PermissionDeniedException {
@@ -297,21 +297,16 @@ public class MainServer {
 	 */
 	public void displayCity(int CityID) {
 		// DONE(Peng) print flightIn and flightOut as well
-		if (isLogin){
-			System.out.println("the name of the City is : " + dataManager.getCityByID(CityID).getCityName());
-			System.out.println("Flights to this City are : ");
-			System.out.println("\tID\tName\tStartCity\tPrice\tSeatCapacity");
-			for (FlightDaemon daemon : dataManager.getCityByID(CityID).getFlightsIn()) {
-				System.out.println("\t" + daemon);
-			}
-			System.out.println("Flights living this City are : ");
-			System.out.println("\tID\tName\tStartCity\tPrice\tSeatCapacity");
-			for (FlightDaemon daemon : dataManager.getCityByID(CityID).getFlightsOut()) {
-				System.out.println("\t" + daemon);
-			}
+		System.out.println("the name of the City is : " + dataManager.getCityByID(CityID).getCityName());
+		System.out.println("Flights to this City are : ");
+		System.out.println("\tID\tName\tStartCity\tPrice\tSeatCapacity");
+		for (FlightDaemon daemon : dataManager.getCityByID(CityID).getFlightsIn()) {
+			System.out.println("\t" + daemon);
 		}
-		else {
-			System.out.println("Sorry your are not logged in");
+		System.out.println("Flights living this City are : ");
+		System.out.println("\tID\tName\tStartCity\tArriveCity\tPrice\tSeatCapacity");
+		for (FlightDaemon daemon : dataManager.getCityByID(CityID).getFlightsOut()) {
+			System.out.println("\t" + daemon);
 		}
 	}
 	

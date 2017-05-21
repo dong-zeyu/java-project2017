@@ -262,7 +262,11 @@ public class Main {
 						server.displayFlight();						
 					} else {
 						for (int i = 1; i < param.length; i++) {
-							server.displayFlight(i);								
+							try {
+								server.displayFlight(Integer.valueOf(param[i]));
+							} catch (NumberFormatException e) {
+								System.out.printf("'%s' is not a flight\n", param[i]);
+							}								
 						}
 					}						
 					break;
