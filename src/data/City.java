@@ -40,10 +40,12 @@ public class City {
 		this.cityName = cityName;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public ArrayList<FlightDaemon> getFlightsIn() {
 		return (ArrayList<FlightDaemon>) flightsIn.clone();
 	}
 
+	@SuppressWarnings("unchecked")
 	public ArrayList<FlightDaemon> getFlightsOut() {
 		return (ArrayList<FlightDaemon>) flightsOut.clone();
 	}

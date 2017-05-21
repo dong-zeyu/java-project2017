@@ -195,6 +195,7 @@ public class Flight {
 	 * read only, use add/remove to operate
 	 * @return a clone of field passengers
 	 */
+	@SuppressWarnings("unchecked")
 	public HashMap<Passenger, Integer> passagers() {
 		return (HashMap<Passenger, Integer>) passagers.clone();
 	}

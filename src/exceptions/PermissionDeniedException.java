@@ -3,6 +3,7 @@ package exceptions;
 /**
  * throws when permission denied
  */
+@SuppressWarnings("serial")
 public class PermissionDeniedException extends Exception {
 
 	public PermissionDeniedException() {

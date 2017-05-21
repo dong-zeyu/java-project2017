@@ -7,6 +7,7 @@ import data.OrderStatus;
  *  throws when status has already changed to not UNPUBLISH or TERMINATE but still trying to change something
  *  or the order status unavailable
  */
+@SuppressWarnings("serial")
 public class StatusUnavailableException extends Exception {
 
 	public StatusUnavailableException(FlightStatus status) {

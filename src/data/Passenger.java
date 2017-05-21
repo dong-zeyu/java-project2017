@@ -36,6 +36,7 @@ public class Passenger extends User {
 		orderList.add(order);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public ArrayList<Order> getOrderList() {
 		return (ArrayList<Order>) orderList.clone();
 	}

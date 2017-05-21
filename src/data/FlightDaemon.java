@@ -206,6 +206,7 @@ public class FlightDaemon {
 		return status;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public ArrayList<Flight> getChildren() {
 		return (ArrayList<Flight>) children.clone();
 	}
