@@ -1,6 +1,7 @@
 package main;
 
 import java.util.Date;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import data.City;
@@ -688,7 +689,7 @@ public class Main {
 			System.out.print("Please enter the Starttime,formatted with : year-month-date-hr-min-sec: ");
 			String[] startime=scanner.nextLine().split("-");
 			int year =Integer.parseInt(startime[0]);
-			int month =Integer.parseInt(startime[1]) - 1;
+			int month =Integer.parseInt(startime[1]);
 			int date =Integer.parseInt(startime[2]);
 			int hr =Integer.parseInt(startime[3]);
 			int min =Integer.parseInt(startime[4]);
@@ -697,18 +698,24 @@ public class Main {
 			System.out.print("Please enter the arrivetime,formatted with : year-month-date-hr-min-sec: ");
 			String[] arrivetime=scanner.nextLine().split("-");
 			int year1 =Integer.parseInt(arrivetime[0]);
-			int month1 =Integer.parseInt(arrivetime[1]) - 1;
+			int month1 =Integer.parseInt(arrivetime[1]);
 			int date1 =Integer.parseInt(arrivetime[2]);
 			int hr1 =Integer.parseInt(arrivetime[3]);
 			int min1 =Integer.parseInt(arrivetime[4]);
 			int sec1 =Integer.parseInt(arrivetime[5]);
 			Date arriveTime = Flight.calendar(year1, month1, date1, hr1, min1, sec1);
+			if (arriveTime.before(startTime) || startTime.before(new Date())) {
+				throw new NumberFormatException();
+			}
 			System.out.print("Period of the flight(day)(0 for no period): ");
 			int period = scanner.nextInt();
 			System.out.print("startCityID: ");
 			int startCityID=scanner.nextInt();
 			System.out.print("arriveCityID: ");
 			int arriveCityID=scanner.nextInt();
+			if (startCityID == arriveCityID) {
+				throw new NumberFormatException();
+			}
 			System.out.println("price");
 			int price=scanner.nextInt();
 			System.out.print("seatCapacity: ");
@@ -717,16 +724,20 @@ public class Main {
 			int distance = scanner.nextInt();
 			scanner.nextLine();
 			if (!server.createFlightDaemon(flightName, startTime, arriveTime, period, startCityID, arriveCityID, price, seatCapacity, distance)) {
-				System.out.println("Error in format of flight information, please retry");
-				addFlight();
+				System.out.println("Error in cityID. retry?");
+				if (scanner.nextLine().toLowerCase().equals("y")) {
+					addFlight();
+				}
 			} else {
 				System.out.print("Flight added successfully\n");
 			}
 		} catch (PermissionDeniedException e) {
 			System.out.println(e.getMessage());
-		} catch (IndexOutOfBoundsException | NumberFormatException e) {
-			System.out.println("Input error, please retry");
-			addFlight();
+		} catch (IndexOutOfBoundsException | NumberFormatException | InputMismatchException e) {
+			System.out.print("Input error. retry?");
+			if (scanner.nextLine().toLowerCase().equals("y")) {
+				addFlight();				
+			}
 		}
 	}
 	
@@ -749,7 +760,7 @@ public class Main {
 		if (isMini) {
 			System.out.println("Welcome to flight system!\n"
 					+ "please use 'login [username] [password]' to login or use 'register' to register an account\n"
-					+ "type 'help' for more information.'");
+					+ "type 'help' for more information.");
 		} else {
 			System.out.println("Usage: command [param...]\n"
 					+ "Available command: \n\n"
