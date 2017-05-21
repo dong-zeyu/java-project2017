@@ -762,11 +762,11 @@ public class Main {
 	private static void printHelp(boolean isMini) {
 		// DONE(Dong) Help
 		if (isMini) {
-			System.out.println("Welcome to flight system!\n"
+			System.out.print("Welcome to flight system!\n"
 					+ "please use 'login [username] [password]' to login or use 'register' to register an account\n"
-					+ "type 'help' for more information.");
+					+ "type 'help' for more information.\n");
 		} else {
-			System.out.println("Usage: command [param...]\n"
+			System.out.print("Usage: command [param...]\n"
 					+ "Available command: \n\n"
 					+ "\tlogin|log [username] [password]\n"
 					+ "\t\tlogin with username and password\n\n"
@@ -776,15 +776,17 @@ public class Main {
 					+ "\t\tsearch flight with specific name\n\n"
 					+ "\tsearch|s\n"
 					+ "\t\tsearch flight with some filter\n\n"
-					+ "\tlist|l (city|user|flight|daemon) [ID]\n"
-					+ "\t\tlist all city, users(only for adminstrator), flight and flight daemon in the server, or list the element with specific ID in detail\n\n"
+					+ "\tlist|l (city|user|flight) [ID]\n"
+					+ "\t\tlist all city, users(only for adminstrator), flight and in the server, or list the element with specific ID in detail\n\n"
 					+ "\tlist|l order\n"
 					+ "\t\tlist the order\n\n"
+					+ "\tlist|l daemon\n"
+					+ "\t\tlist flight daemon\n"
 					+ "\tadd (city|admin|flight)\n"
 					+ "\t\tadd a city administrator or flight daemon(only for adminstrator)\n\n"
-					+ "\tdelete|d (city|user|flight) [ID1] [ID2] ....\n"
+					+ "\tdelete|d (city|user|flight|daemon) [ID1] [ID2] ....\n"
 					+ "\t\tdelete city, user, flight or flight daemon with specific ID(only for adminstrator)\n"
-					+ "\t\t\tcaution： delete flight daemon will only delete the flight with status UNPUBLISHED\n\n"
+					+ "\t\t\t**caution： delete flight daemon will also delete corresponding flight with status UNPUBLISHED\n\n"
 					+ "\treserve|re [ID1] [ID2] ....\n"
 					+ "\t\treserve flights with specific ID\n\n"
 					+ "\tunsubscribe|unsub\n"
