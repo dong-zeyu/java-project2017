@@ -256,7 +256,7 @@ public class MainServer {
 
 	public void displayFlight() {
 		// DONE(Zhu) displayFlight
-		System.out.println("ID\tName\tStartCity\tArriveCity\tStartTime\t\t\tArriveTime\t\t\tPrice\tSeatRemain\n");
+		System.out.println("ID\tName\tStartCity\tArriveCity\tStartTime\t\t\tArriveTime\t\t\tPrice\tRemain\n");
 		for(Flight fl : dataManager.flights)
 			System.out.println(fl);
 	}
@@ -287,7 +287,12 @@ public class MainServer {
 		if (isAdmin) {
 			resultbuilder.append("\tPasengers:\n");
 			for (Passenger passenger : flight.passagers().keySet()) {
-				resultbuilder.append("\t\t" + passenger.toString() + "\n");
+				for (Order order : passenger.getOrderList()) {
+					if (order.getFlight().equals(flight)) {
+						String status = order.getStatus().name();
+						resultbuilder.append("\t\t" + passenger.toString() + "\t" + status + "\n");
+					}
+				}
 			}
 		}
 		System.out.println(resultbuilder);
@@ -367,7 +372,7 @@ public class MainServer {
 				flights.add(flight);
 			}
 		}
-		builder.append("ID\tName\tStartCity\tArriveCity\tStartTime\t\t\tArriveTime\t\t\tPrice\tSeatRemain\n");
+		builder.append("ID\tName\tStartCity\tArriveCity\tStartTime\t\t\tArriveTime\t\t\tPrice\tRemain\n");
 		for (Flight flight : flights) {
 			if (flight.getStartCity().equals(from) && flight.getArriveCity().equals(to)) {
 				builder.append(flight.toString() + "\n");
@@ -378,7 +383,7 @@ public class MainServer {
 	
 	public void search(String flightName) {
 		StringBuilder builder = new StringBuilder();
-		builder.append("ID\tName\tStartCity\tArriveCity\tStartTime\t\t\tArriveTime\t\t\tPrice\tSeatRemain\n");
+		builder.append("ID\tName\tStartCity\tArriveCity\tStartTime\t\t\tArriveTime\t\t\tPrice\tRemain\n");
 		for (Flight flight : dataManager.flights) {
 			if (flight.getFlightStatus() != FlightStatus.TERMINATE && flight.getFlightName().toLowerCase().contains(flightName.toLowerCase())) {
 				builder.append(flight.toString() + "\n");
