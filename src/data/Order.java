@@ -38,14 +38,14 @@ public class Order {
 				"----------------------------\n"
 				+ "Passenger: %s\n"
 				+ "Flight: %s\n"
-				+ "Seat: %d\n"
+				+ "Seat: %s\n"
 				+ "Set Off Date: %s\n"
 				+ "Create Date: %s\n"
 				+ "Status: %s\n"
 				+ "----------------------------", 
 				passenger.userName,
 				flight.getFlightName(),
-				getSeat(),
+				status != OrderStatus.CANCLE ? String.valueOf(getSeat()) : "null", 
 				flight.getStartTime().toString(),
 				createDate.toString(),
 				status.name());
