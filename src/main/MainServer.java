@@ -263,7 +263,7 @@ public class MainServer {
 
 	public void displayDaemon() {
 		// DONE(Zhu) displayDaemon
-		System.out.println("ID\tName\tStartCity\tArriveCity\tPrice\tSeatCapacity");
+		System.out.println("ID\tName\tStartCity\tArriveCity\tPeriod\tPrice\tSeatCapacity");
 		for(FlightDaemon fd : dataManager.flightDaemons)
 			System.out.println(fd);
 	}
@@ -299,12 +299,12 @@ public class MainServer {
 		// DONE(Peng) print flightIn and flightOut as well
 		System.out.println("the name of the City is : " + dataManager.getCityByID(CityID).getCityName());
 		System.out.println("Flights to this City are : ");
-		System.out.println("\tID\tName\tStartCity\tPrice\tSeatCapacity");
+		System.out.println("\tID\tName\tStartCity\tArriveCity\tPeriod\tPrice\tSeatCapacity");
 		for (FlightDaemon daemon : dataManager.getCityByID(CityID).getFlightsIn()) {
 			System.out.println("\t" + daemon);
 		}
 		System.out.println("Flights living this City are : ");
-		System.out.println("\tID\tName\tStartCity\tArriveCity\tPrice\tSeatCapacity");
+		System.out.println("\tID\tName\tStartCity\tArriveCity\tPeriod\tPrice\tSeatCapacity");
 		for (FlightDaemon daemon : dataManager.getCityByID(CityID).getFlightsOut()) {
 			System.out.println("\t" + daemon);
 		}

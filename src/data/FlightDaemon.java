@@ -47,6 +47,7 @@ public class FlightDaemon {
 				flightName + "\t" + 
 				((startCity.toString().length() < 8) ? (startCity.toString() + "\t") : startCity.toString()) + "\t" +
 				((arriveCity.toString().length() < 8) ? (arriveCity.toString() + "\t") : arriveCity.toString()) + "\t" +
+				String.valueOf(period/(24*3600*1000)) + "d" + "\t" +
 				String.valueOf(price) + "\t" +
 				String.valueOf(seatCapacity) + "\t" +
 				(status ? "" : "deleted");
@@ -221,5 +222,4 @@ public class FlightDaemon {
 		status = false;
 	}
 
-	
 }
