@@ -33,44 +33,6 @@ import exceptions.StatusUnavailableException;
  * use constructor DataManager(MainServer server) to trace
  * use saveData() to save to file
  */
-/* file format:
- * <root>
- * 	<user>
- * 		<admin id=>
- * 			<username></username>
- * 			<passhash></passhash>
- * 		</admin>
- * 		<passenger id=>
- * 			<username></username>
- * 			<passhash></passhash>
- * 			<idnumber></idnumber>
- * 			<order>
- * 				<item>
- * 					<flightid></flightid>
- * 					<seat></seat>
- * 					<date></date>
- * 					<status></status>
- * 				</item>
- * 			</order>
- * 		</passenger>
- * 	</user>
- * 	<flight>
- * 		<item id=>
- *			<flightname></flightname>
- *			<starttime><starttime>
- *			<arrivetime><arrivetime>
- *			<startcity></startcity>
- *			<arrivecity></arrivecity>
- *			<price></price>
- *			<seatcapacity></seatcapacity>
- *			<status></status>
- * 		</item>
- * 	</flight>
- * 	<city>
- * 		<cityname id=></cityname>
- * 	</city>
- * </root>
- */
 public class DataManager {
 	
 	// DONE(Dong) This class is all of my job :(
@@ -79,10 +41,10 @@ public class DataManager {
 	public ArrayList<City> cities;
 	public ArrayList<FlightDaemon> flightDaemons;
 	public static final long CHECKING_INTERVAL = 1000l; // 1 second
-	public static final long DAY_OF_CREATE = 30*24*3600*1000l; // 18 days
+	public static final long DAY_OF_CREATE = 30*24*3600*1000l; // 30 days
 	public static final long INTERVAL_TO_CREATE = 3600*1000l; // 1 hour
 	public static final long TIME_TO_TERMINATE = 2*3600*1000l; // 2 hours
-	public static final long TIME_TO_PUBLISH = 15*24*3600*1000l; // 8 days
+	public static final long TIME_TO_PUBLISH = 15*24*3600*1000l; // 15 days
 	private final String filename = "data.xml";
 	private File file;
 	private Doc doc;
@@ -563,7 +525,6 @@ public class DataManager {
 			User.ID = MAX_ID + 1;
 			doc.returnParent();
 		} catch (IndexOutOfBoundsException | NullPointerException e) {
-			e.printStackTrace();
 			System.gc();
 			file.delete();
 			init();
