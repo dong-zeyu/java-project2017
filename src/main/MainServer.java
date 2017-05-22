@@ -11,6 +11,7 @@ import data.Flight;
 import data.FlightDaemon;
 import data.FlightStatus;
 import data.Order;
+import data.OrderStatus;
 import data.Passenger;
 import data.User;
 import exceptions.PermissionDeniedException;
@@ -219,12 +220,12 @@ public class MainServer {
 		
 	}
 	
-	public void cancel(int index) throws PermissionDeniedException, StatusUnavailableException{
+	public boolean cancel(int index) throws PermissionDeniedException, StatusUnavailableException{
 		// DONE(Peng) cancel an order (index is the index of the order in ArrayList<Order>)
 		checkPermission(false);
 		if (!isAdmin) {
 			Passenger passenger = (Passenger) currentUser;
-			passenger.getOrderList().get(index).cancle();
+			return passenger.getOrderList().get(index).cancle();
 		} else {
 			throw new PermissionDeniedException("sorry you are not the user");
 		}

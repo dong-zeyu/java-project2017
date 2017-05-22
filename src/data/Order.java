@@ -94,10 +94,17 @@ public class Order {
 		}
 	}
 	
-	public void cancle() throws StatusUnavailableException {
+	public boolean cancle() throws StatusUnavailableException {
 		if (status != OrderStatus.CANCLE) {
-			status = OrderStatus.CANCLE;
+			boolean re;
+			if (status == OrderStatus.PAID) {
+				re = true;
+			} else {
+				re = false;
+			}
 			flight.removePassenger(passenger);			
+			status = OrderStatus.CANCLE;
+			return re;
 		} else {
 			throw new StatusUnavailableException(status);
 		}

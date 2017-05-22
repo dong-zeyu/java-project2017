@@ -235,8 +235,11 @@ public class Main {
 					}
 					System.out.println("Are you sure to cancel this order?");
 					if (scanner.nextLine().toLowerCase().equals("y")) {
-						server.cancel(index);
-						System.out.println("Succeed!");						
+						if (server.cancel(index)) {
+							System.out.println("Reserving money has returned");
+						}
+						System.out.println("Succeed!");	
+						
 					} else {
 						System.out.println("Operator canceld");
 					}
