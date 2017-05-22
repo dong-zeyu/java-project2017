@@ -364,6 +364,9 @@ public class Main {
 		if (flight == null) {
 			System.out.printf("Cannot find flight daemon with ID '%d'\n", flightID);
 			return;
+		} else if (!flight.getStatus()) {
+			System.out.println("This flight has deleted");
+			return;
 		}
 		System.out.print("Usage: "
 				+ "\tname=newname\n"
