@@ -187,6 +187,10 @@ public class Main {
 
 	private static void pay() {
 		try {
+			System.out.print("Please input your password: ");
+			if (!server.checkPass(scanner.nextLine())) {
+				throw new PermissionDeniedException("Password Error");
+			}
 			server.displayOrder();
 			do {
 				System.out.print("please select the index of order to pay(-1 to exit): ");
@@ -217,6 +221,10 @@ public class Main {
 
 	private static void unsubscribe() {
 		try {
+			System.out.print("Please Input your password: ");
+			if (!server.checkPass(scanner.nextLine())) {
+				throw new PermissionDeniedException("Password Error");
+			}
 			server.displayOrder();
 			do {
 				System.out.print("please select the index of order to cancel(-1 to exit): ");
@@ -292,6 +300,10 @@ public class Main {
 					}
 					break;
 				case "order":
+					System.out.print("Please Input your password: ");
+					if (!server.checkPass(scanner.nextLine())) {
+						throw new PermissionDeniedException("Password Error");
+					}
 					server.displayOrder();
 					break;
 				default:

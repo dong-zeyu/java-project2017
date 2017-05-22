@@ -54,6 +54,11 @@ public class MainServer {
 		return false;
 	}
 	
+	public boolean checkPass(String pass) throws PermissionDeniedException {
+		checkPermission(false);
+		return currentUser.getPassHash().equals(User.hashPass(pass));
+	}
+	
 	public boolean isLogin() {
 		return isLogin;
 	}
