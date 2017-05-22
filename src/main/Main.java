@@ -177,6 +177,7 @@ public class Main {
 				}
 				break;
 			default:
+				System.out.println("Please input what to change");
 				break;
 			}
 		} catch (NullPointerException | IndexOutOfBoundsException e) {
@@ -781,7 +782,7 @@ public class Main {
 					+ "\tlist|l order\n"
 					+ "\t\tlist the order\n\n"
 					+ "\tlist|l daemon\n"
-					+ "\t\tlist flight daemon\n"
+					+ "\t\tlist flight daemon\n\n"
 					+ "\tadd (city|admin|flight)\n"
 					+ "\t\tadd a city administrator or flight daemon(only for adminstrator)\n\n"
 					+ "\tdelete|d (city|user|flight|daemon) [ID1] [ID2] ....\n"

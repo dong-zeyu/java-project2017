@@ -276,7 +276,7 @@ public class MainServer {
 		for (User user : dataManager.users) {
 			resultbuilder.append(String.valueOf(user.getID()) + "\t" + user.toString() + "\t\t" + String.valueOf(user instanceof Admin) + "\n");		
 		}
-		System.out.println(resultbuilder);
+		System.out.print(resultbuilder);
 	}
 	
 	public void displayFlight(int flightID) {
@@ -295,7 +295,7 @@ public class MainServer {
 				}
 			}
 		}
-		System.out.println(resultbuilder);
+		System.out.print(resultbuilder);
 	}
 	/*
 	 * when it comes to display a object with specific id, you need provide more specific information(see above)
@@ -378,7 +378,7 @@ public class MainServer {
 				builder.append(flight.toString() + "\n");
 			}
 		}
-		System.out.println(builder);
+		System.out.print(builder);
 	}
 	
 	public void search(String flightName) {
