@@ -485,7 +485,7 @@ public class Main {
 				addAdmin();
 				break;
 			default:
-				System.out.println("You can only add a city, flight or user");
+				System.out.println("You can only add a city, flight or admin");
 				break;
 			}
 		} else {
