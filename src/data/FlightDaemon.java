@@ -96,11 +96,12 @@ public class FlightDaemon {
 	}
 
 	public void setStartTime(Date startTime) {
+		long shift = startTime.getTime() - this.startTime.getTime();
 		this.startTime = startTime;
 		for (Flight flight : children) {
 			try {
 				if (flight.isDaemon()) {
-					flight.setStartTime(startTime);
+					flight.setStartTime(new Date(flight.getStartTime().getTime() + shift));
 				}
 			} catch (StatusUnavailableException e) { /* ignored */ }		
 		}
@@ -111,11 +112,12 @@ public class FlightDaemon {
 	}
 
 	public void setArriveTime(Date arriveTime) {
+		long shift = arriveTime.getTime() - this.arriveTime.getTime();		
 		this.arriveTime = arriveTime;
 		for (Flight flight : children) {
 			try {
 				if (flight.isDaemon()) {
-					flight.setArriveTime(arriveTime);
+					flight.setArriveTime(new Date(flight.getArriveTime().getTime() + shift));
 				}
 			} catch (StatusUnavailableException e) { /* ignored */ }
 		}
