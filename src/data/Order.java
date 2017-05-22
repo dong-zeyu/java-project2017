@@ -44,9 +44,9 @@ public class Order {
 				+ "Status: %s\n"
 				+ "----------------------------", 
 				passenger.userName,
-				flight.getFlightName(),
+				flight != null ? "deleted" : flight.getFlightName(),
 				status != OrderStatus.CANCLE ? String.valueOf(getSeat()) : "null", 
-				flight.getStartTime().toString(),
+				flight != null ? "flight deleted" : flight.getStartTime().toString(),
 				createDate.toString(),
 				status.name());
 	}
@@ -56,7 +56,7 @@ public class Order {
 	}
 
 	public Integer getSeat() {
-		return flight.passagers().get(passenger);
+		return flight == null ? null : flight.passagers().get(passenger);
 	}
 
 	public Flight getFlight() {
@@ -126,14 +126,16 @@ public class Order {
 	}
 
 	public void remove() {
-		for (Passenger passenger : flight.getPassagers().keySet()) {
-			if (passenger == this.passenger) {
-				flight.getPassagers().remove(passenger);
+		if (status != OrderStatus.CANCLE) {
+			for (Passenger passenger : flight.getPassagers().keySet()) {
+				if (passenger == this.passenger) {
+					flight.getPassagers().remove(passenger);
+				}
 			}
-		}
-		passenger.orderList.remove(this);
-		if (flight.getPassagers().size() < flight.getSeatCapacity()) {
-			flight.flightStatus = FlightStatus.AVAILABLE;
+			passenger.orderList.remove(this);
+			if (flight.getPassagers().size() < flight.getSeatCapacity()) {
+				flight.flightStatus = FlightStatus.AVAILABLE;
+			} 
 		}
 	}
 
