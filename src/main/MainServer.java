@@ -249,9 +249,9 @@ public class MainServer {
 	 */
 	public void displayCity() {
 		// DONE(Zhu) displayCity
+		System.out.println("ID\tname");
 		for(City city : dataManager.cities)
-		System.out.printf("%s\t"
-				+ "%s","City",city);
+		System.out.printf("%d\t%s\n", city.getCityID(), city);
 	}
 
 	public void displayFlight() {
