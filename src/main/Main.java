@@ -368,6 +368,8 @@ public class Main {
 			System.out.println("This flight has deleted");
 			return;
 		}
+		System.out.println("ID\tName\tStartCity\tArriveCity\tBeginTime\t\t\tTime\tPeriod\tPrice\tSeatCapacity");
+		System.out.println(server.getDaemon(flightID));
 		System.out.print("Usage: "
 				+ "\tname=newname\n"
 				+ "\tstarttime=yyyy-mm-dd-hr-mim-sec\n"
@@ -377,7 +379,9 @@ public class Main {
 				+ "\tprice=newprice\n"
 				+ "\tcapacity=newcapacity\n"
 				+ "\tdistance=newdistance\n"
-				+ "\texit|e\n");
+				+ "\texit|e\n"
+				+ "Available City: \n");
+		server.displayCity();
 		String[] input;
 		do {
 			System.out.print("Please input what to change: ");

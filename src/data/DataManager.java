@@ -379,10 +379,10 @@ public class DataManager {
 						Flight.calendar(2017, 5, 1, 14, 32, 00), 7*24*3600*1000, shenz, zhenz, 1200, 120, 1200000);
 				FlightDaemon flight6 = new FlightDaemon("A006",
 						Flight.calendar(2017, 5, 1, 22, 46, 00), 
-						Flight.calendar(2017, 5, 1, 00, 10, 00), 24*3600*1000, zhenz, Nanc, 250, 300, 950000);
+						Flight.calendar(2017, 5, 2, 00, 10, 00), 24*3600*1000, zhenz, Nanc, 250, 300, 950000);
 				FlightDaemon flight7 = new FlightDaemon("A007",
 						Flight.calendar(2017, 5, 1, 23, 46, 00), 
-						Flight.calendar(2017, 5, 1, 02, 10, 00), 24*3600*1000, Wuh, Hangz, 900, 90, 470000);
+						Flight.calendar(2017, 5, 2, 00, 10, 00), 24*3600*1000, Wuh, Hangz, 900, 90, 470000);
 				FlightDaemon flight9 = new FlightDaemon("A009",
 						Flight.calendar(2017, 5, 1, 11, 46, 00), 
 						Flight.calendar(2017, 5, 1, 13, 10, 00), 24*3600*1000, shangh, Hangz, 870, 100, 240000);

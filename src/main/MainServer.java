@@ -269,7 +269,7 @@ public class MainServer {
 
 	public void displayDaemon() {
 		// DONE(Zhu) displayDaemon
-		System.out.println("ID\tName\tStartCity\tArriveCity\tPeriod\tPrice\tSeatCapacity");
+		System.out.println("ID\tName\tStartCity\tArriveCity\tBeginTime\t\t\tTime\tPeriod\tPrice\tSeatCapacity");
 		for(FlightDaemon fd : dataManager.flightDaemons)
 			System.out.println(fd);
 	}

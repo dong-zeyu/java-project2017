@@ -43,14 +43,17 @@ public class FlightDaemon {
 
 	@Override
 	public String toString() {
-		return String.valueOf(flightDaemonID) + "\t" +
-				flightName + "\t" + 
-				((startCity.toString().length() < 8) ? (startCity.toString() + "\t") : startCity.toString()) + "\t" +
-				((arriveCity.toString().length() < 8) ? (arriveCity.toString() + "\t") : arriveCity.toString()) + "\t" +
-				String.valueOf(period/(24*3600*1000)) + "d" + "\t" +
-				String.valueOf(price) + "\t" +
-				String.valueOf(seatCapacity) + "\t" +
-				(status ? "" : "deleted");
+		return String.format("%d\t%s\t%-8s\t%-8s\t%s\t%dmin\t%dday\t%d\t%d",
+				flightDaemonID,
+				flightName,
+				startCity,
+				arriveCity,
+				startTime,
+				(arriveTime.getTime() - startTime.getTime())/60000,
+				period/(24*3600*1000),
+				price,
+				seatCapacity)
+				 + (status ? "" : "\tdeleted");
 	}
 	
 	@Override
