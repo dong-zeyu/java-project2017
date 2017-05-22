@@ -662,27 +662,25 @@ public class Main {
 
 	private static void register() {
 		// DONE(Zhu) register UI
-		System.out.println("Please import your Username"); // XXX(Zhu) did you mean 'input'? :D
+		System.out.print("Please input your username: ");
 		String username;
 		username=scanner.nextLine();
-		System.out.println("Please import your identity card number");
+		System.out.print("Please input your identity card number: ");
 		String idNumber;
 		idNumber=scanner.nextLine();
 		while(idNumber.length()>18||idNumber.length()<18){
-			System.out.println("Please import the correct identity card number");
+			System.out.print("Please input the correct identity card number: ");
 		idNumber=scanner.nextLine();
 		}
 		String password,password2;
-		System.out.println("Please import your password");
+		System.out.print("Please input your password: ");
 		password=scanner.nextLine();
 		do {
-			System.out.println("Please import your password again");
+			System.out.print("Please input your password again: ");
 		password2=scanner.nextLine();	
-		} while (!(password.equals(password2)));
-		System.out.println("You succeed in creating your account!");
-		
+		} while (!(password.equals(password2)));		
 		server.addPassenger(username, idNumber, password2);
-		System.out.println("Register successfully");
+		System.out.println("Succeed in creating your account!");
 		
 	}
 
