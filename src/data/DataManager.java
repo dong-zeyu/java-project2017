@@ -62,7 +62,6 @@ public class DataManager {
 						flight.setDaemon(false);
 					} else if (flight.getStartTime().getTime() - now.getTime() <= TIME_TO_PUBLISH) {
 						flight.flightStatus = FlightStatus.AVAILABLE;
-						flight.setDaemon(false);
 					} 
 				}				
 			}
