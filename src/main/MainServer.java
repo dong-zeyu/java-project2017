@@ -126,11 +126,10 @@ public class MainServer {
 	public boolean deleteFlightDaemon(int daemonID) throws PermissionDeniedException, StatusUnavailableException {
 		checkPermission(true);
 		FlightDaemon daemon = dataManager.getFlightDaemonByID(daemonID);
-		if (daemon.getStatus() == false) {
-			throw new StatusUnavailableException("already Deleted");
-		}
-		
 		if (daemon != null) {
+			if (daemon.getStatus() == false) {
+				throw new StatusUnavailableException("already Deleted");
+			}
 			ArrayList<Flight> flights = daemon.getChildren();
 			dataManager.flights.removeIf(new Predicate<Flight>() {
 
@@ -140,6 +139,7 @@ public class MainServer {
 				}
 			});
 			daemon.removeFlight();
+			return true;
 		}
 		return false;
 	}
