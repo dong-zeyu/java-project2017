@@ -274,7 +274,7 @@ public class MainServer {
 		StringBuilder resultbuilder = new StringBuilder();
 		resultbuilder.append("userID\tuserName\tisAdmin\n");
 		for (User user : dataManager.users) {
-			resultbuilder.append(String.valueOf(user.getID()) + "\t" + user.toString() + "\t\t" + String.valueOf(user instanceof Admin) + "\n");		
+			resultbuilder.append(String.format("%d\t%-8s\t%s\n", user.getID(), user, user instanceof Admin));		
 		}
 		System.out.print(resultbuilder);
 	}
