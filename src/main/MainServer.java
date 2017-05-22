@@ -321,15 +321,19 @@ public class MainServer {
 		}
 	}
 	
-	public void dispalyUser(int userID) throws PermissionDeniedException {
+	public boolean dispalyUser(int userID) throws PermissionDeniedException {
 		// DONE(Zhu) print User order(if it is passenger) as well
 		checkPermission(true);
 		User u = dataManager.getUserByID(userID);
+		if (u == null) {
+			return false;
+		}
 		System.out.printf("UserName: %s\n", u);
 		if(u instanceof Passenger){
 			System.out.println("Order: ");
 			displayOrder((Passenger)u);
 		}
+		return true;
 	}
 	
 	private void displayOrder(Passenger pa) {

@@ -295,7 +295,9 @@ public class Main {
 					} else {
 						for (int i = 1; i < param.length; i++) {
 							try {
-								server.dispalyUser(Integer.valueOf(param[i]));
+								if (!server.dispalyUser(Integer.valueOf(param[i]))) {
+									System.out.printf("Can't find user with id '%s'\n", param[i]);
+								}
 							} catch (NumberFormatException e) {
 								System.out.printf("'%s' is not a user id.\n", param[i]);
 							}
