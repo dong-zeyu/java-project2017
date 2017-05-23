@@ -221,7 +221,6 @@ public class FlightDaemon {
 
 			@Override
 			public boolean test(Flight t) {
-				// TODO Auto-generated method stub
 				return t.flightStatus == FlightStatus.UNPUBLISHED;
 			}
 		});
