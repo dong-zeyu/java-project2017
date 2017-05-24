@@ -61,7 +61,7 @@ public class DataManager {
 						flight.flightStatus = FlightStatus.TERMINATE;
 						flight.setDaemon(false);
 					} else if (flight.getStartTime().getTime() - now.getTime() <= TIME_TO_PUBLISH) {
-						if (!(flight.flightStatus == FlightStatus.FULL)) {
+						if (flight.flightStatus == FlightStatus.UNPUBLISHED) {
 							flight.flightStatus = FlightStatus.AVAILABLE;							
 						}
 					} 

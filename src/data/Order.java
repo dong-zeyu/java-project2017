@@ -44,9 +44,9 @@ public class Order {
 				+ "Status: %s\n"
 				+ "----------------------------", 
 				passenger.userName,
-				flight != null ? "deleted" : flight.getFlightName(),
+				flight == null ? "deleted" : flight.getFlightName(),
 				status != OrderStatus.CANCLE ? String.valueOf(getSeat()) : "null", 
-				flight != null ? "flight deleted" : flight.getStartTime().toString(),
+				flight == null ? "flight deleted" : flight.getStartTime().toString(),
 				createDate.toString(),
 				status.name());
 	}
