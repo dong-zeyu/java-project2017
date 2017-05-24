@@ -1,4 +1,6 @@
-This is the main class of flight system project designed by group No.25
+# Flight-System
+
+This is the main class of flight system project of 2017 Java Project in SUSTC
 <p>The feature of this flight system:
 <ul>
 		<li>containing all of the functions required</li>
@@ -9,11 +11,4 @@ This is the main class of flight system project designed by group No.25
 		<li>using custom exception to deal with status and permission problem</li>
 </ul>
 
-<p>The name following the tag DONE specified the work assignment, the code having no tag is done by DongZeyu.
-
 <p>This project has a complete git repository, and you can trace the develop procedure if you like.
-
-<p>author: 
-<p>&ensp;&ensp;DongZeyu(11611716)
-<p>&ensp;&ensp;ZhuJunhua(11611826)
-<p>&ensp;&ensp;PengRuiheng(11611804)

@@ -25,13 +25,7 @@ import exceptions.StatusUnavailableException;
  * 		<li>using custom exception to deal with status and permission problem</li>
  * </ul>
  * 
- * <p>The name following the tag {@code DONE} specified the work assignment, the code having no tag is done by DongZeyu.
- * 
  * <p>This project has a complete git repository, and you can trace the develop procedure if you like.
- * 
- * @author DongZeyu(11611716) 
- * @author ZhuJunhua(11611826)
- * @author PengRuiheng(11611804)
  *
  */
 public class Main {
