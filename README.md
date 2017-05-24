@@ -1,6 +1,6 @@
 # Flight-System
 
-This is the main class of flight system project of 2017 Java Project in SUSTC
+This is the flight system project of 2017 Java Project in SUSTC
 <p>The feature of this flight system:
 <ul>
 		<li>containing all of the functions required</li>
