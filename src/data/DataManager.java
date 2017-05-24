@@ -42,7 +42,7 @@ public class DataManager {
 	public ArrayList<FlightDaemon> flightDaemons;
 	public static final long CHECKING_INTERVAL = 1000l; // 1 second
 	public static final long DAY_OF_CREATE = 30*24*3600*1000l; // 30 days
-	public static final long INTERVAL_TO_CREATE = 3600*1000l; // 1 hour
+	public static final long INTERVAL_TO_CREATE = 10*1000l; // 1 hour
 	public static final long TIME_TO_TERMINATE = 2*3600*1000l; // 2 hours
 	public static final long TIME_TO_PUBLISH = 15*24*3600*1000l; // 15 days
 	private final String filename = "data.xml";
@@ -61,7 +61,9 @@ public class DataManager {
 						flight.flightStatus = FlightStatus.TERMINATE;
 						flight.setDaemon(false);
 					} else if (flight.getStartTime().getTime() - now.getTime() <= TIME_TO_PUBLISH) {
-						flight.flightStatus = FlightStatus.AVAILABLE;
+						if (flight.flightStatus == FlightStatus.UNPUBLISHED) {
+							flight.flightStatus = FlightStatus.AVAILABLE;							
+						}
 					} 
 				}				
 			}
