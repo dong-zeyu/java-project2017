@@ -711,6 +711,8 @@ public class Main {
 	private static void addFlight() {
 		// DONE(Peng) addFlight UI
 		try {
+			System.out.println("Available City: ");
+			server.displayCity();
 			System.out.print("flightName： ");
 			String flightName=scanner.nextLine();
 			System.out.print("Please enter the Starttime,formatted with : year-month-date-hr-min-sec: ");
