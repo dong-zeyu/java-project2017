@@ -1,10 +1,15 @@
 package data;
 
+import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public abstract class User {
+public abstract class User implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1641926112430680231L;
 	public static int ID = 0; //Plus one when create a new user and current is set to userID
 	protected int userID; //ID is unchangeable.
 	protected String userName;

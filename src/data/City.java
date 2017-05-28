@@ -1,9 +1,14 @@
 package data;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class City {
+public class City implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1847989476070817692L;
 	public static int ID = 0; //ID is just the count of cities
 	private int cityID; //cityID needn't changing
 	private String cityName;

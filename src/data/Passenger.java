@@ -6,6 +6,10 @@ import exceptions.StatusUnavailableException;
 
 public class Passenger extends User {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7622300935345582710L;
 	private String identityID; // XXX this should not be changed?
 	protected ArrayList<Order> orderList;
 

@@ -1,13 +1,18 @@
 package data;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.function.Predicate;
 
 import exceptions.StatusUnavailableException;
 
-public class FlightDaemon {
+public class FlightDaemon implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -462004565055095904L;
 	public static int ID = 0;
 	private int flightDaemonID;
 	private String flightName;

@@ -1,11 +1,16 @@
 package data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import exceptions.StatusUnavailableException;
 
-public class Order {
+public class Order implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6646579220998951615L;
 	private Passenger passenger;
 	private Flight flight;
 	private Date createDate;
