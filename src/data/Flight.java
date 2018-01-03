@@ -1,5 +1,6 @@
 package data;
 
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -10,8 +11,12 @@ import java.util.TimeZone;
 
 import exceptions.StatusUnavailableException;
 
-public class Flight {
+public class Flight implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4984381831014139467L;
 	public static int ID = 0;
 	private int flightID;
 	private String flightName;

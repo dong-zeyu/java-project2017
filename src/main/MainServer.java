@@ -11,7 +11,6 @@ import data.Flight;
 import data.FlightDaemon;
 import data.FlightStatus;
 import data.Order;
-import data.OrderStatus;
 import data.Passenger;
 import data.User;
 import exceptions.PermissionDeniedException;
